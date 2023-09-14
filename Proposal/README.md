@@ -7,12 +7,15 @@ The problem that the project seeks to solve is to allow for ways for employees t
 ## Project Overview & Functionality
 The general features that the application will provide will be an authentication and authorization function for employees to log in and log their times and what they have done for the day to keep track of the hours that they have worked. 
 ![](https://github.ncsu.edu/engr-csc342/csc342-2023Fall-GroupX/blob/main/Proposal/Wireframes/splash_login_signin.png)
+
 In order to keep track of times, there will be three options. The employee can enter the time manually in hours and minutes that they calculated themselves, the employee can enter the start time and end time and the application will calculate the hours and minutes for the employee, or the employee can choose to clock in and clock out with the application and it will save the start and end times. 
 ![](https://github.ncsu.edu/engr-csc342/csc342-2023Fall-GroupX/blob/main/Proposal/Wireframes/timestamp_employee_hours.png)
+
 The employee will also have access to some account settings for better customization of their account and some statistics. In addition, employees will be able to view their logs that they have submitted for the time worked.
-![](https://github.ncsu.edu/engr-csc342/csc342-2023Fall-GroupX/blob/main/Proposal/Wireframes/timestamp_logs_settings.png)
+<img src="https://github.ncsu.edu/engr-csc342/csc342-2023Fall-GroupX/blob/main/Proposal/Wireframes/timestamp_logs_settings.png" height=500>
+
 For businesses, they will be able to search through a database of workers and examine the amount of hours that they have worked for a period of time from where the employee had been last paid to the time that the employers look at the employee hours. The employer can choose to send the payment as calculated by the application to the employees to ensure that they are paid on time. 
-![](https://github.ncsu.edu/engr-csc342/csc342-2023Fall-GroupX/blob/main/Proposal/Wireframes/timestamp_business.png)
+<img src="https://github.ncsu.edu/engr-csc342/csc342-2023Fall-GroupX/blob/main/Proposal/Wireframes/timestamp_business.png" height=500>
 
 ## Data Needed & How It Is Obtained
 Businesses will also be able to add employees to their business in order to add them to their respective database of employees. For this data to work, the system will need business names, usernames, and passwords to start out. Other personal information may be added when necessary, such as first name, last name, and date of birth. To obtain this information, the users will simply need to register an account as an employee or register a whole business. If a business is registered, then they use a generated code to register themselves as a business. Other data includes timestamps and time worked in terms of hours and minutes. This will be collected from employees that log their times into the database, which calculates the sum of the hours and minutes worked, which will in turn be shown to the employers for when it is time to pay the employees.
