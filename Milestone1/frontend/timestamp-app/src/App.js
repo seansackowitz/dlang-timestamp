@@ -1,28 +1,36 @@
 import logo from './logo.svg';
 import './App.css';
-import LoginPage from './page/login';
-import Register from './page/Register';
-import { EmployeeRegistrationPage } from './page/EmployeeRegistrationPage';
+import Header from './components/Header';
+import Navbar from './components/Navbar';
+import LeftSidebar from './components/LeftSidebar';
 import BusinessRegistrationPage from './page/BusinessRegistrationPage';
-import Navbar from './page/Navbar';
-import Header from './page/Header';
-import LeftSidebar from './page/LeftSidebar';
+
+import { EmployeeRegistrationPage } from './page/EmployeeRegistrationPage';
+import LoginPage from './page/LoginPage';
+import Homepage from './page/Homepage';
+import Register from './page/Register';
+import HoursRecord from './page/HoursRecord';
 
 function App() {
-  return (
-    <div className="App">
+    return (
+      <div className="App bg-slate-50">
       <Header></Header>
-      <div className='flex'>
-      <LeftSidebar></LeftSidebar>
-      <div>
-        <p>lisajdlaisjd</p>
+      <div className="flex justify-center w-full">
+          <div className="">
+              <LeftSidebar />
+          </div>
+          <div className="flex-grow flex justify-center">
+              {/* <BusinessRegistrationPage /> */}
+              {/* <EmployeeRegistrationPage></EmployeeRegistrationPage> */}
+              {/* <LoginPage></LoginPage> */}
+              {/* <Homepage></Homepage> */}
+              {/* <Register></Register> */}
+              <HoursRecord></HoursRecord>
+          </div>
       </div>
-      </div>
-
       <Navbar></Navbar>
-
-    </div>
-  );
+  </div>
+    );
 }
 
 export default App;

@@ -3,7 +3,7 @@ import React from 'react';
 const BusinessRegistrationPage = () => {
     return (
         <div className="flex flex-col justify-center h-full items-center">
-            <h1 className="text-5xl mb-8">Business Registration</h1>
+            <h1 className="text-5xl mb-8  text-center max-lg:mt-24">Business Registration</h1>
             <form className="flex flex-col gap-7">
                 <div class="w-72">
                     <div class="relative h-10 w-full min-w-[200px]">
