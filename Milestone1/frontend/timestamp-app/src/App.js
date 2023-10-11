@@ -25,7 +25,7 @@ function App() {
               {/* <LoginPage></LoginPage> */}
               {/* <Homepage></Homepage> */}
               {/* <Register></Register> */}
-              <HoursRecord></HoursRecord>
+              {/* <HoursRecord></HoursRecord> */}
           </div>
       </div>
       <Navbar></Navbar>
