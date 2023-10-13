@@ -17,7 +17,7 @@ services:
       - PORT=80
 
   frontend:
-    build: ./frontend
+    build: ./frontend/timestamp-app
     restart: unless-stopped
     volumes:
       - ./frontend/src:/app/src
