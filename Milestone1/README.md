@@ -21,10 +21,21 @@ Dashboard  | 90%    | [Wireframe](https://github.ncsu.edu/engr-csc342/csc342-202
 ### API Endpoints
 Method | Route                 | Description
 ------ | --------------------- | ---------
-POST | /login              | Receives an email and password
-POST | /register           | Creates a new user account and returns the new user object
-GET  | /users              | Retrieves an array of all active users in the system
-GET  | /users/:userId      | Retrieves a user by its Id
+POST | /api/login              | Receives a username and password
+POST | /api/register/business           | Creates a new employer account and returns the new user object
+POST | /api/register/employee           | Creates a new employee account and returns the new user object
+POST | /api/records | Creates a new record for the employee
+GET  | /api/records | Retrieves every log in the "database"
+GET  | /api/records/:userid | Retrieves every log associated with the user id
+GET  | /api/users              | Retrieves an array of all active users in the system
+GET  | /api/users/:userId      | Retrieves a user by its Id
+PUT  | /api/users/:id | Updating the user fields in their user object (as allowed)
+PUT  | /api/records/:id | Updating the record for an employee
+DELETE | /api/records/:id | Deleting the user record based on record id
+DELETE | /api/users/:id | Deleting the user object based on user id
 
 ### Individual Team Member Contributions
-
+Team Member | Contributions
+Kuangyao Mai | Set up the frontend pages, mock data, and some API endpoints. Also set up routing for navigating between pages.
+Dylan Lang | Set up the Dockerfile and docker compose file for the configuration settings and also the mock data for the users.json file. Also planned out some API endpoints that will be needed for the project. Also helped create the login page.
+Michael Dacanay | Helped work on creating the login page.
