@@ -10,26 +10,23 @@ import LoginPage from './page/LoginPage';
 import Homepage from './page/Homepage';
 import Register from './page/Register';
 import HoursRecord from './page/HoursRecord';
+import { BrowserRouter } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+import Dashboard from './page/Dashboard';
 
 function App() {
     return (
-      <div className="App bg-slate-50">
-      <Header></Header>
-      <div className="flex justify-center w-full">
-          <div className="">
-              <LeftSidebar />
-          </div>
-          <div className="flex-grow flex justify-center">
-              {/* <BusinessRegistrationPage /> */}
-              {/* <EmployeeRegistrationPage></EmployeeRegistrationPage> */}
-              {/* <LoginPage></LoginPage> */}
-              {/* <Homepage></Homepage> */}
-              {/* <Register></Register> */}
-              {/* <HoursRecord></HoursRecord> */}
-          </div>
-      </div>
-      <Navbar></Navbar>
-  </div>
+        <div className="App bg-slate-50">
+            <Routes>
+                <Route path='/login' element={<LoginPage/>}></Route>
+                <Route path='/dashboard' element={<Dashboard/>}>
+                    <Route path='hours'></Route>
+                </Route>
+                <Route path='/register' element={<Register/>}></Route>
+                <Route path='/register/business' element={<BusinessRegistrationPage/>}></Route>
+                <Route path='/register/employee' element={<EmployeeRegistrationPage/>}></Route>
+            </Routes>
+        </div>
     );
 }
 

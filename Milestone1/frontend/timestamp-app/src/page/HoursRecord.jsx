@@ -3,6 +3,8 @@ import Modal from '../components/Modal';
 
 const HoursRecord = () => {
     const [open, setOpen] = useState(false);
+
+
     return (
         <div className="overflow-y-auto w-full flex flex-col items-center" style={{ maxHeight: 'calc(100vh - 5rem)' }}>
             <h1 className=" text-4xl mt-8 text-center">My Hours</h1>
