@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const LeftSidebar = () => {
     return (
@@ -8,30 +9,30 @@ const LeftSidebar = () => {
         >
             <h2 className="text-2xl px-4">Hello! Persondsa dsadsadasd s</h2>
             <nav className='flex flex-col gap-2'>
-                <a
-                    href="#"
+                <Link
+                    to="/dashboard"
                     className="block py-3 px-4 text-xl rounded transition duration-200 hover:bg-slate-400 hover:text-slate-50"
                 >
                     Home
-                </a>
-                <a
-                    href="#"
+                </Link>
+                <Link
+                    to="/dashboard/hours"
                     className="block py-3 px-4 text-xl rounded transition duration-200 hover:bg-slate-400 hover:text-slate-50"
                 >
-                    Edit
-                </a>
-                <a
-                    href="#"
+                    Hours
+                </Link>
+                <Link
+                    to="#"
                     className="block py-3 px-4 text-xl rounded transition duration-200 hover:bg-slate-400 hover:text-slate-50"
                 >
                     Profile
-                </a>
-                <a
-                    href="#"
+                </Link>
+                <Link
+                    to="/login"
                     className="block py-3 px-4 text-xl rounded transition duration-200 hover:bg-slate-400 hover:text-slate-50"
                 >
                     Logout
-                </a>
+                </Link>
             </nav>
         </section>
     );
