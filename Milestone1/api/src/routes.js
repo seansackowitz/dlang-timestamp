@@ -17,6 +17,24 @@ router.get("/payments", (req, res) => {
     res.json(payments);
 });
 
+// get all payments sent by user with senderId
+router.get("/payments/sender/:senderId", (req, res) => {
+    let senderId = req.params.senderId;
+    let senderPayments = payments.filter(payment => {
+        return payment.senderId == senderId;
+    });
+    res.json(senderPayments);
+})
+
+// get all payments received by user with recipientId
+router.get("/payments/recipient/:recipientId", (req, res) => {
+    let recipientId = req.params.recipientId;
+    let recipientPayments = payments.filter(payment => {
+        return payment.recipientId == recipientId;
+    });
+    res.json(recipientPayments);
+})
+
 router.post("/payments", (req, res) => {
     const {amount, date, recipientId, senderId} = req.body;
     
