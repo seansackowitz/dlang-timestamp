@@ -25,8 +25,12 @@ POST | /api/login              | Receives a username and password
 POST | /api/register/business           | Creates a new employer account and returns the new user object
 POST | /api/register/employee           | Creates a new employee account and returns the new user object
 POST | /api/records | Creates a new record for the employee
+POST | /api/payments | Creates a payment transaction between a sender and recipient
 GET  | /api/records | Retrieves every log in the "database"
 GET  | /api/records/:userid | Retrieves every log associated with the user id
+GET  | /api/payments | Retrieves an array of all payments
+GET  | /api/payments/recipient/:recipientId | Retrieves an array of payments received by user with recipientId
+GET  | /api/payments/sender/:senderId | Retrieves an array of payments sent by user with senderId
 GET  | /api/users              | Retrieves an array of all active users in the system
 GET  | /api/users/:userId      | Retrieves a user by its Id
 PUT  | /api/users/:id | Updating the user fields in their user object (as allowed)
@@ -34,8 +38,10 @@ PUT  | /api/records/:id | Updating the record for an employee
 DELETE | /api/records/:id | Deleting the user record based on record id
 DELETE | /api/users/:id | Deleting the user object based on user id
 
+
 ### Individual Team Member Contributions
 Team Member | Contributions
+------------|--------------
 Kuangyao Mai | Set up the frontend pages, mock data, and some API endpoints. Also set up routing for navigating between pages.
 Dylan Lang | Set up the Dockerfile and docker compose file for the configuration settings and also the mock data for the users.json file. Also planned out some API endpoints that will be needed for the project. Also helped create the login page.
-Michael Dacanay | Helped work on creating the login page.
+Michael Dacanay | Helped work on creating the login page. Also helped add API endpoints for payments and mock data.
