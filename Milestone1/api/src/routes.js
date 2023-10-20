@@ -7,11 +7,15 @@ let payments = require("../data/payments.json");
 
 router.get("/users", (req, res) => {
     res.json(users);
-})
+});
 
 router.get("/records", (req, res) => {
     res.json(records);
-})
+});
+
+router.get("/payments", (req, res) => {
+    res.json(payments);
+});
 
 router.get("/payments", (req, res) => {
     res.json(payments)
