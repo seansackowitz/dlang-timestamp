@@ -8,7 +8,7 @@ app.use(express.json());
 
 
 const routes = require('../src/routes');
-app.use('/api', routes);
+app.use('/', routes);
 
 // As our server to listen for incoming connections
 app.listen(PORT, () => console.log(`Server listening on port: ${PORT}`));
