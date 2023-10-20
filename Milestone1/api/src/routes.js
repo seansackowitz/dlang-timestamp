@@ -3,6 +3,7 @@ const router = express.Router();
 
 let users = require("../data/users.json");
 let records = require("../data/records.json");
+let payments = require("../data/payments.json");
 
 router.get("/users", (req, res) => {
     res.json(users);
@@ -10,6 +11,10 @@ router.get("/users", (req, res) => {
 
 router.get("/records", (req, res) => {
     res.json(records);
+})
+
+router.get("/payments", (req, res) => {
+    res.json(payments)
 })
 
 router.get("/users/:id", (req, res) => {
@@ -63,31 +68,45 @@ router.post("/login", (req, res) => {
 })
 
 router.post("/register/business", (req, res) => {
-    return res.json("Not implemented");
+    const {username} = req.body;
+    //TODO: adding to the databse
+    return res.json({ success: true, message: 'Business account registered successfully!' });
 });
 
 router.post("/register/employee", (req, res) => {
-    return res.json("Not implemented");
+    const {username} = req.body;
+    //TODO: adding to the databse
+    return res.json({ success: true, message: 'Employee account registered successfully!' });
 });
 
 router.post("/records", (req, res) => {
-    return res.json("Not implemented");
+    const {notes, minutes} = req.body;
+    //TODO adding to the databse
+    return res.json({ success: true, message: 'Record added successfully!' });
 })
 
 router.put("/records/:id", (req, res) => {
-    return res.json("Not implemented");
+    const {notes, minutes} = req.body;
+    //TODO editing in the database
+    return res.json({ success: true, message: 'Record edited successfully!' });
 })
 
 router.put("/users/:id", (req, res) => {
-    return res.json("Not implemented");
+    const {first_name, last_name, avatar} = req.body;
+    //TODO editing in the database
+    return res.json({ success: true, message: 'User edited successfully!' });
 })
 
 router.delete("/records/:id",(req, res) => {
-    return res.json("Not implemented");
+    const {id} = req.body;
+    //TODO delete in the database
+    return res.json({ success: true, message: 'Record deleted successfully!' });
 })
 
 router.delete("/users/:id",(req, res) => {
-    return res.json("Not implemented");
+    const {id} = req.body;
+    //TODO delete in the database
+    return res.json({ success: true, message: 'User deleted successfully!' });
 })
 
 module.exports = router;
