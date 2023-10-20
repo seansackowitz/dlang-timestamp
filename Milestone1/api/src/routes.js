@@ -17,9 +17,12 @@ router.get("/payments", (req, res) => {
     res.json(payments);
 });
 
-router.get("/payments", (req, res) => {
-    res.json(payments)
-})
+router.post("/payments", (req, res) => {
+    const {amount, date, recipientId, senderId} = req.body;
+    
+    //TODO adding to the database
+    return res.json({ success: true, message: 'Payment added successfully!' });
+});
 
 router.get("/users/:id", (req, res) => {
     let userId = req.params.id;
