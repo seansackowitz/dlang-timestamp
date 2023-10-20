@@ -18,6 +18,7 @@ function App() {
     return (
         <div className="App bg-slate-50">
             <Routes>
+                <Route path='/' element={<LoginPage/>}></Route>
                 <Route path='/login' element={<LoginPage/>}></Route>
                 <Route path='/dashboard' element={<Dashboard/>}>
                     <Route path='hours'></Route>
