@@ -3,14 +3,19 @@ const router = express.Router();
 
 let users = require("../data/users.json");
 let records = require("../data/records.json");
+let payments = require("../data/payments.json");
 
 router.get("/users", (req, res) => {
     res.json(users);
-})
+});
 
 router.get("/records", (req, res) => {
     res.json(records);
-})
+});
+
+router.get("/payments", (req, res) => {
+    res.json(payments);
+});
 
 router.get("/users/:id", (req, res) => {
     let userId = req.params.id;
