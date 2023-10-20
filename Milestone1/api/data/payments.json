@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "date" : "Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)",
+        "sender_id" : 1,
+        "recipient_id" : 2,
+        "amount" : 120
+    },
+    {
+        "id": 2,
+        "date" : "Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)",
+        "sender_id" : 1,
+        "recipient_id" : 3,
+        "amount" : 5
+    },
+    {
+        "id": 3,
+        "date" : "Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)",
+        "sender_id" : 2,
+        "recipient_id" : 3,
+        "amount" : 12
+    },
+    {
+        "id": 4,
+        "date" : "Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)",
+        "sender_id" : 5,
+        "recipient_id" : 1,
+        "amount" : 19.99
+    },
+    {
+        "id": 5,
+        "date" : "Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)",
+        "sender_id" : 3,
+        "recipient_id" : 4,
+        "amount" : 0.5
+    }
+]
