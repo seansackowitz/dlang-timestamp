@@ -14,12 +14,13 @@ import { BrowserRouter } from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom';
 import Dashboard from './page/Dashboard';
 import ProfilePage from './page/ProfilePage';
+import SplashScreenPage from './page/SplashScreenPage';
 
 function App() {
     return (
         <div className="App bg-slate-50">
             <Routes>
-                <Route path='/' element={<LoginPage/>}></Route>
+                <Route path='/' element={<SplashScreenPage/>}></Route>
                 <Route path='/login' element={<LoginPage/>}></Route>
                 <Route path='/dashboard' element={<Dashboard/>}>
                     <Route path='home' element={<Homepage/>}></Route>
