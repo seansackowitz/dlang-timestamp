@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "date" : "Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)",
+        "minutes" : 120,
+        "userId" : 1,
+        "notes" : "I worked so hard today"
+    },
+    {
+        "id": 2,
+        "date" : "Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)",
+        "minutes" : 50,
+        "userId" : 2,
+        "notes" : "I worked so hard today"
+    },
+    {
+        "id": 3,
+        "date" : "Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)",
+        "minutes" : 50,
+        "userId" : 3,
+        "notes" : "I worked so hard today"
+    },
+    {
+        "id": 4,
+        "date" : "Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)",
+        "minutes" : 30,
+        "userId" : 4,
+        "notes" : "I worked so hard today"
+    },
+    {
+        "id": 5,
+        "date" : "Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)",
+        "minutes" : 20,
+        "userId" : 5,
+        "notes" : "I worked so hard today"
+    }
+]
