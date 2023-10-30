@@ -13,6 +13,7 @@ import HoursRecord from './page/HoursRecord';
 import { BrowserRouter } from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom';
 import Dashboard from './page/Dashboard';
+import ProfilePage from './page/ProfilePage';
 
 function App() {
     return (
@@ -21,7 +22,9 @@ function App() {
                 <Route path='/' element={<LoginPage/>}></Route>
                 <Route path='/login' element={<LoginPage/>}></Route>
                 <Route path='/dashboard' element={<Dashboard/>}>
-                    <Route path='hours'></Route>
+                    <Route path='home' element={<Homepage/>}></Route>
+                    <Route path='hours' element={<HoursRecord/>}></Route>
+                    <Route path='profile' element={<ProfilePage/>}></Route>
                 </Route>
                 <Route path='/register' element={<Register/>}></Route>
                 <Route path='/register/business' element={<BusinessRegistrationPage/>}></Route>
