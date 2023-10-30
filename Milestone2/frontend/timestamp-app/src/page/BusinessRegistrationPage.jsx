@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const BusinessRegistrationPage = () => {
     return (
@@ -51,21 +52,22 @@ const BusinessRegistrationPage = () => {
                         </label>
                     </div>
                 </div>
-                <button
-                    classNameName="block w-full select-none rounded-lg bg-pink-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                <Link
+                    to="/login"
+                    className="block w-full select-none rounded-lg bg-pink-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
                     data-ripple-light="true"
                 >
                     Register
-                </button>
+                </Link>
 
-                <div classNameName="flex gap-3 justify-center">
-                    <p classNameName="mt-2block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
+                <div className="flex gap-3 justify-center">
+                    <p className="mt-2block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
                         Already have an account?
                     </p>
                     <a
-                        classNameName="font-medium text-pink-500 transition-colors hover:text-blue-700"
-                        href="#"
+                        className="font-medium text-pink-500 transition-colors hover:text-blue-700"
+                        href="/login"
                     >
                         Sign In
                     </a>
