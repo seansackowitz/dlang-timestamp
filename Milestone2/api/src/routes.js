@@ -37,8 +37,14 @@ router.get("/payments/recipient/:recipientId", (req, res) => {
 
 router.post("/payments", (req, res) => {
     const {amount, date, recipientId, senderId} = req.body;
-    
+    const payment = {
+        amount: amount,
+        date: date,
+        recipientId: recipientId,
+        senderId: senderId
+    }
     //TODO adding to the database
+    payments.push(payment);
     return res.json({ success: true, message: 'Payment added successfully!' });
 });
 
@@ -86,7 +92,7 @@ router.post("/login", (req, res) => {
             res.json(user);
         }
         else {
-            res.status(404).send("Incorrect password");
+            res.status(401).send("Incorrect password");
             res.json("Incorrect password");
         }
     }
@@ -106,31 +112,69 @@ router.post("/register/employee", (req, res) => {
 
 router.post("/records", (req, res) => {
     const {notes, minutes} = req.body;
+    const newRecord = {
+        id: records[records.length - 1].id + 1,
+        date: new Date().toISOString(),
+        minutes: minutes,
+        // TODO: USER ID NEEDS TO CHANGE
+        userId: 1,
+        notes: notes
+    }
     //TODO adding to the databse
+    records.push(newRecord);
     return res.json({ success: true, message: 'Record added successfully!' });
 })
 
 router.put("/records/:id", (req, res) => {
     const {notes, minutes} = req.body;
     //TODO editing in the database
+    let record = records.find(record => record.id === parseInt(req.params.id));
+    let recordIndex = records.findIndex(record => record.id === parseInt(req.params.id));
+    if (record === undefined || record === null || recordIndex == -1) {
+        res.status(404).json({error: "Record not found"});
+    }
+    record.notes = notes;
+    record.minutes = minutes;
+    records.splice(recordIndex, 1, record);
     return res.json({ success: true, message: 'Record edited successfully!' });
 })
 
 router.put("/users/:id", (req, res) => {
     const {first_name, last_name, avatar} = req.body;
     //TODO editing in the database
+    let user = users.find(user => user.id === parseInt(req.params.id));
+    let userIndex = users.findIndex(user => user.id === parseInt(req.params.id));
+    if (user === undefined || user === null || userIndex == -1) {
+        res.status(404).json({error: "User not found"});
+    }
+    user.first_name = first_name;
+    user.last_name = last_name;
+    user.avatar = avatar;
+    users.splice(userIndex, 1, user);
     return res.json({ success: true, message: 'User edited successfully!' });
 })
 
 router.delete("/records/:id",(req, res) => {
     const {id} = req.body;
+    let record = records.find(record => record.id === parseInt(req.params.id))
+    let recordIndex = records.findIndex(record => record.id === parseInt(req.params.id));
+    if (record === undefined || record === null || recordIndex == -1) {
+        res.status(404).json({error: "Record not found"});
+    }
     //TODO delete in the database
+    records.splice(recordIndex, 1);
     return res.json({ success: true, message: 'Record deleted successfully!' });
 })
 
 router.delete("/users/:id",(req, res) => {
     const {id} = req.body;
+    let user = users.find(user => user.id === parseInt(req.params.id));
+    let userIndex = users.findIndex(user => user.id === parseInt(req.params.id));
+    if (user === undefined || user === null || userIndex == -1) {
+        res.status(404).json({error: "User not found"});
+    }
     //TODO delete in the database
+    users.splice(userIndex, 1);
     return res.json({ success: true, message: 'User deleted successfully!' });
 })
 
