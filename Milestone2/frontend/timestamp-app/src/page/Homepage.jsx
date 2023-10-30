@@ -1,8 +1,46 @@
 import React, { useState } from 'react';
 import Modal from '../components/Modal';
+import { useRef } from 'react';
 
 const Homepage = () => {
+    //Enter time manually
+    const [manualHours, setManualHours] = useState('');
+    const handleManualHoursInput = (e) => {
+        if (!isNaN(e.target.value)) {
+            setManualHours(e.target.value);
+        }
+    };
+    const handleManualTimeSubmit = (e) => {
+        if(manualHours === '') {
+            return;
+            // e.preventDefault();
+        }
+        setOpen(false);
+        setManualHours('');
+        console.log(manualHours)
+        console.log(manualMessage.current.value)
+    }
+    const manualMessage = useRef();
+
     const [open, setOpen] = useState(false);
+    const [openCalcualtedModal, setOpenCalcualtedModal] = useState(false);
+
+    //Enter start time and end time
+    const startTime = useRef();
+    const endTime = useRef();
+    const calcualtedMessage = useRef();
+    const handleSubmitCaluclatedTime = (e) => {
+        if(startTime.current.value === '' || endTime.current.value === '') {
+            return;
+        }
+        console.log(startTime.current.value);
+        console.log(endTime.current.value);
+        console.log(calcualtedMessage.current.value)
+        startTime.current.value = '';
+        endTime.current.value = '';
+        setOpen(false);
+    }
+
     return (
         <div className="flex flex-col items-center">
             <h1 className=" text-5xl mt-24 text-center">Total Hours</h1>
@@ -12,6 +50,10 @@ const Homepage = () => {
                     className="block w-full select-none rounded-lg bg-zinc-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-zinc-500/20 transition-all hover:shadow-lg hover:shadow-zinc-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
                     data-ripple-light="true"
+                    onClick={() => {
+                        setOpen(true);
+                        setOpenCalcualtedModal(false);
+                    }}
                 >
                     Enter Hours
                 </button>
@@ -19,7 +61,10 @@ const Homepage = () => {
                     className="block w-full select-none rounded-lg bg-zinc-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-zinc-500/20 transition-all hover:shadow-lg hover:shadow-zinc-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
                     data-ripple-light="true"
-                    onClick={() => setOpen(true)}
+                    onClick={() => {
+                        setOpen(true);
+                        setOpenCalcualtedModal(true);
+                    }}
                 >
                     Enter hours manually
                 </button>
@@ -39,50 +84,118 @@ const Homepage = () => {
             >
                 CLOCK IN
             </button>
+
             <Modal open={open} onClose={() => setOpen(false)}>
-                <div className="text-center w-64 flex flex-col justify-center">
-                    <h1 className="text-4xl mb-4 text-center">
-                        Enter your time
-                    </h1>
-                    <form className="flex flex-col gap-7 justify-center">
-                        <div className='flex gap-3 justify-center items-center'>
-                            <label>Date: </label>
-                            <input name="date" type="date" required />
-                        </div>
-                        <div className="">
-                            <div className="relative h-11 w-full min-w-[180]">
-                                <input
-                                    placeholder="hours"
-                                    className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
-                                />
-                                <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 flex h-full w-full select-none text-sm font-normal leading-tight text-blue-gray-500 transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-pink-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:after:scale-x-100 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
-                                    Enter your hours
-                                </label>
+                {openCalcualtedModal ? (
+                    <div className="text-center w-64 flex flex-col justify-center">
+                        <h1 className="text-4xl mb-4 text-center">
+                            Enter your time
+                        </h1>
+                        <div className="flex flex-col gap-7 justify-center">
+                            <div className="flex gap-3 justify-center items-center">
+                                <label>Date: </label>
+                                <input name="date" type="date" required />
+                            </div>
+                            <div className="">
+                                <div className="relative h-11 w-full min-w-[180]">
+                                    <input
+                                        onChange={(e) =>
+                                            handleManualHoursInput(e)
+                                        }
+                                        value={manualHours}
+                                        placeholder="hours"
+                                        className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                                    />
+                                    <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 flex h-full w-full select-none text-sm font-normal leading-tight text-blue-gray-500 transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-pink-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:after:scale-x-100 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
+                                        Enter your hours
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="">
+                                <div className="relative w-full min-w-[200px]">
+                                    <textarea
+                                        ref={manualMessage}
+                                        className="peer h-full min-h-[100px] w-full resize-none rounded-[7px] border border-blue-gray-200  bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 disabled:resize-none disabled:border-0 disabled:bg-blue-gray-50"
+                                        placeholder=" "
+                                    ></textarea>
+                                    <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-pink-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
+                                        Message
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="flex gap-4">
+                                <button
+                                    className="block w-full select-none rounded-lg bg-teal-800 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-teal-800/20 transition-all hover:shadow-lg hover:shadow-teal-800/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                    type="button"
+                                    data-ripple-light="true"
+                                    onClick={handleManualTimeSubmit}
+                                >
+                                    Continue
+                                </button>
                             </div>
                         </div>
-                        <div className="">
-                            <div className="relative w-full min-w-[200px]">
-                                <textarea
-                                    className="peer h-full min-h-[100px] w-full resize-none rounded-[7px] border border-blue-gray-200  bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 disabled:resize-none disabled:border-0 disabled:bg-blue-gray-50"
-                                    placeholder=" "
-                                ></textarea>
-                                <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-pink-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
-                                    Message
-                                </label>
+                    </div>
+                ) : (
+                    <div className="text-center w-64 flex flex-col justify-center">
+                        <h1 className="text-4xl mb-4 text-center">
+                            Enter your time
+                        </h1>
+                        <form className="flex flex-col gap-7 justify-center">
+                            <div className="flex gap-3 justify-center items-center">
+                                <label>Date: </label>
+                                <input name="date" type="date" required />
                             </div>
-                        </div>
-                        <div className="flex gap-4">
-                            <button
-                                className="block w-full select-none rounded-lg bg-teal-800 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-teal-800/20 transition-all hover:shadow-lg hover:shadow-teal-800/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                                type="button"
-                                data-ripple-light="true"
-                                onClick={() => setOpen(false)}
-                            >
-                                Continue
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                            <div className="">
+                                <div className="relative h-11 w-full min-w-[180]">
+                                    <input
+                                        ref={startTime}
+                                        type='time'
+                                        placeholder="hours"
+                                        className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                                    />
+                                    <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 flex h-full w-full select-none text-sm font-normal leading-tight text-blue-gray-500 transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-pink-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:after:scale-x-100 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
+                                        Enter Start Time
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="">
+                                <div className="relative h-11 w-full min-w-[180]">
+                                    <input
+                                        ref={endTime}
+                                        type="time"
+                                        placeholder="hours"
+                                        className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                                    />
+                                    <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 flex h-full w-full select-none text-sm font-normal leading-tight text-blue-gray-500 transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-pink-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:after:scale-x-100 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
+                                        Enter End Time
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="">
+                                <div className="relative w-full min-w-[200px]">
+                                    <textarea
+                                        ref={calcualtedMessage}
+                                        className="peer h-full min-h-[100px] w-full resize-none rounded-[7px] border border-blue-gray-200  bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 disabled:resize-none disabled:border-0 disabled:bg-blue-gray-50"
+                                        placeholder=" "
+                                    ></textarea>
+                                    <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-pink-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
+                                        Message
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="flex gap-4">
+                                <button
+                                    className="block w-full select-none rounded-lg bg-teal-800 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-teal-800/20 transition-all hover:shadow-lg hover:shadow-teal-800/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                    type="button"
+                                    data-ripple-light="true"
+                                    onClick={handleSubmitCaluclatedTime}
+                                >
+                                    Continue
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                )}
             </Modal>
         </div>
     );

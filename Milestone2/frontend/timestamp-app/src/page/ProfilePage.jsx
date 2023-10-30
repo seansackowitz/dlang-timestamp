@@ -123,13 +123,20 @@ const ProfilePage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex lg:w-[150px] w-full lg:gap-10 gap-2 flex-wrap lg:flex-nowrap mt-2">
+                    <div className="flex w-full lg:gap-10 gap-2 flex-wrap lg:flex-nowrap mt-2">
                         <button
-                            className="block select-none rounded-lg bg-teal-800 py-4 px-4 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-teal-800/20 transition-all hover:shadow-lg hover:shadow-teal-800/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            className="block lg:w-[150px]  select-none rounded-lg bg-teal-800 py-4 px-4 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-teal-800/20 transition-all hover:shadow-lg hover:shadow-teal-800/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                             type="button"
                             data-ripple-light="true"
                         >
                             Save Changes
+                        </button>
+                        <button
+                            className="block lg:w-[100px] select-none rounded-lg bg-pink-500 py-3 px-4 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            type="button"
+                            data-ripple-light="true"
+                        >
+                            Leave
                         </button>
                     </div>
                 </div>
@@ -137,7 +144,7 @@ const ProfilePage = () => {
                 <div className=" mx-4 mt-4 flex lg:mx-36">
                     <div className='flex justify-between w-full lg:flex-nowrap flex-wrap gap-4'>
                         <div>
-                            <b>Deactivate your account</b>
+                            <b>Delete your account</b>
                             <p className='mt-1'>All your personal information will be permanently removed. </p>
                         </div>
                         <button
