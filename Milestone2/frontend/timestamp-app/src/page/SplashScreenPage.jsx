@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
-import SplashScreen from '../images/TimeStamp__1_-removebg-preview.png'
+import SplashScreen from '../images/TimeStamp.png'
 import '../App.css'
-import { Link, useNavigate} from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 
 const SplashScreenPage = () => {
     console.log("DO SOMETHING");
@@ -13,8 +13,9 @@ const SplashScreenPage = () => {
         }, 3000)
     }, []);
     return (
-        <div className='flex w-full h-full items-center justify-center'>
+        <div className='flex w-full h-full items-center justify-center bg-[#F6F6E9]'>
             <img
+                className=' w-[500px]'
                 src={SplashScreen}
                 alt="splash"
                 height={'100%'}

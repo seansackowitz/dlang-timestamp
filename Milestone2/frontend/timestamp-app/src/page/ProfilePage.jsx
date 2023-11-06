@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const ProfilePage = () => {
     const previewProfile = useRef();
@@ -12,6 +12,9 @@ const ProfilePage = () => {
     const handleUploadProfileChange = (event) => {
         //To do: see the preview image
         const file = event.target.files[0];
+        if(!file) {
+            return;
+        }
         if (file.size > 1 * 1024 * 1024) {
             alert('File size too big');
             return;
