@@ -29,7 +29,7 @@ services:
       - PORT=80
 
   database:
-    image: mariadb:10.6
+    image: mariadb:latest
     restart: unless-stopped
     ports:
       # Make the DB accessible from outside of the Docker network if needed
