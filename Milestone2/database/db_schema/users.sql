@@ -42,32 +42,35 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `username`, `avatar`, `rol
   (25,'Sterne','Cundey','scundeyo','https://robohash.org/necessitatibusoccaecatifuga.png?size=64x64&set=set1','self-employed','none',12,'522d71c5c89d25cc5ed6549343053ec8','1ebf065c99047324e4e84ef527eecf38c3454e2ed300d60b92d6f903b5742ebaec8e6b5a0dc7b926f273f27f3ad202be01f1b2b0913f2f52e90317c6a6ceb7d8');
 
 -- Create records table
-CREATE TABLE records (
-  id INTEGER PRIMARY KEY,
-  date TEXT,
-  minutes INTEGER,
-  notes TEXT,
-  paid BOOLEAN
+CREATE TABLE IF NOT EXISTS `records` (
+  `id` INTEGER NOT NULL AUTO_INCREMENT,
+  `date` DATE NOT NULL,
+  `minutes` INTEGER NOT NULL,
+  `notes` TEXT,
+  `paid` BOOLEAN NOT NULL,
+  PRIMARY KEY (`id`)
 );
 
 -- Create user_records join table 
-CREATE TABLE user_records (
-  record_id INTEGER,
-  user_id INTEGER,
-  FOREIGN KEY (record_id) REFERENCES records(id),
-  FOREIGN KEY (user_id) REFERENCES users(id)
+CREATE TABLE IF NOT EXISTS `user_records` (
+  `record_id` INTEGER,
+  `user_id` INTEGER,
+  FOREIGN KEY (`record_id`) REFERENCES records(`id`),
+  FOREIGN KEY (`user_id`) REFERENCES users(`id`)
 );
 
+DELETE FROM `records`;
 -- Populate records
-INSERT INTO records VALUES
+INSERT INTO `records` (`id`, `date`, `minutes`, `notes`, `paid`) VALUES
   (1,'Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',120,'I worked so hard today',FALSE),
   (2,'Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',50,'I worked so hard today',FALSE),
   (3,'Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',50,'I worked so hard today',FALSE),
   (4,'Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',30,'I worked so hard today',FALSE),
   (5,'Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',20,'I worked so hard today',FALSE);
 
+DELETE FROM `user_records`;
 -- Populate user_records join table
-INSERT INTO user_records VALUES
+INSERT INTO `user_records` (`record_id`, `user_id`) VALUES
   (1,1),
   (2,2),
   (3,3),
@@ -75,32 +78,34 @@ INSERT INTO user_records VALUES
   (5,5); 
 
 -- Create payments table
-CREATE TABLE payments (
-  id INTEGER PRIMARY KEY, 
-  date TEXT,
-  sender_id INTEGER,
-  recipient_id INTEGER,
-  amount NUMERIC
+CREATE TABLE IF NOT EXISTS `payments` (
+  `id` INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT, 
+  `date` DATE NOT NULL,
+  `sender_id` INTEGER NOT NULL,
+  `recipient_id` INTEGER NOT NULL,
+  `amount` NUMERIC NOT NULL
 );
 
 -- Create records_payments join table
-CREATE TABLE records_payments (
-  record_id INTEGER,
-  payment_id INTEGER,
+CREATE TABLE IF NOT EXISTS `records_payments` (
+  `record_id` INTEGER,
+  `payment_id` INTEGER,
   FOREIGN KEY (record_id) REFERENCES records(id),
   FOREIGN KEY (payment_id) REFERENCES payments(id)  
 );
 
+DELETE FROM `payments`;
 -- Populate payments
-INSERT INTO payments VALUES
+INSERT INTO `payments` (`id`, `date`, `sender_id`, `recipient_id`, `amount`) VALUES
   (1,'Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',1,2,120),
   (2,'Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',1,3,5),
   (3,'Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',2,3,12),
   (4,'Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',5,1,19.99),
   (5,'Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',3,4,0.5);
   
+DELETE FROM `records_payments`;
 -- Populate records_payments (sample data) 
-INSERT INTO records_payments VALUES
+INSERT INTO `records_payments` (`record_payment`, `payment_id`) VALUES
   (1,1),
   (2,2),
   (3,3);
