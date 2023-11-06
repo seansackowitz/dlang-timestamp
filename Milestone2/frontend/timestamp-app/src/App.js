@@ -14,6 +14,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom';
 import Dashboard from './page/Dashboard';
 import ProfilePage from './page/ProfilePage';
+import BusinessPaymentPage from './page/BusinessPaymentPage';
+import PaymentConfirmationPage from './page/PaymentConfirmationPage';
 
 function App() {
     return (
@@ -29,6 +31,8 @@ function App() {
                 <Route path='/register' element={<Register/>}></Route>
                 <Route path='/register/business' element={<BusinessRegistrationPage/>}></Route>
                 <Route path='/register/employee' element={<EmployeeRegistrationPage/>}></Route>
+                <Route path='/business/payment' element={<BusinessPaymentPage/>}></Route>
+                <Route path='/payment-confirmation' element={<PaymentConfirmationPage/>}></Route>
             </Routes>
         </div>
     );
