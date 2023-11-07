@@ -151,13 +151,13 @@ router.post("/logout", (req, res) => {
     res.json("Logged out");
 });
 
-router.post("/register/business", TokenMiddleware, (req, res) => {
+router.post("/register/business", (req, res) => {
     const { username } = req.body;
     //TODO: adding to the databse
     return res.json({ success: true, message: 'Business account registered successfully!' });
 });
 
-router.post("/register/employee", TokenMiddleware, (req, res) => {
+router.post("/register/employee", (req, res) => {
     const { username } = req.body;
     //TODO: adding to the databse
     return res.json({ success: true, message: 'Employee account registered successfully!' });
