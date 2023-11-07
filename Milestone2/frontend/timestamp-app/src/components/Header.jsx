@@ -14,54 +14,16 @@ const Header = () => {
                         </a>
                         <ul className="hidden items-center gap-6 lg:flex">
                             <li className="block p-1 font-sans text-sm font-normal leading-normal text-inherit antialiased">
-                                <a className="flex items-center text-xl" href="#">
+                                <a className="flex items-center text-2xl" href="#">
                                     Hello Big Boy!
                                 </a>
                             </li>
                         </ul>
-                        <button
-                            className="middle none center hidden rounded-lg bg-gradient-to-tr from-pink-600 to-pink-400 py-2 px-4 font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block"
-                            type="button"
-                            data-ripple-light="true"
-                        >
-                            <span>I am an icon</span>
-                        </button>
-                    </div>
-                    <div
-                        className="block h-0 w-full basis-full overflow-hidden text-blue-gray-900 transition-all duration-300 ease-in lg:hidden"
-                        data-collapse="navbar"
-                    >
-                        <div className="container mx-auto pb-2">
-                            <ul className="mt-2 mb-4 flex flex-col gap-2">
-                                <li className="block p-1 font-sans text-sm font-normal leading-normal text-inherit antialiased">
-                                    <a className="flex items-center" href="#">
-                                        Pages
-                                    </a>
-                                </li>
-                                <li className="block p-1 font-sans text-sm font-normal leading-normal text-inherit antialiased">
-                                    <a className="flex items-center" href="#">
-                                        Account
-                                    </a>
-                                </li>
-                                <li className="block p-1 font-sans text-sm font-normal leading-normal text-inherit antialiased">
-                                    <a className="flex items-center" href="#">
-                                        Blocks
-                                    </a>
-                                </li>
-                                <li className="block p-1 font-sans text-sm font-normal leading-normal text-inherit antialiased">
-                                    <a className="flex items-center" href="#">
-                                        Docs
-                                    </a>
-                                </li>
-                            </ul>
-                            <button
-                                className="middle none center mb-2 block w-full rounded-lg bg-gradient-to-tr from-pink-600 to-pink-400 py-2 px-4 font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                                type="button"
-                                data-ripple-light="true"
-                            >
-                                <span>Buy Now</span>
-                            </button>
-                        </div>
+                        <img
+                                class="relative inline-block h-12 w-12 rounded-full object-cover object-center"
+                                alt="Image placeholder"
+                                src="https://source.unsplash.com/random"
+                        />
                     </div>
                 </div>
             </nav>
