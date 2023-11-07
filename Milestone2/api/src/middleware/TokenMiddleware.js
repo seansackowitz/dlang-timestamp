@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const TOKEN_COOKIE_NAME = "TimestampToken";
+require('dotenv').config();
 
 exports.TokenMiddleware = (req, res, next) => {
   // We will look for the token in two places:
@@ -41,6 +42,7 @@ exports.TokenMiddleware = (req, res, next) => {
 
 
 exports.generateToken = (req, res, user) => {
+  console.log("LET US CREATE A TEMP USER");
   let temp = {
     id: user.id,
     first_name: user.first_name,
@@ -51,14 +53,16 @@ exports.generateToken = (req, res, user) => {
     affiliation: user.affiliation,
     hourly_rate: user.hourly_rate,
   };
+  console.log("LET US CREATE THE COOKIE")
   let data = {
     user: temp,
     // Use the exp registered claim to expire token in 1 hour
     exp: Math.floor(Date.now() / 1000) + (60 * 60)
   }
-
-  const token = jwt.sign(data, API_SECRET);
-
+  console.log("WE ARE COOKING");
+  console.log("THIS IS THE SECRET", process.env.API_SECRET_KEY);
+  const token = jwt.sign(data, process.env.API_SECRET_KEY);
+  console.log("WE ARE SENDING TOKEN");
   //send token in cookie to client
   res.cookie(TOKEN_COOKIE_NAME, token, {
     httpOnly: true,

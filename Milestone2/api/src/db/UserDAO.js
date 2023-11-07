@@ -3,11 +3,14 @@ const User = require('./models/User');
 const crypto = require('crypto');
 
 async function getUserByCredentials(username, password) {
+    console.log("BEFORE TRY CATCH");
     try {
+        console.log("BEFORE DB QUERY");
         const { results } = await db.query(
             'SELECT * FROM users WHERE username = ?',
             [username]
         );
+        console.log("THIS IS THE USER FOUND", results);
         if (results.length <= 0) {
             throw new Error('No such user');
         }

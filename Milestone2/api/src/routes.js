@@ -116,7 +116,7 @@ router.get("/records/:id", TokenMiddleware, (req, res) => {
     }
 });
 
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res) => {
     
     // let userId = req.params.id;
     // let user = users.find(usr => {
@@ -136,12 +136,16 @@ router.post("/login", (req, res) => {
     //         res.json("Incorrect password");
     //     }
     // }
+    console.log("TRYING TO LOGIN RN");
     try {
-        let user = users.getUserByCredentials(req.body.username, req.body.password);
+        let user = await users.getUserByCredentials(req.body.username, req.body.password);
+        console.log("GOT USER CREDENTIALS");
         generateToken(req, res, user);
+        console.log("TOKEN GENERATED");
         res.json(user);
     }
     catch (error) {
+        console.log("ERROR IS", error);
         res.status(error.status).json({ error: error.message });
     }
 });

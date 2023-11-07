@@ -3,7 +3,7 @@ import toast, { Toaster } from 'react-hot-toast';
 
 const ProfilePage = () => {
     const previewProfile = useRef();
-
+    
     const profilePicUploadRef = useRef(null);
 
     const handleUploadClick = (event) => {
