@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` TEXT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=mysqld DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 INSERT INTO `users` (`first_name`, `last_name`, `username`, `avatar`, `role`, `affiliation`, `hourly_rate`, `salt`, `password`) VALUES
@@ -61,11 +61,11 @@ CREATE TABLE IF NOT EXISTS `user_records` (
 
 -- Populate records
 INSERT INTO `records` (`date`, `minutes`, `notes`, `paid`) VALUES
-  ('Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',120,'I worked so hard today',FALSE),
-  ('Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',50,'I worked so hard today',FALSE),
-  ('Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',50,'I worked so hard today',FALSE),
-  ('Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',30,'I worked so hard today',FALSE),
-  ('Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',20,'I worked so hard today',FALSE);
+  ('2023-10-11 09:34:13', 120, 'I worked so hard today', FALSE),
+  ('2023-10-11 09:34:13', 50, 'I worked so hard today', FALSE),
+  ('2023-10-11 09:34:13', 50, 'I worked so hard today', FALSE),
+  ('2023-10-11 09:34:13', 30, 'I worked so hard today', FALSE),
+  ('2023-10-11 09:34:13', 20, 'I worked so hard today', FALSE);
 
 
 -- Populate user_records join table
@@ -96,11 +96,11 @@ CREATE TABLE IF NOT EXISTS `records_payments` (
 
 -- Populate payments
 INSERT INTO `payments` (`date`, `sender_id`, `recipient_id`, `amount`) VALUES
-  ('Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',1,2,120),
-  ('Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',1,3,5),
-  ('Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',2,3,12),
-  ('Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',5,1,19.99),
-  ('Wed Oct 11 2023 09:34:13 GMT-0400 (Eastern Daylight Time)',3,4,0.5);
+  ('2023-10-11 09:34:13', 1, 2, 120),
+  ('2023-10-11 09:34:13', 1, 3, 5),
+  ('2023-10-11 09:34:13', 2, 3, 12),
+  ('2023-10-11 09:34:13', 5, 1, 19.99),
+  ('2023-10-11 09:34:13', 3, 4, 0.5);
   
 
 -- Populate records_payments (sample data) 
