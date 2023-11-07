@@ -147,8 +147,9 @@ router.post("/payments/:recipientId", TokenMiddleware, (req, res) => {
             amount += record.minutes * employee.hourly_rate;
         });
         let payment = req.body;
-        payments.createPayment(payment);
-        return res.json({ success: true, message: 'Payment added successfully!' });
+        payments.createPayment(payment).then((payment) => {
+            return res.json({ success: true, message: 'Payment added successfully!' });
+        });
     }
     catch (error) {
         return res.status(error.status).json({ success: false, message: error.message });
