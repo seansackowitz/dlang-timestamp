@@ -66,3 +66,13 @@ function createPayment(payment) {
         respond(400, { error: 'Bad request. Payment cannot be created.' });
     });
 }
+
+module.exports = {
+    getPayments: getPayments,
+    getPaymentById: getPaymentById,
+    getPaymentByDate: getPaymentByDate,
+    getPaymentByDateAndId: getPaymentByDateAndId,
+    getPaymentsBySenderId: getPaymentsBySenderId,
+    getPaymentsByRecipientId: getPaymentsByRecipientId,
+    createPayment: createPayment,
+}

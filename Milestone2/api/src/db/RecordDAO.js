@@ -65,9 +65,25 @@ function updateRecord(record) {
 }
 
 function deleteRecord(record) {
+    // Don't allow a record to be deleted if the record was paid
+    if (record.paid) {
+        return respond(400, { error: 'Bad request. Record cannot be deleted by record ID because this record received payment.' });
+    }
     return db.query('DELETE FROM records WHERE id=?', [record.id]).then(({ results }) => {
         return new Record(record.id);
     }).catch(() => {
         respond(404, { error: 'Record not found. Record cannot be deleted by record ID.' });
     });
+}
+
+module.exports = {
+    getRecords: getRecords,
+    getRecordById: getRecordById,
+    getRecordByUserId: getRecordByUserId,
+    getRecordByUserIdAndDate: getRecordByUserIdAndDate,
+    getUnpaidRecordsByUserId: getUnpaidRecordsByUserId,
+    getRecordsByDate: getRecordsByDate,
+    createRecord: createRecord,
+    updateRecord: updateRecord,
+    deleteRecord: deleteRecord,
 }
