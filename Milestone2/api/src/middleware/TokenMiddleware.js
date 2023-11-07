@@ -1,9 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const TOKEN_COOKIE_NAME = "NCParksToken";
-// In a real application, you will never hard-code this secret and you will
-// definitely never commit it to version control, ever
-const API_SECRET = "60d0954e20eaa0c02b382171c33c53bc18522cc6d4805eaa02e182b0";
+const TOKEN_COOKIE_NAME = "TimestampToken";
 
 exports.TokenMiddleware = (req, res, next) => {
   // We will look for the token in two places:
@@ -44,8 +41,18 @@ exports.TokenMiddleware = (req, res, next) => {
 
 
 exports.generateToken = (req, res, user) => {
+  let temp = {
+    id: user.id,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    username: user.username,
+    avatar: user.avatar,
+    role: user.role,
+    affiliation: user.affiliation,
+    hourly_rate: user.hourly_rate,
+  };
   let data = {
-    user: user,
+    user: temp,
     // Use the exp registered claim to expire token in 1 hour
     exp: Math.floor(Date.now() / 1000) + (60 * 60)
   }
@@ -56,7 +63,7 @@ exports.generateToken = (req, res, user) => {
   res.cookie(TOKEN_COOKIE_NAME, token, {
     httpOnly: true,
     secure: true,
-    maxAge: 2 * 60 * 1000 //This session expires in 2 minutes.. but token expires in 1 hour!
+    maxAge: 5 * 60 * 1000 //This session expires in 5 minutes.. but token expires in 1 hour!
   });
 };
 
