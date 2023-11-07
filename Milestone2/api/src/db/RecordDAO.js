@@ -34,7 +34,7 @@ function getRecordByUserIdAndDate(userId, date) {
     });
 }
 
-function getUnpaidRecordsById(userId) {
+function getUnpaidRecordsByUserId(userId) {
     let records = getRecordByUserId(userId);
     let unpaidRecords = [];
     return records.filter(record => record.paid === false).map(record => unpaidRecords.push(record));
