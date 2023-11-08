@@ -1,5 +1,5 @@
-import React from 'react';
-
+import React, { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Routes, Route, Switch, Outlet } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 
@@ -13,6 +13,24 @@ import ProfilePage from './ProfilePage';
 
 const Dashboard = () => {
     const { pathname } = useLocation();
+    // const loggedUser = useRef();
+    const navigate = useNavigate();
+    const checkUser = async () => {
+        let user = await fetch('/api/login/users/current');
+        if (user !== undefined && user !== null && user.role !== undefined) {
+            if (user.role === 'employer') {
+                // TODO: Navigate employer to employer page
+                console.log("THIS IS AN EMPLOYER");
+            }
+            // loggedUser.current = "Hello " + user.first_name + " " + user.last_name;
+        }
+        else {
+            navigate('/login');
+        }
+    };
+    useEffect(() => {
+        checkUser();
+    }, []);
     return (
         <div>
             <Header></Header>

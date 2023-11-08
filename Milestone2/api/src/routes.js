@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const cookieParser = require('cookie-parser');
 
 // let users = require("../data/users.json");
 // let records = require("../data/records.json");
@@ -9,6 +10,8 @@ const records = require('./db/RecordDAO');
 const payments = require('./db/PaymentDAO');
 const users = require('./db/UserDAO');
 const { TokenMiddleware, generateToken, removeToken } = require("./middleware/TokenMiddleware");
+
+router.use(cookieParser());
 
 // router.get("/users", TokenMiddleware, (req, res) => {
 // res.json(users);
@@ -122,8 +125,11 @@ router.get("/login/users/current", TokenMiddleware, (req, res) => {
 
 router.post("/login", async (req, res) => {
     try {
+        console.log("BEFORE GETTING USER");
         let user = await users.getUserByCredentials(req.body.username, req.body.password);
+        console.log("BEFORE GENERATING TOKEN");
         generateToken(req, res, user);
+        console.log("BEFORE RETURNING USER");
         res.json(user);
     }
     catch (error) {

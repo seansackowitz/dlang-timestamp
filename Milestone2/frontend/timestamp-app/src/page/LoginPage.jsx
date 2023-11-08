@@ -6,11 +6,13 @@ import toast from 'react-hot-toast';
 const LoginPage = () => {
     const navigate = useNavigate();
     async function onLogin() {
+        console.log("ATTEMPT LOGIN");
         let login = {
             username: username.current.value,
             password: password.current.value,
         };
         try {
+            console.log("BEFORE GETTING RESPONSE");
             const response = await fetch('/api/login', {
                 method: 'POST',
                 body: JSON.stringify(login),
@@ -18,10 +20,12 @@ const LoginPage = () => {
                     'Content-Type': 'application/json',
                 },
             });
+            console.log("RESPONSE");
             if (!response.ok) {
                 const errorData = await response.json(); // Get the error message from the server
                 throw new Error(errorData.error || response.statusText);
             }
+            console.log("LOGIN SUCCESSFUL");
             const userData = await response.json();
             toast.success('Login successful: ', userData.username);
             setTimeout(function() {
