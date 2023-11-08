@@ -37,7 +37,9 @@ module.exports = class {
                     resolve(this);
                 }
                 else {
-                    reject("Invalid username or password");
+                    const error = new Error("Invalid username or password");
+                    error.status = 401;
+                    reject(error);
                 }
             });
         });

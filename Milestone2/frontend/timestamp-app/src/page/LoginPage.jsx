@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 const LoginPage = () => {
     async function onLogin() {
@@ -9,16 +9,25 @@ const LoginPage = () => {
         // toast.success(`Username is ${username.current.value} and password is ${password.current.value}`);
         let login = {
             username: username.current.value,
-            password: password.current.value
+            password: password.current.value,
         };
-        const response = await fetch('/api/login', {
-            method: 'POST',
-            body: JSON.stringify(login),
-            headers: {
-                'Content-Type': 'application/json'
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                body: JSON.stringify(login),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                const errorData = await response.json(); // Get the error message from the server
+                throw new Error(errorData.error || response.statusText);
             }
-        });
-        console.log(response);
+            const userData = await response.json();
+            toast.success('Login successful: ', userData.username);
+        } catch (error) {
+            toast.error(error.message);
+        }
     }
     const username = useRef();
     const password = useRef();
@@ -51,9 +60,9 @@ const LoginPage = () => {
                         </label>
                     </div>
                 </div>
-                <div className='flex gap-4'>
+                <div className="flex gap-4">
                     <Link
-                        to='/register'
+                        to="/register"
                         className="block w-full select-none rounded-lg bg-teal-800 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-teal-800/20 transition-all hover:shadow-lg hover:shadow-teal-800/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                         type="button"
                         data-ripple-light="true"
@@ -74,7 +83,5 @@ const LoginPage = () => {
         </div>
     );
 };
-
-
 
 export default LoginPage;

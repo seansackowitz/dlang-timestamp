@@ -12,13 +12,17 @@ async function getUserByCredentials(username, password) {
         );
         console.log("THIS IS THE USER FOUND", results);
         if (results.length <= 0) {
-            throw new Error('No such user');
+            const error = new Error('No such user');
+            error.status = 404;
+            throw error;
         }
         const user = new User(results[0]);
         if (user) {
-            return user.validatePassword(password);
+            return await user.validatePassword(password);
         } else {
-            throw new Error('Invalid credentials');
+            const error = new Error('Invalid username or password');
+            error.status = 401;
+            throw error;
         }
     } catch (error) {
         console.error(error);
