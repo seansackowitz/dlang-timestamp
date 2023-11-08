@@ -2,6 +2,23 @@ import React, { useRef } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
 const ProfilePage = () => {
+    const navigate = useNavigate();
+    const checkUser = async () => {
+        let user = await fetch('/api/login/users/current');
+        if (user !== undefined && user !== null && user.role !== undefined) {
+            if (user.role === 'employer') {
+                // TODO: Navigate employer to employer page
+                console.log("THIS IS AN EMPLOYER");
+            }
+            // loggedUser.current = "Hello " + user.first_name + " " + user.last_name;
+        }
+        else {
+            navigate('/login');
+        }
+    };
+    useEffect(() => {
+        checkUser();
+    }, []);
     const previewProfile = useRef();
     
     const profilePicUploadRef = useRef(null);
