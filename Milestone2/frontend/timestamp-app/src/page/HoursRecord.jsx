@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Modal from '../components/Modal';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { useEffect } from 'react';
 
 const HoursRecord = () => {
     const navigate = useNavigate();
