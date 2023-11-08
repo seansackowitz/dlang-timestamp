@@ -8,6 +8,9 @@ const HoursRecord = () => {
     const navigate = useNavigate();
     let user;
     let records;
+    const updateRecord = async () => {
+
+    };
     const checkUser = async () => {
         user = await ((await fetch('/api/login/users/current')).json());
         console.log("USER IS", user);

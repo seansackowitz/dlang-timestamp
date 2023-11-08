@@ -19,14 +19,9 @@ function getRecordById(recordId) {
 }
 
 function getRecordByUserId(userId) {
-    const sql = `
-    SELECT r.* 
-    FROM records r
-    JOIN user_records ur ON r.id = ur.record_id
-    WHERE ur.user_id = ?
-  `;
+    const sql = `SELECT r.* FROM records r JOIN user_records ur ON r.id = ur.record_id WHERE ur.user_id = ?`;
 
-    return db.query("SELECT r.* FROM records r JOIN user_records ur ON r.id = ur.record_id WHERE ur.user_id = ?", [userId]).then(({ results }) => {
+    return db.query(sql, [userId]).then(({ results }) => {
         return results.map(record => new Record(record));
     }).catch(() => {
         respond(404, { error: 'Records cannot be retrieved by user ID ' + userId });
