@@ -4,9 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const LoginPage = () => {
+    const navigate = useNavigate();
     async function onLogin() {
-        // TODO: Login
-        // toast.success(`Username is ${username.current.value} and password is ${password.current.value}`);
         let login = {
             username: username.current.value,
             password: password.current.value,
@@ -25,6 +24,9 @@ const LoginPage = () => {
             }
             const userData = await response.json();
             toast.success('Login successful: ', userData.username);
+            setTimeout(function() {
+                navigate('/dashboard/home');
+            }, 3000);
         } catch (error) {
             toast.error(error.message);
         }

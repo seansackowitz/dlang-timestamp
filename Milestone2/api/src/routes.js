@@ -116,36 +116,17 @@ router.get("/records/:id", TokenMiddleware, (req, res) => {
     }
 });
 
+router.get("/login/users/current", TokenMiddleware, (req, res) => {
+    res.json(req.user);
+});
+
 router.post("/login", async (req, res) => {
-    
-    // let userId = req.params.id;
-    // let user = users.find(usr => {
-    //     return usr.id == userId;
-    // });
-    // if (!user) {
-    //     res.status(404).send("User not found");
-    //     res.json("User not found");
-    // }
-    // else {
-    //     if (user.password == req.body.password) {
-    //         res.json(user);
-    //         generateToken(req, res, user);
-    //     }
-    //     else {
-    //         res.status(401).send("Incorrect password");
-    //         res.json("Incorrect password");
-    //     }
-    // }
-    console.log("TRYING TO LOGIN RN");
     try {
         let user = await users.getUserByCredentials(req.body.username, req.body.password);
-        console.log("GOT USER CREDENTIALS");
         generateToken(req, res, user);
-        console.log("TOKEN GENERATED");
         res.json(user);
     }
     catch (error) {
-        console.log("ERROR IS", error);
         res.status(error.status || 500).json({ error: error.message || 'Internal Server Error' });
     }
 });
