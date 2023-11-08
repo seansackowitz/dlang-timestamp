@@ -13,26 +13,26 @@ const { TokenMiddleware, generateToken, removeToken } = require("./middleware/To
 
 router.use(cookieParser());
 
-// router.get("/users", TokenMiddleware, (req, res) => {
-// res.json(users);
+// router.get("/users", TokenMiddleware, async (req, res) => {
+// res.json(await users.getUsers());
 // });
 
-router.get("/records", TokenMiddleware, (req, res) => {
-    res.json(records.getRecords());
+router.get("/records", TokenMiddleware, async (req, res) => {
+    res.json(await records.getRecords());
 });
 
-router.get("/payments", TokenMiddleware, (req, res) => {
-    res.json(payments.getPayments());
+router.get("/payments", TokenMiddleware, async (req, res) => {
+    res.json(await payments.getPayments());
 });
 
 // get all payments sent by user with senderId
-router.get("/payments/sender/:senderId", TokenMiddleware, (req, res) => {
+router.get("/payments/sender/:senderId", TokenMiddleware, async (req, res) => {
     let senderId = req.params.senderId;
     // let senderPayments = payments.filter(payment => {
     //     return payment.senderId == senderId;
     // });
     try {
-        let senderPayments = payments.getPaymentsBySenderId(senderId);
+        let senderPayments = await payments.getPaymentsBySenderId(senderId);
         res.json(senderPayments);
     }
     catch (error) {
@@ -41,13 +41,13 @@ router.get("/payments/sender/:senderId", TokenMiddleware, (req, res) => {
 });
 
 // get all payments received by user with recipientId
-router.get("/payments/recipient/:recipientId", TokenMiddleware, (req, res) => {
+router.get("/payments/recipient/:recipientId", TokenMiddleware, async (req, res) => {
     let recipientId = req.params.recipientId;
     // let recipientPayments = payments.filter(payment => {
     //     return payment.recipientId == recipientId;
     // });
     try {
-        let recipientPayments = payments.getPaymentsByRecipientId(recipientId);
+        let recipientPayments = await payments.getPaymentsByRecipientId(recipientId);
         res.json(recipientPayments);
     }
     catch (error) {
@@ -55,7 +55,7 @@ router.get("/payments/recipient/:recipientId", TokenMiddleware, (req, res) => {
     }
 });
 
-router.post("/payments", TokenMiddleware, (req, res) => {
+router.post("/payments", TokenMiddleware, async (req, res) => {
     try {
         const { amount, date, recipientId, senderId } = req.body;
         const payment = {
@@ -66,7 +66,7 @@ router.post("/payments", TokenMiddleware, (req, res) => {
         }
         //TODO adding to the database
         // payments.push(payment);
-        payments.createPayment(payment);
+        await payments.createPayment(payment);
         return res.json({ success: true, message: 'Payment added successfully!' });
     }
     catch (error) {
@@ -74,7 +74,7 @@ router.post("/payments", TokenMiddleware, (req, res) => {
     }
 });
 
-router.get("/users/:id", TokenMiddleware, (req, res) => {
+router.get("/users/:id", TokenMiddleware, async (req, res) => {
     let userId = req.params.id;
     // let user = users.find(usr => {
     //     console.log("GET /users/:id route hit");
@@ -88,7 +88,7 @@ router.get("/users/:id", TokenMiddleware, (req, res) => {
     //     res.json(user);
     // }
     try {
-        let user = users.getUserById(userId);
+        let user = await users.getUserById(userId);
         res.json(user);
     }
     catch (error) {
@@ -119,8 +119,8 @@ router.get("/records/:id", TokenMiddleware, async (req, res) => {
     }
 });
 
-router.get("/login/users/current", TokenMiddleware, (req, res) => {
-    res.json(req.user);
+router.get("/login/users/current", TokenMiddleware, async (req, res) => {
+    res.json(await req.user);
 });
 
 router.post("/login", async (req, res) => {
@@ -137,24 +137,24 @@ router.post("/login", async (req, res) => {
     }
 });
 
-router.post("/logout", (req, res) => {
+router.post("/logout", async (req, res) => {
     removeToken(req, res);
     res.json("Logged out");
 });
 
-router.post("/register/business", (req, res) => {
+router.post("/register/business", async (req, res) => {
     const { username } = req.body;
     //TODO: adding to the databse
     return res.json({ success: true, message: 'Business account registered successfully!' });
 });
 
-router.post("/register/employee", (req, res) => {
+router.post("/register/employee", async (req, res) => {
     const { username } = req.body;
     //TODO: adding to the databse
     return res.json({ success: true, message: 'Employee account registered successfully!' });
 });
 
-router.post("/records", TokenMiddleware, (req, res) => {
+router.post("/records", TokenMiddleware, async (req, res) => {
     const { userId, notes, minutes } = req.body;
     const newRecord = {
         // id: records[records.length - 1].id + 1,
@@ -167,22 +167,22 @@ router.post("/records", TokenMiddleware, (req, res) => {
     }
     //TODO adding to the databse
     // records.push(newRecord);
-    records.createRecord(newRecord);
+    await records.createRecord(newRecord);
     return res.json({ success: true, message: 'Record added successfully!' });
 })
 
-router.post("/payments/:recipientId", TokenMiddleware, (req, res) => {
+router.post("/payments/:recipientId", TokenMiddleware, async (req, res) => {
     try {
         const senderId = req.user.id;
         const recipientId = req.params.recipientId;
-        let unpaidRecords = records.getUnpaidRecordsByUserId(recipientId);
-        let employee = users.getEmployeeById(recipientId);
+        let unpaidRecords = await records.getUnpaidRecordsByUserId(recipientId);
+        let employee = await users.getEmployeeById(recipientId);
         let amount = 0;
         unpaidRecords.forEach((record) => {
             amount += record.minutes * employee.hourly_rate;
         });
         let payment = req.body;
-        payments.createPayment(payment).then((payment) => {
+        await payments.createPayment(payment).then((payment) => {
             return res.json({ success: true, message: 'Payment added successfully!' });
         });
     }
@@ -191,13 +191,13 @@ router.post("/payments/:recipientId", TokenMiddleware, (req, res) => {
     }
 });
 
-router.put("/records/:id", TokenMiddleware, (req, res) => {
+router.put("/records/:id", TokenMiddleware, async (req, res) => {
     try {
         const { notes, minutes } = req.body;
-        let record = records.getRecordById(req.params.id);
+        let record = await records.getRecordById(req.params.id);
         record.notes = notes;
         record.minutes = minutes;
-        records.updateRecord(record);    
+        await records.updateRecord(record);    
     }
     catch (error) {
         res.status(error.status).json({ success: false, message: error.message });
@@ -214,10 +214,10 @@ router.put("/records/:id", TokenMiddleware, (req, res) => {
     // return res.json({ success: true, message: 'Record edited successfully!' });
 });
 
-router.put("/users/:id", TokenMiddleware, (req, res) => {
+router.put("/users/:id", TokenMiddleware, async (req, res) => {
     const { first_name, last_name, username, avatar, role, affiliation, hourly_rate } = req.body;
     try {
-        let user = users.getUserById(req.params.id);
+        let user = await users.getUserById(req.params.id);
         user.first_name = first_name;
         user.last_name = last_name;
         user.username = username;
@@ -225,7 +225,7 @@ router.put("/users/:id", TokenMiddleware, (req, res) => {
         user.role = role;
         user.affiliation = affiliation;
         user.hourly_rate = hourly_rate;
-        users.updateUser(req.params.id, user);
+        await users.updateUser(req.params.id, user);
         return res.json({ success: true, message: 'User edited successfully!' });
     }
     catch (error) {
@@ -244,11 +244,11 @@ router.put("/users/:id", TokenMiddleware, (req, res) => {
     // return res.json({ success: true, message: 'User edited successfully!' });
 });
 
-router.delete("/records/:id", TokenMiddleware, (req, res) => {
+router.delete("/records/:id", TokenMiddleware, async (req, res) => {
     const { id } = req.body;
     try {
-        let record = records.getRecordById(id);
-        records.deleteRecord(record);
+        let record = await records.getRecordById(id);
+        await records.deleteRecord(record);
         return res.json({ success: true, message: 'Record deleted successfully!' });
     }
     catch (error) {
