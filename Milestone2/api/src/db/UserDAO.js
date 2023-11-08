@@ -47,6 +47,23 @@ async function getUserById(id) {
     }
 }
 
+async function getUserByUsername(username) {
+    try {
+        const { results } = await db.query('SELECT * FROM users WHERE username = ?', [
+            username,
+        ]);
+        if (results.length > 0) {
+            const user = new User(results[0]);
+            return user;
+        } else {
+            throw new Error('No such user');
+        }
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
 async function registerUser(username, firstname, lastname, password) {
     try {
         // Check if the username already exists
