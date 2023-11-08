@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const TOKEN_COOKIE_NAME = "NCParksToken";
 // In a real application, you will never hard-code this secret and you will
 // definitely never commit it to version control, ever
-const API_SECRET = "60d0954e20eaa0c02b382171c33c53bc18522cc6d4805eaa02e182b0";
 
 exports.TokenMiddleware = (req, res, next) => {
   // We will look for the token in two places:
@@ -30,7 +30,7 @@ exports.TokenMiddleware = (req, res, next) => {
   //If we've made it this far, we have a token. We need to validate it
 
   try {
-    const decoded = jwt.verify(token, API_SECRET);
+    const decoded = jwt.verify(token, process.env.API_SECRET_KEY);
     req.user = decoded.user;
     next(); //Make sure we call the next middleware
   }
@@ -50,7 +50,7 @@ exports.generateToken = (req, res, user) => {
     exp: Math.floor(Date.now() / 1000) + (60 * 60)
   }
 
-  const token = jwt.sign(data, API_SECRET);
+  const token = jwt.sign(data, process.env.API_SECRET_KEY);
 
   //send token in cookie to client
   res.cookie(TOKEN_COOKIE_NAME, token, {
