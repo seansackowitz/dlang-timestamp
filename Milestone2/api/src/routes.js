@@ -97,18 +97,6 @@ router.get("/users/:id", TokenMiddleware, async (req, res) => {
 });
 
 router.get("/records/:id", TokenMiddleware, async (req, res) => {
-    // let usrId = req.params.id;
-    // let record = records.find(rec => {
-    //     console.log(rec.userId);
-    //     return usrId == rec.userId;
-    // })
-    // if (!record) {
-    //     res.status(404).send("Record not found");
-    //     res.json("Record not found");
-    // }
-    // else {
-    //     res.json(record);
-    // }
     try {
         let userId = req.params.id;
         let record = await records.getRecordByUserId(userId);

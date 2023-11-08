@@ -19,9 +19,14 @@ function getRecordById(recordId) {
 }
 
 async function getRecordByUserId(userId) {
-    const sql = `SELECT r.* FROM records r JOIN user_records ur ON r.id = ur.record_id WHERE ur.user_id = ?`;
-    const {results} = await db.query(sql, [userId]);
-    return await results.map(record => new Record(record));
+    try {
+        const sql = `SELECT r.* FROM records r JOIN user_records ur ON r.id = ur.record_id WHERE ur.user_id = ?`;
+        const {results} = await db.query(sql, [userId]);
+        return await results.map(record => new Record(record));    
+    }
+    catch (error) {
+        respond(404, { error: 'Records cannot be retrieved by user ID ' + userId });
+    }
 }
 
 function getRecordByUserIdAndDate(userId, date) {
