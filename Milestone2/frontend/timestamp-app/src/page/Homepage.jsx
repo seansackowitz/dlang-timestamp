@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router-dom';
 const Homepage = () => {
     const navigate = useNavigate();
     const checkUser = async () => {
-        let user = await fetch('/api/login/users/current');
+        let user = await ((await fetch('/api/login/users/current')).json());
+        console.log("USER IS", user);
         if (user !== undefined && user !== null && user.role !== undefined) {
             if (user.role === 'employer') {
                 // TODO: Navigate employer to employer page
