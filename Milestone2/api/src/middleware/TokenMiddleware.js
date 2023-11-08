@@ -28,7 +28,7 @@ exports.TokenMiddleware = (req, res, next) => {
   //If we've made it this far, we have a token. We need to validate it
 
   try {
-    const decoded = jwt.verify(token, API_SECRET);
+    const decoded = jwt.verify(token, process.env.API_SECRET_KEY);
     req.user = decoded.user;
     next(); //Make sure we call the next middleware
   }
