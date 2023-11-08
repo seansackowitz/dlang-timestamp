@@ -6,8 +6,10 @@ import { useEffect } from 'react';
 
 const HoursRecord = () => {
     const navigate = useNavigate();
+    let user;
+    let records;
     const checkUser = async () => {
-        let user = await ((await fetch('/api/login/users/current')).json());
+        user = await ((await fetch('/api/login/users/current')).json());
         console.log("USER IS", user);
         if (user !== undefined && user !== null && user.role !== undefined) {
             if (user.role === 'employer') {
@@ -15,6 +17,13 @@ const HoursRecord = () => {
                 console.log("THIS IS AN EMPLOYER");
             }
             // loggedUser.current = "Hello " + user.first_name + " " + user.last_name;
+            records = await fetch('/api/records/' + user.id);
+            let recordsJson = await records.json();
+            // let temp = await recordsJson.json();
+            console.log("RECORDS", records);
+            console.log("RECORDS JSON", recordsJson);
+            // console.log("RECORDS TEMP", temp);
+            // console.log("RECORDS TEMP TYPE", typeof(temp.records));
         }
         else {
             navigate('/login');
@@ -28,13 +37,13 @@ const HoursRecord = () => {
     //Enter time manually
     const [manualHours, setManualHours] = useState('');
     const handleManualHoursInput = (e) => {
-        if(!isNaN(e.target.value)) {
+        if (!isNaN(e.target.value)) {
             setManualHours(e.target.value);
         }
     }
     const message = useRef();
     const handleSubmitEditedTime = () => {
-        if(manualHours === '') {
+        if (manualHours === '') {
             return;
         }
         console.log(manualHours);

@@ -19,8 +19,34 @@ function getRecordById(recordId) {
 }
 
 function getRecordByUserId(userId) {
-    return db.query('SELECT * FROM records WHERE userId=?', [userId]).then(({ results }) => {
-        return results.map(records => new Record(records));
+    const sql = `
+    SELECT r.* 
+    FROM records r
+    JOIN user_records ur ON r.id = ur.record_id
+    WHERE ur.user_id = ?
+  `;
+
+    return db.query("SELECT r.* FROM records r JOIN user_records ur ON r.id = ur.record_id WHERE ur.user_id = ?", [userId]).then(({ results }) => {
+        return results.map(record => new Record(record));
+    }).catch(() => {
+        respond(404, { error: 'Records cannot be retrieved by user ID ' + userId });
+    });
+    // console.log("THIS IS THE RESULT", result);
+    // console.log("THIS IS THE RESULT.RESULTS!", result.results);
+    // return result.results.map(record => new Record(record));
+
+    return db.query('SELECT * FROM user_records WHERE user_id = ?', [userId]).then(({ results }) => {
+        let foundRecords = [];
+        console.log("RECORDS IDS INCLUDE", results);
+        for (recordId of results) {
+            // console.log("THIS IS RECORD ID", recordId);
+            db.query('SELECT * FROM records WHERE id=?', [recordId.recordId]).then(({ record }) => {
+                foundRecords.push(new Record(record));
+            });
+        }
+        console.log("RECORDS INCLUDE", foundRecords);
+        // return results.map(records => new Record(records));
+        return foundRecords;
     }).catch(() => {
         respond(404, { error: 'Records cannot be retrieved by user ID ' + userId });
     });

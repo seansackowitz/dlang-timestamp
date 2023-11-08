@@ -96,7 +96,7 @@ router.get("/users/:id", TokenMiddleware, (req, res) => {
     }
 });
 
-router.get("/records/:id", TokenMiddleware, (req, res) => {
+router.get("/records/:id", TokenMiddleware, async (req, res) => {
     // let usrId = req.params.id;
     // let record = records.find(rec => {
     //     console.log(rec.userId);
@@ -111,8 +111,8 @@ router.get("/records/:id", TokenMiddleware, (req, res) => {
     // }
     try {
         let userId = req.params.id;
-        let record = records.getRecordByUserId(userId);
-        res.json(record);
+        let record = await records.getRecordByUserId(userId);
+        return res.json(record);
     }
     catch (error) {
         res.status(error.status).json({ error: error.message });
