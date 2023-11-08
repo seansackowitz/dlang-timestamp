@@ -47,7 +47,7 @@ async function getUserById(id) {
     }
 }
 
-async function registerUser(db, username, firstname, lastname, password) {
+async function registerUser(username, firstname, lastname, password) {
     try {
         // Check if the username already exists
         const existingUser = await db.query(
@@ -73,7 +73,7 @@ async function registerUser(db, username, firstname, lastname, password) {
 
         // Insert the new user into the database
         await db.query(
-            'INSERT INTO users (username, firstname, lastname, password, salt, role, avatar, affiliation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO users (username, first_name, last_name, password, salt, role, avatar, affiliation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             [
                 username,
                 firstname,
