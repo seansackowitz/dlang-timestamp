@@ -8,6 +8,7 @@ const HoursRecord = () => {
     const navigate = useNavigate();
     let user;
     let records;
+    let recordCards;
     const updateRecord = async () => {
 
     };
@@ -20,11 +21,30 @@ const HoursRecord = () => {
                 console.log("THIS IS AN EMPLOYER");
             }
             // loggedUser.current = "Hello " + user.first_name + " " + user.last_name;
-            records = await fetch('/api/records/' + user.id);
-            let recordsJson = await records.json();
+            records = await (await fetch('/api/records/' + user.id)).json();
+            // let recordsJson = await records.json();
             // let temp = await recordsJson.json();
             console.log("RECORDS", records);
-            console.log("RECORDS JSON", recordsJson);
+            // console.log("RECORDS JSON", recordsJson);
+            recordCards = await records.map(record => {
+                const hours = Math.floor(record.minutes / 60);
+                const minutes = record.minutes % 60;
+                return (
+                    <div key={record.id} className="bg-white p-6 shadow-md">
+                        <h5>{record.date}</h5>
+                        <h5>{hours}H{minutes}M</h5>
+
+                        <p>{record.notes}</p>
+
+                        <button
+                            onClick={() => setOpen(true)/**openEditModal(record.id)*/}
+                        >
+                            Edit
+                        </button>
+                    </div>
+                );
+            });
+            console.log("RECORD CARDS", await recordCards);
             // console.log("RECORDS TEMP", temp);
             // console.log("RECORDS TEMP TYPE", typeof(temp.records));
         }
@@ -63,6 +83,7 @@ const HoursRecord = () => {
             style={{ maxHeight: 'calc(100vh - 5rem)' }}
         >
             <h1 className=" text-4xl mt-8 text-center">My Hours</h1>
+            {recordCards}
             <div className="relative mt-6 flex w-96 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
                 <div className="p-6 pb-0">
                     <div className="flex justify-between">

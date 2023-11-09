@@ -67,7 +67,7 @@ exports.generateToken = (req, res, user) => {
   res.cookie(TOKEN_COOKIE_NAME, token, {
     httpOnly: true,
     secure: true,
-    maxAge: 5 * 60 * 1000 //This session expires in 5 minutes.. but token expires in 1 hour!
+    maxAge: 99999 * 60 * 1000 //This session expires in 99999 minutes.. but token expires in 1 hour!
   });
 };
 
