@@ -70,11 +70,52 @@ const HoursRecord = () => {
         console.log("was i ehre");
         return records.map((item) => {
           return (
-            <div key={item.id}>
-              <h5>{item.date}</h5>
-              <h5>{item.notes}</h5>
+            <div id="${item.id}" className="relative mt-6 flex w-96 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
+            <div className="p-6 pb-0">
+              <div className="flex justify-between">
+                <h5 className="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
+                  {new Date(item.date).toDateString()}
+                </h5>
+                <h5 className="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
+                  {`${Math.floor(item.minutes / 60)}H ${item.minutes % 60}M`}
+                </h5>
+              </div>
+              <p className="block font-sans text-base font-light leading-relaxed text-inherit antialiased">
+                {item.notes}
+              </p>
             </div>
-          );
+            <div className="p-6 pt-4">
+              <a
+                className="!font-medium !text-blue-gray-900 !transition-colors hover:!text-pink-500 cursor-default"
+                href="#"
+              >
+                <button
+                  className="flex select-none items-center gap-2 rounded-lg py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-pink-500 transition-all hover:bg-pink-500/10 active:bg-pink-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                  type="button"
+                  data-ripple-dark="true"
+                  onClick={() => setOpen(true)}
+                >
+                  Edit
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                    className="h-4 w-4"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
+                    ></path>
+                  </svg>
+                </button>
+              </a>
+            </div>
+          </div>
+              );
         });
       default:
         return <div>Idle...</div>;
@@ -87,198 +128,6 @@ const HoursRecord = () => {
     >
       <h1 className=" text-4xl mt-8 text-center">My Hours</h1>
       {renderRecords()}
-      <div className="relative mt-6 flex w-96 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
-        <div className="p-6 pb-0">
-          <div className="flex justify-between">
-            <h5 className="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
-              Sep 11 2023
-            </h5>
-            <h5 className="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
-              11h20m
-            </h5>
-          </div>
-          <p className="block font-sans text-base font-light leading-relaxed text-inherit antialiased">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere sunt
-            saepe laborum expedita ipsa odio aspernatur optio architecto hic
-            mollitia, unde quia praesentium et. Sunt maiores id tenetur nam
-            incidunt!
-          </p>
-        </div>
-        <div className="p-6 pt-4">
-          <a
-            className="!font-medium !text-blue-gray-900 !transition-colors hover:!text-pink-500 cursor-default"
-            href="#"
-          >
-            <button
-              className="flex select-none items-center gap-2 rounded-lg py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-pink-500 transition-all hover:bg-pink-500/10 active:bg-pink-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              type="button"
-              data-ripple-dark="true"
-              onClick={() => setOpen(true)}
-            >
-              Edit
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                aria-hidden="true"
-                className="h-4 w-4"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-                ></path>
-              </svg>
-            </button>
-          </a>
-        </div>
-      </div>
-      <div className="relative mt-6 flex w-96 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
-        <div className="p-6 pb-0">
-          <div className="flex justify-between">
-            <h5 className="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
-              Sep 11 2023
-            </h5>
-            <h5 className="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
-              11h20m
-            </h5>
-          </div>
-          <p className="block font-sans text-base font-light leading-relaxed text-inherit antialiased">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere sunt
-            saepe laborum expedita ipsa odio aspernatur optio architecto hic
-            mollitia, unde quia praesentium et. Sunt maiores id tenetur nam
-            incidunt!
-          </p>
-        </div>
-        <div className="p-6 pt-4">
-          <a
-            className="!font-medium !text-blue-gray-900 !transition-colors hover:!text-pink-500 cursor-default"
-            href="#"
-          >
-            <button
-              className="flex select-none items-center gap-2 rounded-lg py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-pink-500 transition-all hover:bg-pink-500/10 active:bg-pink-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              type="button"
-              data-ripple-dark="true"
-              onClick={() => setOpen(true)}
-            >
-              Edit
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                aria-hidden="true"
-                className="h-4 w-4"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-                ></path>
-              </svg>
-            </button>
-          </a>
-        </div>
-      </div>
-      <div className="relative mt-6 flex w-96 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
-        <div className="p-6 pb-0">
-          <div className="flex justify-between">
-            <h5 className="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
-              Sep 11 2023
-            </h5>
-            <h5 className="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
-              11h20m
-            </h5>
-          </div>
-          <p className="block font-sans text-base font-light leading-relaxed text-inherit antialiased">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere sunt
-            saepe laborum expedita ipsa odio aspernatur optio architecto hic
-            mollitia, unde quia praesentium et. Sunt maiores id tenetur nam
-            incidunt!
-          </p>
-        </div>
-        <div className="p-6 pt-4">
-          <a
-            className="!font-medium !text-blue-gray-900 !transition-colors hover:!text-pink-500 cursor-default"
-            href="#"
-          >
-            <button
-              className="flex select-none items-center gap-2 rounded-lg py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-pink-500 transition-all hover:bg-pink-500/10 active:bg-pink-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              type="button"
-              data-ripple-dark="true"
-              onClick={() => setOpen(true)}
-            >
-              Edit
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                aria-hidden="true"
-                className="h-4 w-4"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-                ></path>
-              </svg>
-            </button>
-          </a>
-        </div>
-      </div>
-      <div className="relative mt-6 mb-12 flex w-96 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
-        <div className="p-6 pb-0">
-          <div className="flex justify-between">
-            <h5 className="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
-              Sep 11 2023
-            </h5>
-            <h5 className="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
-              11h20m
-            </h5>
-          </div>
-          <p className="block font-sans text-base font-light leading-relaxed text-inherit antialiased">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere sunt
-            saepe laborum expedita ipsa odio aspernatur optio architecto hic
-            mollitia, unde quia praesentium et. Sunt maiores id tenetur nam
-            incidunt!
-          </p>
-        </div>
-        <div className="p-6 pt-4">
-          <a
-            className="!font-medium !text-blue-gray-900 !transition-colors hover:!text-pink-500 cursor-default"
-            href="#"
-          >
-            <button
-              className="flex select-none items-center gap-2 rounded-lg py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-pink-500 transition-all hover:bg-pink-500/10 active:bg-pink-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              type="button"
-              data-ripple-dark="true"
-              onClick={() => setOpen(true)}
-            >
-              Edit
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                aria-hidden="true"
-                className="h-4 w-4"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-                ></path>
-              </svg>
-            </button>
-          </a>
-        </div>
-      </div>
       <Modal open={open} onClose={() => setOpen(false)}>
         <div className="text-center w-64 flex flex-col justify-center">
           <h1 className="text-4xl mb-4 text-center">Edit your time</h1>
