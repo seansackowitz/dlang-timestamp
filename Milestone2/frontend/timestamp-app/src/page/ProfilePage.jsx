@@ -19,6 +19,10 @@ const ProfilePage = () => {
                 setHourlyRate(user.hourly_rate || "");
                 setRole(user.role || "");
                 setAffiliation(user.affiliation || "");
+                setAvatar(
+                    user.avatar ||
+                        "https://images-ext-1.discordapp.net/external/6CZaeJz37z5zmVIZ2c1ELxM5NicrKd96KM65FiBHGPA/https/art.pixilart.com/0b055c338bd0168.png?width=598&height=598"
+                );
 
                 if (user.role === "employer") {
                     // TODO: Navigate employer to employer page
@@ -56,7 +60,7 @@ const ProfilePage = () => {
         reader.readAsDataURL(file);
     };
 
-    const handleOnSave = () => {
+    const handleOnSave = async () => {
         console.log({
             username: username,
             password: password,
@@ -65,11 +69,41 @@ const ProfilePage = () => {
             affiliation: affiliation,
             hourlyRate: hourlyRate,
         });
-        if (password !== confirmPassword) {
-            toast.error("Password not match");
+        if ((password || confirmPassword) && password !== confirmPassword) {
+            toast.error("password does not match");
             return;
         }
-        toast.success("Profile saved");
+        const updateData = {
+            username: username,
+            first_name: firstName,
+            last_name: lastName,
+            hourly_rate: hourlyRate,
+            role: role,
+            affiliation: affiliation,
+        };
+        if (password) {
+            updateData.newPassword = password;
+        }
+        try {
+            const response = await fetch("/api/users/" + username, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updateData),
+            });
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+            const data = await response.json();
+            console.log("Response back with data: ", data);
+
+            // Notify the user of success
+            toast.success("Profile Updated!");
+        } catch (error) {
+            console.log("error: ", error);
+            toast.error("An error occurred while updating the profile.");
+        }
     };
 
     /**
@@ -84,6 +118,7 @@ const ProfilePage = () => {
     //employer changing those settings
     const [role, setRole] = useState("");
     const [affiliation, setAffiliation] = useState("");
+    const [avatar, setAvatar] = useState("");
 
     return (
         <div
@@ -97,7 +132,7 @@ const ProfilePage = () => {
                 <div className="mx-8 mt-8 flex lg:mx-36 pb-7 border-b-2">
                     <img
                         ref={previewProfile}
-                        src="https://media.discordapp.net/attachments/813610330374144050/1077362408315682899/6C570FF2-A5C9-479E-AB97-9531C03945DA.jpg?ex=65496e6e&is=6536f96e&hm=98b39b4d8f3a4482df14751012033df5695c27ecd8f70026563f1363a494c75c&=&width=1117&height=917"
+                        src={avatar}
                         className=" object-cover w-32 h-32 mr-6 rounded-full"
                         alt="profile_pic"
                     ></img>
@@ -128,6 +163,7 @@ const ProfilePage = () => {
                         <div className="flex flex-col gap-2 lg:w-1/2 w-full">
                             <label className=" ml-1">Username</label>
                             <input
+                                disabled={true}
                                 className="w-full h-11 px-3 mb-2 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
                                 type="text"
                                 value={username}

@@ -1,18 +1,18 @@
-const db = require('./DBConnection');
-const User = require('./models/User');
-const crypto = require('crypto');
+const db = require("./DBConnection");
+const User = require("./models/User");
+const crypto = require("crypto");
 
 async function getUserByCredentials(username, password) {
     console.log("BEFORE TRY CATCH");
     try {
         console.log("BEFORE DB QUERY");
         const { results } = await db.query(
-            'SELECT * FROM users WHERE username = ?',
+            "SELECT * FROM users WHERE username = ?",
             [username]
         );
         console.log("THIS IS THE USER FOUND", results);
         if (results.length <= 0) {
-            const error = new Error('No such user');
+            const error = new Error("No such user");
             error.status = 404;
             throw error;
         }
@@ -20,7 +20,7 @@ async function getUserByCredentials(username, password) {
         if (user) {
             return await user.validatePassword(password);
         } else {
-            const error = new Error('Invalid username or password');
+            const error = new Error("Invalid username or password");
             error.status = 401;
             throw error;
         }
@@ -32,14 +32,14 @@ async function getUserByCredentials(username, password) {
 
 async function getUserById(id) {
     try {
-        const { results } = await db.query('SELECT * FROM users WHERE id = ?', [
+        const { results } = await db.query("SELECT * FROM users WHERE id = ?", [
             id,
         ]);
         if (results.length > 0) {
             const user = new User(results[0]);
             return user;
         } else {
-            throw new Error('No such user');
+            throw new Error("No such user");
         }
     } catch (error) {
         console.error(error);
@@ -49,14 +49,15 @@ async function getUserById(id) {
 
 async function getUserByUsername(username) {
     try {
-        const { results } = await db.query('SELECT * FROM users WHERE username = ?', [
-            username,
-        ]);
+        const { results } = await db.query(
+            "SELECT * FROM users WHERE username = ?",
+            [username]
+        );
         if (results.length > 0) {
             const user = new User(results[0]);
             return user;
         } else {
-            throw new Error('No such user');
+            throw new Error("No such user");
         }
     } catch (error) {
         console.error(error);
@@ -64,51 +65,51 @@ async function getUserByUsername(username) {
     }
 }
 
-async function registerUser(username, firstname, lastname, password) {
+async function registerBusiness(registerData) {
     try {
-        // Check if the username already exists
+        const { affiliation, username, first_name, last_name, password } =
+            registerData;
+
+        console.log(registerData);
         const existingUser = await db.query(
-            'SELECT * FROM users WHERE username = ?',
+            "SELECT * FROM users WHERE username = ?",
             [username]
         );
         if (existingUser.results.length > 0) {
-            throw new Error('Username already exists');
+            throw new Error("Username already exists");
         }
-
         // Generate a salt
-        const salt = crypto.randomBytes(16).toString('hex');
+        const salt = crypto.randomBytes(16).toString("hex");
 
         // Hash the password with the salt
         const hashedPasswordBuffer = await crypto.pbkdf2Sync(
             password,
             salt,
-            10000,
+            100000,
             64,
-            'sha512'
+            "sha512"
         );
-        const hashedPassword = hashedPasswordBuffer.toString('hex');
-
-        // Insert the new user into the database
+        const hashedPassword = hashedPasswordBuffer.toString("hex");
         await db.query(
-            'INSERT INTO users (username, first_name, last_name, password, salt, role, avatar, affiliation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            "INSERT INTO users (username, first_name, last_name, password, salt, role, avatar, affiliation, hourly_rate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
                 username,
-                firstname,
-                lastname,
+                first_name,
+                last_name,
                 hashedPassword,
                 salt,
-                'self-employed',
-                'https://images-ext-1.discordapp.net/external/6CZaeJz37z5zmVIZ2c1ELxM5NicrKd96KM65FiBHGPA/https/art.pixilart.com/0b055c338bd0168.png?width=1033&height=1033',
-                'none',
+                "employer",
+                "https://media.discordapp.net/attachments/813610330374144050/1172442187858984981/85434_guest_512x512.png?ex=656054e0&is=654ddfe0&hm=77bd3f750309b9e51fc4f5ce0dd391a4a6d621e45de38d47b999c590542af28e&=&width=576&height=576",
+                affiliation,
+                0,
             ]
         );
-
         return {
-            message: 'Account Created',
+            message: "Account Created",
         };
     } catch (error) {
         // Handle any error that occurred during the process
-        if (error.message === 'Username already exists') {
+        if (error.message === "Username already exists") {
             throw {
                 code: 409, // Conflict
                 message: error.message,
@@ -122,62 +123,112 @@ async function registerUser(username, firstname, lastname, password) {
     }
 }
 
-// function updateUser(id, updateData) {
-//     let updates = Object.entries(updateData)
-//         .map(([key, val]) => `${key} = ${db.escape(val)}`)
-//         .join(', ');
+async function registerUser(registerData) {
+    try {
+        const { username, first_name, last_name, password } = registerData;
+        // Check if the username already exists
+        const existingUser = await db.query(
+            "SELECT * FROM users WHERE username = ?",
+            [username]
+        );
+        if (existingUser.results.length > 0) {
+            throw new Error("Username already exists");
+        }
 
-//     if (updates.length === 0) {
-//         return Promise.resolve({
-//             message: 'No updates provided',
-//         });
-//     }
+        // Generate a salt
+        const salt = crypto.randomBytes(16).toString("hex");
 
-//     return db
-//         .query(`UPDATE users SET ${updates} WHERE id = ${db.escape(id)}`)
-//         .then((result) => {
-//             if (result.affectedRows === 0) {
-//                 return {
-//                     message: 'No such user or no changes made',
-//                 };
-//             } else {
-//                 return {
-//                     message: 'User updated successfully',
-//                 };
-//             }
-//         })
-//         .catch((error) => {
-//             console.log(error);
-//             throw new Error(error);
-//         });
-// }
+        // Hash the password with the salt
+        const hashedPasswordBuffer = await crypto.pbkdf2Sync(
+            password,
+            salt,
+            100000,
+            64,
+            "sha512"
+        );
+        const hashedPassword = hashedPasswordBuffer.toString("hex");
 
-async function updateUser(id, updateData) {
+        // Insert the new user into the database
+        await db.query(
+            "INSERT INTO users (username, first_name, last_name, password, salt, role, avatar, affiliation, hourly_rate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [
+                username,
+                first_name,
+                last_name,
+                hashedPassword,
+                salt,
+                "self-employed",
+                "https://media.discordapp.net/attachments/813610330374144050/1172442187858984981/85434_guest_512x512.png?ex=656054e0&is=654ddfe0&hm=77bd3f750309b9e51fc4f5ce0dd391a4a6d621e45de38d47b999c590542af28e&=&width=576&height=576",
+                "none",
+                0,
+            ]
+        );
+
+        return {
+            message: "Account Created",
+        };
+    } catch (error) {
+        // Handle any error that occurred during the process
+        if (error.message === "Username already exists") {
+            throw {
+                code: 409, // Conflict
+                message: error.message,
+            };
+        } else {
+            throw {
+                code: 500,
+                message: `Internal Server Error: ${error.message}`,
+            };
+        }
+    }
+}
+
+async function updateUser(username, updateData, newPassword) {
     try {
         let updates = [];
-        for (const [key, value] of Object.entries(updateData)) {
-            updates.push(`${key} = ?`);
+        const updateValues = [];
+        if (newPassword !== undefined && newPassword !== null && newPassword) {
+            //hash
+            const salt = crypto.randomBytes(16).toString("hex");
+            updateData.salt = salt;
+            const hashedPasswordBuffer = crypto.pbkdf2Sync(
+                newPassword,
+                salt,
+                100000,
+                64,
+                "sha512"
+            );
+            const hashedPassword = hashedPasswordBuffer.toString("hex");
+            updateData.password = hashedPassword;
         }
-        const updateValues = Object.values(updateData);
-        const updateString = updates.join(', ');
+        for (const [key, value] of Object.entries(updateData)) {
+            if (value !== undefined) {
+                updates.push(`${key} = ?`);
+                updateValues.push(value);
+            }
+        }
+
+        const updateString = updates.join(", ");
 
         // Check if the user exists before trying to update
-        const userCheck = await db.query('SELECT * FROM users WHERE id = ?', [
-            id,
-        ]);
+        const userCheck = await db.query(
+            "SELECT * FROM users WHERE username = ?",
+            [username]
+        );
         if (userCheck.results.length === 0) {
-            throw { code: 404, message: 'User not found' };
+            throw { code: 404, message: "User not found" };
         }
-
+        console.log("this is the update string: ", updateString);
+        console.log("this is the update values: ", updateValues);
         // Update the user
         const updateResults = await db.query(
-            `UPDATE users SET ${updateString} WHERE id = ?`,
-            [...updateValues, id]
+            `UPDATE users SET ${updateString} WHERE username = ?`,
+            [...updateValues, username]
         );
         if (updateResults.affectedRows === 0) {
-            return { message: 'No changes made' };
+            return { message: "No changes made" };
         } else {
-            return { message: 'User updated' };
+            return { message: "User updated" };
         }
     } catch (error) {
         throw { code: 500, message: `Internal Server Error: ${error.message}` };
@@ -187,21 +238,21 @@ async function updateUser(id, updateData) {
 function getUsersWithSameAffilaitionAsEmployer(employerId) {
     // First, get the employer's affiliation
     return db
-        .query('SELECT affiliation FROM users WHERE id = ? AND role = ?', [
+        .query("SELECT affiliation FROM users WHERE id = ? AND role = ?", [
             employerId,
-            'employer',
+            "employer",
         ])
         .then(({ results }) => {
             if (results.length === 0) {
                 // No employer found with the given ID
-                throw new Error('Emoloyer not found');
+                throw new Error("Emoloyer not found");
             }
 
             const employerAffiliation = results[0].affiliation;
             // Now, get all users with the same affiliation
             return db.query(
-                'SELECT * FROM users WHERE affiliation = ? AND role = ?',
-                [employerAffiliation, 'employee']
+                "SELECT * FROM users WHERE affiliation = ? AND role = ?",
+                [employerAffiliation, "employee"]
             );
         })
         .then(({ results }) => {
@@ -226,4 +277,6 @@ module.exports = {
     updateUser: updateUser,
     getUsersWithSameAffilaitionAsEmployer:
         getUsersWithSameAffilaitionAsEmployer,
+    getUserByUsername: getUserByUsername,
+    registerBusiness: registerBusiness,
 };
