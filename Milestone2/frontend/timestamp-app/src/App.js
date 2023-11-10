@@ -12,6 +12,8 @@ import HoursRecord from './page/HoursRecord';
 import { Routes, Route } from 'react-router-dom';
 import Dashboard from './page/Dashboard';
 import ProfilePage from './page/ProfilePage';
+import BusinessPaymentPage from './page/BusinessPaymentPage';
+import PaymentConfirmationPage from './page/PaymentConfirmationPage';
 import SplashScreenPage from './page/SplashScreenPage';
 
 function App() {
@@ -29,6 +31,8 @@ function App() {
                 <Route path='/register' element={<Register/>}></Route>
                 <Route path='/register/business' element={<BusinessRegistrationPage/>}></Route>
                 <Route path='/register/employee' element={<EmployeeRegistrationPage/>}></Route>
+                <Route path='/business/payment' element={<BusinessPaymentPage/>}></Route>
+                <Route path='/payment-confirmation' element={<PaymentConfirmationPage/>}></Route>
             </Routes>
         </div>
     );
