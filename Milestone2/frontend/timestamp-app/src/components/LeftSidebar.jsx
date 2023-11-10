@@ -30,6 +30,13 @@ const LeftSidebar = () => {
                 <Link
                     to="/login"
                     className="block py-3 px-4 text-xl rounded transition duration-200 hover:bg-slate-400 hover:text-slate-50"
+                    onClick={() => fetch('/api/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    })}
                 >
                     Logout
                 </Link>

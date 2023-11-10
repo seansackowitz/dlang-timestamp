@@ -133,15 +133,33 @@ router.post("/logout", async (req, res) => {
 });
 
 router.post("/register/business", async (req, res) => {
-    const { username } = await req.body;
-    //TODO: adding to the databse
-    return res.json({ success: true, message: 'Business account registered successfully!' });
+    try {
+        const result = await users.registerBusiness(req.body);
+        res.json({
+            message: result.message,
+        });
+    } catch (error) {
+        res.status(error.code || 500).json({
+            success: false,
+            message: error.message || "Error registering a user",
+        });
+    }
 });
 
 router.post("/register/employee", async (req, res) => {
-    const { username } = await req.body;
-    //TODO: adding to the databse
-    return res.json({ success: true, message: 'Employee account registered successfully!' });
+    try {
+        console.log("this is the register data: ", req.body);
+        const result = await users.registerUser(req.body);
+        console.log("this is the result of creating register: ", result);
+        res.json({
+            message: result.message,
+        });
+    } catch (error) {
+        res.status(error.code || 500).json({
+            success: false,
+            message: error.message || "Error registering a user",
+        });
+    }
 });
 
 router.post("/records/calculate", TokenMiddleware, async (req, res) => {
@@ -269,34 +287,31 @@ router.put("/records/:id", TokenMiddleware, async (req, res) => {
     // return res.json({ success: true, message: 'Record edited successfully!' });
 });
 
-router.put("/users/:id", TokenMiddleware, async (req, res) => {
-    const { first_name, last_name, username, avatar, role, affiliation, hourly_rate } = await req.body;
+router.put("/users/:username", TokenMiddleware, async (req, res) => {
+    const { username } = req.params;
+    const { newPassword, ...updateData } = req.body;
     try {
-        let user = await users.getUserById(req.params.id);
-        user.first_name = first_name;
-        user.last_name = last_name;
-        user.username = username;
-        user.avatar = avatar;
-        user.role = role;
-        user.affiliation = affiliation;
-        user.hourly_rate = hourly_rate;
-        await users.updateUser(req.params.id, user);
-        return res.json({ success: true, message: 'User edited successfully!' });
+        console.log(req.body);
+        console.log("This is the username: ", username);
+        console.log("This is the update data: ", updateData);
+        console.log("This is the new password: ", newPassword);
+        const result = await users.updateUser(
+            username,
+            updateData,
+            newPassword
+        );
+        console.log("Result from updating the user: ", result);
+        const updatedUser = await users.getUserByUsername(username);
+        updateToken(req, res, updatedUser);
+        res.json({
+            message: result.message,
+        });
+    } catch (error) {
+        res.status(error.code || 500).json({
+            success: false,
+            message: error.message || "Error updating user",
+        });
     }
-    catch (error) {
-        res.status(error.status || 404).json({ success: false, message: error.message || 'User not found by ID ' + req.params.id });
-    }
-    //TODO editing in the database
-    // let user = users.find(user => user.id === parseInt(req.params.id));
-    // let userIndex = users.findIndex(user => user.id === parseInt(req.params.id));
-    // if (user === undefined || user === null || userIndex == -1) {
-    //     res.status(404).json({ error: "User not found" });
-    // }
-    // user.first_name = first_name;
-    // user.last_name = last_name;
-    // user.avatar = avatar;
-    // users.splice(userIndex, 1, user);
-    // return res.json({ success: true, message: 'User edited successfully!' });
 });
 
 router.delete("/records/:id", TokenMiddleware, async (req, res) => {
