@@ -144,7 +144,7 @@ router.post("/register/employee", async (req, res) => {
     return res.json({ success: true, message: 'Employee account registered successfully!' });
 });
 
-router.post("/records", TokenMiddleware, async (req, res) => {
+router.post("/records/calculate", TokenMiddleware, async (req, res) => {
     const { date, notes, startTime, endTime } = await req.body;
     let d1 = '0000-01-01 ' + await startTime;
     let d2 = '0000-01-01 ' + await endTime;
@@ -165,7 +165,7 @@ router.post("/records", TokenMiddleware, async (req, res) => {
         // TODO: USER ID NEEDS TO CHANGE
         notes: notes,
         paid: false
-    }
+    };
     console.log("THIS IS THE RECORD OBJECT", newRecord);
     console.log("THIS IS TYPE OF RECORD", typeof(newRecord));
     //TODO adding to the databse
@@ -202,7 +202,20 @@ router.post("/records", TokenMiddleware, async (req, res) => {
     }
 
     return res.json({ success: true, message: 'Record added successfully!' });
-})
+});
+
+router.post("/records/manual", TokenMiddleware, async (req, res) => {
+    const { date, notes, minutes } = await req.body;
+    const newRecord = {
+        // id: records[records.length - 1].id + 1,
+        date: date,
+        minutes: minutes,
+        // TODO: USER ID NEEDS TO CHANGE
+        notes: notes,
+        paid: false
+    };
+    await records.createRecord(newRecord, await req.user.id);
+});
 
 router.post("/payments/:recipientId", TokenMiddleware, async (req, res) => {
     try {
