@@ -10,7 +10,7 @@ const LeftSidebar = () => {
             <h2 className="text-2xl px-4">Hello! Big Boy</h2>
             <nav className='flex flex-col gap-2'>
                 <Link
-                    to="/dashboard/home"
+                    to="/dashboard/employee_home"
                     className="block py-3 px-4 text-xl rounded transition duration-200 hover:bg-slate-400 hover:text-slate-50"
                 >
                     Home
