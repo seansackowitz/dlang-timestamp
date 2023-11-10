@@ -40,7 +40,7 @@ const Header = () => {
                             </li>
                         </ul>
                         <img
-                            class="relative inline-block h-12 w-12 rounded-full object-cover object-center"
+                            className="relative inline-block h-12 w-12 rounded-full object-cover object-center"
                             alt="Image placeholder"
                             src="https://source.unsplash.com/random"
                         />
