@@ -193,7 +193,7 @@ router.post("/register/employee", async (req, res) => {
     }
 });
 
-router.post("/records", TokenMiddleware, async (req, res) => {
+router.post("/records/calculate", TokenMiddleware, async (req, res) => {
     const { date, notes, startTime, endTime } = await req.body;
     let d1 = "0000-01-01 " + (await startTime);
     let d2 = "0000-01-01 " + (await endTime);
@@ -215,7 +215,7 @@ router.post("/records", TokenMiddleware, async (req, res) => {
         minutes: totalMinutes,
         // TODO: USER ID NEEDS TO CHANGE
         notes: notes,
-        paid: false,
+        paid: false
     };
     console.log("THIS IS THE RECORD OBJECT", newRecord);
     console.log("THIS IS TYPE OF RECORD", typeof newRecord);
@@ -262,7 +262,20 @@ router.post("/records", TokenMiddleware, async (req, res) => {
         await records.createRecord(newRecord, await req.user.id);
     }
 
-    return res.json({ success: true, message: "Record added successfully!" });
+    return res.json({ success: true, message: 'Record added successfully!' });
+});
+
+router.post("/records/manual", TokenMiddleware, async (req, res) => {
+    const { date, notes, minutes } = await req.body;
+    const newRecord = {
+        // id: records[records.length - 1].id + 1,
+        date: date,
+        minutes: minutes,
+        // TODO: USER ID NEEDS TO CHANGE
+        notes: notes,
+        paid: false
+    };
+    await records.createRecord(newRecord, await req.user.id);
 });
 
 router.post("/payments/:recipientId", TokenMiddleware, async (req, res) => {
@@ -292,16 +305,23 @@ router.post("/payments/:recipientId", TokenMiddleware, async (req, res) => {
 
 router.put("/records/:id", TokenMiddleware, async (req, res) => {
     try {
-        const { notes, minutes } = await req.body;
+        const { notes, minutes, date } = await req.body;
+        console.log("GOT NOTES", notes);
+        console.log("GOT MINUTES", minutes);
+        console.log("GOT DATE", date);
+        console.log("BEFORE GETTING RECORD BY ID", req.params.id);
         let record = await records.getRecordById(req.params.id);
+        console.log("AFTER GETTING RECORD BY ID", req.params.id);
+        console.log("OLD RECORD IS", record);
         record.notes = notes;
         record.minutes = minutes;
-        await records.updateRecord(record);
-    } catch (error) {
-        res.status(error.status || 404).json({
-            success: false,
-            message: error.message || "Record not found by ID " + req.params.id,
-        });
+        record.date = date;
+        console.log("NEW RECORD IS", record);
+        console.log("BEFORE UPDATE RECORD");
+        await records.updateRecord(record);    
+    }
+    catch (error) {
+        res.status(error.status || 404).json({ success: false, message: error.message || 'Record not found by ID ' + req.params.id });
     }
     //TODO editing in the database
     // let record = records.find(record => record.id === parseInt(req.params.id));

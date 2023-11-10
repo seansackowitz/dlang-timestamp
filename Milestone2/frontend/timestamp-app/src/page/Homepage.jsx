@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../components/Modal';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const Homepage = () => {
     const navigate = useNavigate();
@@ -25,21 +26,57 @@ const Homepage = () => {
     }, []);
     //Enter time manually
     const [manualHours, setManualHours] = useState('');
+    const [manualMinutes, setManualMinutes] = useState('');
+    const manualDate = useRef();
     const handleManualHoursInput = (e) => {
-        if (!isNaN(e.target.value)) {
+        if (!isNaN(e.target.value) && e.target.value != '.') {
             setManualHours(e.target.value);
         }
     };
-    const handleManualTimeSubmit = (e) => {
-        if(manualHours === '') {
+    const handleManualMinutesInput = (e) => {
+        if (!isNaN(e.target.value) && e.target.value != '.') {
+            setManualMinutes(e.target.value);
+        }
+    };
+    const handleManualTimeSubmit = async (e) => {
+        if (manualHours === '' || manualMinutes === '' || manualDate.current.value === '') {
+            toast.error('Please input the date of the log and the amount of time in hours and minutes.');
             return;
             // e.preventDefault();
         }
+        else if (manualHours > 24 || manualMinutes > 59 || manualHours < 0 || manualMinutes < 0 || (manualHours == 0 && manualMinutes == 0)) {
+            toast.error('Please input a valid amount of hours and minutes.');
+            return;
+        }
+        else if (!/^\d{4}$/.test('' + new Date(manualDate.current.value).getFullYear())) {
+            toast.error('Please input a valid date. The year must be 4 digits long.');
+            return;
+        }
         setOpen(false);
+        // setManualHours('');
+        console.log("MANUAL HOURS", manualHours);
+        console.log("MANUAL MINUTES", manualMinutes);
+        console.log("MANUAL MESSAGE", await manualMessage.current.value);
+        console.log("MANUAL DATE", await manualDate.current.value);
+        let minutes = parseInt(manualHours) * 60 + parseInt(manualMinutes);
+        let body = {
+            date: await manualDate.current.value,
+            notes: await manualMessage.current.value,
+            minutes: minutes
+        };
+        let record = await (await fetch('/api/records/manual', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body:  JSON.stringify(body)
+        })).json();
         setManualHours('');
-        console.log(manualHours)
-        console.log(manualMessage.current.value)
-    }
+        setManualMinutes('');
+        manualDate.current.value = '';
+        manualMessage.current.value = '';
+        toast.success("Record entered successfully!");
+    };
     const manualMessage = useRef();
 
     const [open, setOpen] = useState(false);
@@ -51,23 +88,28 @@ const Homepage = () => {
     const calculatedMessage = useRef();
     const calculatedDate = useRef();
     const handleSubmitCalculatedTime = async (e) => {
-        if(startTime.current.value === '' || endTime.current.value === '' || calculatedDate === '') {
+        if (startTime.current.value === '' || endTime.current.value === '' ||calculatedDate.current.value === '') {
+            toast.error('Please enter the start time, end time, and date of the log.');
             return;
         }
-        console.log(startTime.current.value);
-        console.log(endTime.current.value);
-        console.log(calculatedMessage.current.value);
+        else if (!/^\d{4}$/.test('' + new Date(calculatedDate.current.value).getFullYear())) {
+            toast.error('Please input a valid date. The year must be 4 digits long.');
+            return;
+        }
+        console.log(await startTime.current.value);
+        console.log(await endTime.current.value);
+        console.log(await calculatedMessage.current.value);
         let body = {
             date: await calculatedDate.current.value,
             notes: await calculatedMessage.current.value,
-            startTime: startTime.current.value,
-            endTime: endTime.current.value,
+            startTime: await startTime.current.value,
+            endTime: await endTime.current.value,
         }
         console.log("RECORD IS ABOUT TO BE POSTED");
-        let record = await (await fetch('/api/records', {
+        let record = await (await fetch('/api/records/calculate', {
             method: "POST",
-            headers: { 
-                'Content-Type': 'application/json', 
+            headers: {
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(body)
         })).json();
@@ -76,7 +118,8 @@ const Homepage = () => {
         startTime.current.value = '';
         endTime.current.value = '';
         setOpen(false);
-    }
+        toast.success('Record entered successfully!');
+    };
 
     return (
         <div className="flex flex-col items-center">
@@ -131,20 +174,35 @@ const Homepage = () => {
                         <div className="flex flex-col gap-7 justify-center">
                             <div className="flex gap-3 justify-center items-center">
                                 <label>Date: </label>
-                                <input name="date" type="date" required />
+                                <input name="date" type="date" ref={manualDate} required />
                             </div>
                             <div className="">
                                 <div className="relative h-11 w-full min-w-[180]">
                                     <input
-                                        onChange={(e) =>
+                                        onInput={(e) =>
                                             handleManualHoursInput(e)
                                         }
                                         value={manualHours}
-                                        placeholder="hours"
+                                        placeholder="Hours"
                                         className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                     />
                                     <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 flex h-full w-full select-none text-sm font-normal leading-tight text-blue-gray-500 transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-pink-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:after:scale-x-100 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
                                         Enter your hours
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="">
+                                <div className="relative h-11 w-full min-w-[180]">
+                                    <input
+                                        onInput={(e) =>
+                                            handleManualMinutesInput(e)
+                                        }
+                                        value={manualMinutes}
+                                        placeholder="Minutes"
+                                        className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                                    />
+                                    <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 flex h-full w-full select-none text-sm font-normal leading-tight text-blue-gray-500 transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-pink-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:after:scale-x-100 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
+                                        Enter your minutes
                                     </label>
                                 </div>
                             </div>
