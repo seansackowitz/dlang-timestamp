@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router-dom';
 
 const Homepage = () => {
     const navigate = useNavigate();
+    let user;
     const checkUser = async () => {
-        let user = await ((await fetch('/api/login/users/current')).json());
+        user = await ((await fetch('/api/login/users/current')).json());
         console.log("USER IS", user);
         if (user !== undefined && user !== null && user.role !== undefined) {
             if (user.role === 'employer') {
@@ -42,19 +43,36 @@ const Homepage = () => {
     const manualMessage = useRef();
 
     const [open, setOpen] = useState(false);
-    const [openCalcualtedModal, setOpenCalcualtedModal] = useState(false);
+    const [openCalculatedModal, setOpenCalcualtedModal] = useState(false);
 
-    //Enter start time and end time
+    // Enter start time and end time modal (automatically calculated)
     const startTime = useRef();
     const endTime = useRef();
-    const calcualtedMessage = useRef();
-    const handleSubmitCaluclatedTime = (e) => {
-        if(startTime.current.value === '' || endTime.current.value === '') {
+    const calculatedMessage = useRef();
+    const calculatedDate = useRef();
+    const handleSubmitCalculatedTime = async (e) => {
+        if(startTime.current.value === '' || endTime.current.value === '' || calculatedDate === '') {
             return;
         }
         console.log(startTime.current.value);
         console.log(endTime.current.value);
-        console.log(calcualtedMessage.current.value)
+        console.log(calculatedMessage.current.value);
+        let body = {
+            date: await calculatedDate.current.value,
+            notes: await calculatedMessage.current.value,
+            startTime: startTime.current.value,
+            endTime: endTime.current.value,
+        }
+        console.log("RECORD IS ABOUT TO BE POSTED");
+        let record = await (await fetch('/api/records', {
+            method: "POST",
+            headers: { 
+                'Content-Type': 'application/json', 
+            },
+            body: JSON.stringify(body)
+        })).json();
+        console.log("RECORD IS", await record);
+        calculatedMessage.current.value = '';
         startTime.current.value = '';
         endTime.current.value = '';
         setOpen(false);
@@ -105,7 +123,7 @@ const Homepage = () => {
             </button>
 
             <Modal open={open} onClose={() => setOpen(false)}>
-                {openCalcualtedModal ? (
+                {openCalculatedModal ? (
                     <div className="text-center w-64 flex flex-col justify-center">
                         <h1 className="text-4xl mb-4 text-center">
                             Enter your time
@@ -162,7 +180,7 @@ const Homepage = () => {
                         <form className="flex flex-col gap-7 justify-center">
                             <div className="flex gap-3 justify-center items-center">
                                 <label>Date: </label>
-                                <input name="date" type="date" required />
+                                <input name="date" type="date" ref={calculatedDate} required />
                             </div>
                             <div className="">
                                 <div className="relative h-11 w-full min-w-[180]">
@@ -193,7 +211,7 @@ const Homepage = () => {
                             <div className="">
                                 <div className="relative w-full min-w-[200px]">
                                     <textarea
-                                        ref={calcualtedMessage}
+                                        ref={calculatedMessage}
                                         className="peer h-full min-h-[100px] w-full resize-none rounded-[7px] border border-blue-gray-200  bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 disabled:resize-none disabled:border-0 disabled:bg-blue-gray-50"
                                         placeholder=" "
                                     ></textarea>
@@ -207,7 +225,7 @@ const Homepage = () => {
                                     className="block w-full select-none rounded-lg bg-teal-800 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-teal-800/20 transition-all hover:shadow-lg hover:shadow-teal-800/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                     type="button"
                                     data-ripple-light="true"
-                                    onClick={handleSubmitCaluclatedTime}
+                                    onClick={handleSubmitCalculatedTime}
                                 >
                                     Continue
                                 </button>
