@@ -15,6 +15,9 @@ services:
       - /usr/src/app/node_modules
     environment:
       - PORT=80
+    env_file:
+      # this is new
+      - .env # this is new
 
   frontend:
     build: ./frontend/timestamp-app
@@ -24,3 +27,17 @@ services:
       - /usr/src/app/node_modules
     environment:
       - PORT=80
+
+  database:
+    image: mariadb:latest
+    restart: unless-stopped
+    ports:
+      # Make the DB accessible from outside of the Docker network if needed
+      - 3307:3306
+    volumes:
+      # Mount a volume for mariadb's persistent files for lifecycle outside of stack
+      - "./database/data:/var/lib/mysql"
+      # Mount the db_schema directory into the container to be auto-read and created in the new db
+      - "./database/db_schema:/docker-entrypoint-initdb.d"
+    env_file:
+      - .env

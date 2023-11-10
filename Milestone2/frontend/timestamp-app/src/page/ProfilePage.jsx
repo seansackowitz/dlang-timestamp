@@ -1,6 +1,28 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const ProfilePage = () => {
+    const navigate = useNavigate();
+    const checkUser = async () => {
+        let user = await ((await fetch('/api/login/users/current')).json());
+        console.log("USER IS", user);
+        if (user !== undefined && user !== null && user.role !== undefined) {
+            if (user.role === 'employer') {
+                // TODO: Navigate employer to employer page
+                console.log("THIS IS AN EMPLOYER");
+            }
+            // loggedUser.current = "Hello " + user.first_name + " " + user.last_name;
+        }
+        else {
+            navigate('/login');
+        }
+    };
+    useEffect(() => {
+        checkUser();
+    }, []);
+    const previewProfile = useRef();
+    
     const profilePicUploadRef = useRef(null);
 
     const handleUploadClick = (event) => {
@@ -9,8 +31,25 @@ const ProfilePage = () => {
 
     const handleUploadProfileChange = (event) => {
         //To do: see the preview image
-        console.log(event.target.files[0]);
+        const file = event.target.files[0];
+        if(!file) {
+            return;
+        }
+        if (file.size > 1 * 1024 * 1024) {
+            alert('File size too big');
+            return;
+        }
+        console.log(file);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewProfile.current.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
     };
+
+    const handleOnSave = () => {
+        toast.success('Profile saved');
+    }
 
     return (
         <div
@@ -23,6 +62,7 @@ const ProfilePage = () => {
                 </h1>
                 <div className="mx-8 mt-8 flex lg:mx-36 pb-7 border-b-2">
                     <img
+                        ref={previewProfile}
                         src="https://media.discordapp.net/attachments/813610330374144050/1077362408315682899/6C570FF2-A5C9-479E-AB97-9531C03945DA.jpg?ex=65496e6e&is=6536f96e&hm=98b39b4d8f3a4482df14751012033df5695c27ecd8f70026563f1363a494c75c&=&width=1117&height=917"
                         className=" object-cover w-32 h-32 mr-6 rounded-full"
                     ></img>
@@ -53,7 +93,7 @@ const ProfilePage = () => {
                         <div className="flex flex-col gap-2 lg:w-1/2 w-full">
                             <label className=" ml-1">Username</label>
                             <input
-                                class="w-full h-11 px-3 mb-2 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                                className="w-full h-11 px-3 mb-2 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
                                 type="text"
                                 value={'bigboy531'}
                             />
@@ -62,7 +102,7 @@ const ProfilePage = () => {
                         <div className="flex flex-col gap-2 lg:w-1/2 w-full">
                             <label className=" ml-1">Email</label>
                             <input
-                                class="w-full h-11 px-3 mb-2 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                                className="w-full h-11 px-3 mb-2 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
                                 type="text"
                                 value={'bigboy531@gmail.com'}
                             />
@@ -73,7 +113,7 @@ const ProfilePage = () => {
                         <div className="flex flex-col gap-2 lg:w-1/2 w-full">
                             <label className=" ml-1">New Password</label>
                             <input
-                                class="w-full h-11 px-3 mb-2 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                                className="w-full h-11 px-3 mb-2 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
                                 type="password"
                                 placeholder="New Password"
                             />
@@ -84,7 +124,7 @@ const ProfilePage = () => {
                                 Confirm Password
                             </label>
                             <input
-                                class="w-full h-11 px-3 mb-2 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                                className="w-full h-11 px-3 mb-2 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
                                 type="password"
                                 placeholder="Confirm Password"
                             />
@@ -95,7 +135,7 @@ const ProfilePage = () => {
                         <div className="flex flex-col gap-2 lg:w-1/2 w-full">
                             <label className=" ml-1">Affiliation</label>
                             <input
-                                class="w-full h-11 px-3 mb-2 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                                className="w-full h-11 px-3 mb-2 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
                                 type="text"
                                 value={'NCSU'}
                                 disabled
@@ -106,7 +146,7 @@ const ProfilePage = () => {
                             <label className=" ml-1">Role</label>
                             <input
                                 disabled
-                                class="w-full h-11 px-3 mb-2 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                                className="w-full h-11 px-3 mb-2 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
                                 type="text"
                                 value={'Employee'}
                             />
@@ -115,7 +155,7 @@ const ProfilePage = () => {
                             <label className=" ml-1">Hourly Rate</label>
                             <div className="flex items-center gap-3">
                                 <input
-                                    class=" w-11/12 h-11 px-3 mb-2 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                                    className=" w-11/12 h-11 px-3 mb-2 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
                                     type="text"
                                     value={'15'}
                                 />
@@ -123,22 +163,33 @@ const ProfilePage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex lg:w-[150px] w-full lg:gap-10 gap-2 flex-wrap lg:flex-nowrap mt-2">
+                    <div className="flex w-full lg:gap-10 gap-2 flex-wrap lg:flex-nowrap mt-2">
                         <button
-                            className="block select-none rounded-lg bg-teal-800 py-4 px-4 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-teal-800/20 transition-all hover:shadow-lg hover:shadow-teal-800/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            className="block lg:w-[150px]  select-none rounded-lg bg-teal-800 py-4 px-4 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-teal-800/20 transition-all hover:shadow-lg hover:shadow-teal-800/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            type="button"
+                            data-ripple-light="true"
+                            onClick={handleOnSave}
+                        >
+                            Save Changes
+                        </button>
+                        <button
+                            className="block lg:w-[100px] select-none rounded-lg bg-pink-500 py-3 px-4 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                             type="button"
                             data-ripple-light="true"
                         >
-                            Save Changes
+                            Leave
                         </button>
                     </div>
                 </div>
 
                 <div className=" mx-4 mt-4 flex lg:mx-36">
-                    <div className='flex justify-between w-full lg:flex-nowrap flex-wrap gap-4'>
+                    <div className="flex justify-between w-full lg:flex-nowrap flex-wrap gap-4">
                         <div>
-                            <b>Deactivate your account</b>
-                            <p className='mt-1'>All your personal information will be permanently removed. </p>
+                            <b>Delete your account</b>
+                            <p className="mt-1">
+                                All your personal information will be
+                                permanently removed.{' '}
+                            </p>
                         </div>
                         <button
                             className=" lg:w-[180px] block select-none rounded-lg bg-pink-500 py-3 px-4 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
