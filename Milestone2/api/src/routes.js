@@ -175,7 +175,7 @@ router.post("/records/calculate", TokenMiddleware, async (req, res) => {
         // totalMinutes = Math.abs(Math.floor((new Date(d2).getTime() - new Date(d1).getTime()) / 60000));
         // console.log("MINUTES IS", totalMinutes);
     // }
-    let totalMinutes = Math.abs(Math.floor((new Date(d2).getTime() + new Date(d1).getTime()) / 60000));
+    let totalMinutes = Math.abs(Math.floor((new Date(d2).getTime() - new Date(d1).getTime()) / 60000));
     const newRecord = {
         // id: records[records.length - 1].id + 1,
         date: date,
