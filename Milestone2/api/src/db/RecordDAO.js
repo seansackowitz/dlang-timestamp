@@ -152,9 +152,9 @@ async function createRecord(record, userId) {
 
 async function updateRecord(record) {
     try {
-        const sql = `UPDATE records SET minutes=?, notes=?, paid=? WHERE id=?`;
-        const { results } = await db.query(sql, [record.minutes, record.notes, record.paid, record.id]);
-        return await results[0];
+        const sql = `UPDATE records SET date=?, minutes=?, notes=?, paid=? WHERE id=?`;
+        const { results } = await db.query(sql, [record.date, record.minutes, record.notes, record.paid, record.id]);
+        // return await results[0];
     }
     catch (error) {
         throw {

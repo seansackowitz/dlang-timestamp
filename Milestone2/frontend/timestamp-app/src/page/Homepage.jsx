@@ -53,7 +53,7 @@ const Homepage = () => {
             return;
         }
         setOpen(false);
-        setManualHours('');
+        // setManualHours('');
         console.log("MANUAL HOURS", manualHours);
         console.log("MANUAL MINUTES", manualMinutes);
         console.log("MANUAL MESSAGE", await manualMessage.current.value);
@@ -88,11 +88,11 @@ const Homepage = () => {
     const calculatedMessage = useRef();
     const calculatedDate = useRef();
     const handleSubmitCalculatedTime = async (e) => {
-        if (startTime.current.value === '' || endTime.current.value === '' || calculatedDate.current.value === '') {
+        if (startTime.current.value === '' || endTime.current.value === '' ||calculatedDate.current.value === '') {
             toast.error('Please enter the start time, end time, and date of the log.');
             return;
         }
-        else if (!/^\d{4}$/.test('' + new Date(manualDate.current.value).getFullYear())) {
+        else if (!/^\d{4}$/.test('' + new Date(calculatedDate.current.value).getFullYear())) {
             toast.error('Please input a valid date. The year must be 4 digits long.');
             return;
         }

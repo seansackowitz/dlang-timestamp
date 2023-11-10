@@ -239,10 +239,19 @@ router.post("/payments/:recipientId", TokenMiddleware, async (req, res) => {
 
 router.put("/records/:id", TokenMiddleware, async (req, res) => {
     try {
-        const { notes, minutes } = await req.body;
+        const { notes, minutes, date } = await req.body;
+        console.log("GOT NOTES", notes);
+        console.log("GOT MINUTES", minutes);
+        console.log("GOT DATE", date);
+        console.log("BEFORE GETTING RECORD BY ID", req.params.id);
         let record = await records.getRecordById(req.params.id);
+        console.log("AFTER GETTING RECORD BY ID", req.params.id);
+        console.log("OLD RECORD IS", record);
         record.notes = notes;
         record.minutes = minutes;
+        record.date = date;
+        console.log("NEW RECORD IS", record);
+        console.log("BEFORE UPDATE RECORD");
         await records.updateRecord(record);    
     }
     catch (error) {
