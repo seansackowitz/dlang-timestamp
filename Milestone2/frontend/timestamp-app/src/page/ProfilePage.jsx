@@ -21,7 +21,7 @@ const ProfilePage = () => {
                 setAffiliation(user.affiliation || "");
                 setAvatar(
                     user.avatar ||
-                        "https://images-ext-1.discordapp.net/external/6CZaeJz37z5zmVIZ2c1ELxM5NicrKd96KM65FiBHGPA/https/art.pixilart.com/0b055c338bd0168.png?width=598&height=598"
+                    "https://images-ext-1.discordapp.net/external/6CZaeJz37z5zmVIZ2c1ELxM5NicrKd96KM65FiBHGPA/https/art.pixilart.com/0b055c338bd0168.png?width=598&height=598"
                 );
 
                 if (user.role === "employer") {
@@ -291,6 +291,33 @@ const ProfilePage = () => {
                             data-ripple-light="true"
                         >
                             Delete Account
+                        </button>
+                    </div>
+                </div>
+                <div className=" mx-4 mt-4 flex lg:mx-36">
+                    <div className="flex justify-between w-full lg:flex-nowrap flex-wrap gap-4">
+                        <div>
+                            <b>Logout of your account</b>
+                            <p className="mt-1">
+                                You will be logged out of your current session.{" "}
+                            </p>
+                        </div>
+                        <button
+                            className="h-[50px] lg:w-[180px] block select-none rounded-lg bg-pink-500 py-3 px-4 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            type="button"
+                            data-ripple-light="true"
+                            onClick={() => {
+                                fetch('/api/logout', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Accept': 'application/json'
+                                    }
+                                });
+                                navigate('/login');
+                            }}
+                        >
+                            Logout
                         </button>
                     </div>
                 </div>
