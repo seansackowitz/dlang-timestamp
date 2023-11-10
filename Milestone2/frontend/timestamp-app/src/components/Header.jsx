@@ -12,7 +12,7 @@ const Header = () => {
                 // TODO: Navigate employer to employer page
                 console.log("THIS IS AN EMPLOYER");
             }
-            loggedUser.current.value = "Hello " + user.first_name + " " + user.last_name;
+            loggedUser.current.value = "Hello " + await user.first_name + " " + await user.last_name;
         }
         else {
             navigate('/login');

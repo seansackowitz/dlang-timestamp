@@ -28,7 +28,7 @@ const Homepage = () => {
             } catch (error) {
 
             }
-            // loggedUser.current = "Hello " + user.first_name + " " + user.last_name;
+            // loggedUser.current.value = "Hello " + user.first_name + " " + user.last_name;
         }
         else {
             navigate('/login');
