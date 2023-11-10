@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser');
 const records = require('./db/RecordDAO');
 const payments = require('./db/PaymentDAO');
 const users = require('./db/UserDAO');
-const { TokenMiddleware, generateToken, removeToken } = require("./middleware/TokenMiddleware");
+const { TokenMiddleware, generateToken, removeToken, updateToken } = require("./middleware/TokenMiddleware");
 
 router.use(cookieParser());
 
