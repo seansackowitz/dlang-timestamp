@@ -33,10 +33,10 @@ router.get("/payments/sender/:senderId", TokenMiddleware, async (req, res) => {
     // });
     try {
         let senderPayments = await payments.getPaymentsBySenderId(senderId);
-        res.json(senderPayments);
+        res.json(await senderPayments);
     }
     catch (error) {
-        res.status(error.status).json({ error: error.message });
+        res.status(await error.status || 404).json({ error: await error.message || 'Sender not found by ID ' + req.params.senderId });
     }
 });
 
@@ -48,16 +48,16 @@ router.get("/payments/recipient/:recipientId", TokenMiddleware, async (req, res)
     // });
     try {
         let recipientPayments = await payments.getPaymentsByRecipientId(recipientId);
-        res.json(recipientPayments);
+        res.json(await recipientPayments);
     }
     catch (error) {
-        res.status(error.status).json({ error: error.message });
+        res.status(await error.status || 404).json({ error: await error.message || 'Recipient not found by ID ' + req.params.recipientId });
     }
 });
 
 router.post("/payments", TokenMiddleware, async (req, res) => {
     try {
-        const { amount, date, recipientId, senderId } = req.body;
+        const { amount, date, recipientId, senderId } = await req.body;
         const payment = {
             amount: amount,
             date: date,
@@ -70,7 +70,7 @@ router.post("/payments", TokenMiddleware, async (req, res) => {
         return res.json({ success: true, message: 'Payment added successfully!' });
     }
     catch (error) {
-        res.status(error.status).json({ error: error.message });
+        res.status(await error.status || 400).json({ error: await error.message || 'Payment could not be added due to bad request' });
     }
 });
 
@@ -92,18 +92,20 @@ router.get("/users/:id", TokenMiddleware, async (req, res) => {
         res.json(user);
     }
     catch (error) {
-        res.status(error.status).json({ error: error.message });
+        res.status(await error.status || 404).json({ error: await error.message || 'User not found by ID ' + userId });
     }
 });
 
 router.get("/records/:id", TokenMiddleware, async (req, res) => {
     try {
         let userId = req.params.id;
+        console.log("THIS IS USER ID", userId);
         let record = await records.getRecordByUserId(userId);
-        return res.json(record);
+        console.log("THIS IS RECORD", record);
+        return res.json(await record);
     }
     catch (error) {
-        res.status(error.status).json({ error: error.message });
+        res.status(await error.status || 404).json({ error: await error.message || 'Record not found by user ID ' + req.params.id });
     }
 });
 
@@ -114,11 +116,11 @@ router.get("/login/users/current", TokenMiddleware, async (req, res) => {
 router.post("/login", async (req, res) => {
     try {
         console.log("BEFORE GETTING USER");
-        let user = await users.getUserByCredentials(req.body.username, req.body.password);
+        let user = await users.getUserByCredentials(await req.body.username, await req.body.password);
         console.log("BEFORE GENERATING TOKEN");
         generateToken(req, res, user);
         console.log("BEFORE RETURNING USER");
-        res.json(user);
+        res.json(await user);
     }
     catch (error) {
         res.status(error.status || 500).json({ error: error.message || 'Internal Server Error' });
@@ -131,64 +133,107 @@ router.post("/logout", async (req, res) => {
 });
 
 router.post("/register/business", async (req, res) => {
-    const { username } = req.body;
+    const { username } = await req.body;
     //TODO: adding to the databse
     return res.json({ success: true, message: 'Business account registered successfully!' });
 });
 
 router.post("/register/employee", async (req, res) => {
-    const { username } = req.body;
+    const { username } = await req.body;
     //TODO: adding to the databse
     return res.json({ success: true, message: 'Employee account registered successfully!' });
 });
 
 router.post("/records", TokenMiddleware, async (req, res) => {
-    const { userId, notes, minutes } = req.body;
+    const { date, notes, startTime, endTime } = await req.body;
+    let d1 = '0000-01-01 ' + await startTime;
+    let d2 = '0000-01-01 ' + await endTime;
+    // If the times are the same, then it is 24 hours.
+    console.log("CALCULATE MINUTES");
+    console.log("START TIME", startTime);
+    console.log("END TIME", endTime);
+    // else {
+        // console.log("NOT 24 HOURS");
+        // totalMinutes = Math.abs(Math.floor((new Date(d2).getTime() - new Date(d1).getTime()) / 60000));
+        // console.log("MINUTES IS", totalMinutes);
+    // }
+    let totalMinutes = Math.abs(Math.floor((new Date(d2).getTime() + new Date(d1).getTime()) / 60000));
     const newRecord = {
         // id: records[records.length - 1].id + 1,
-        date: new Date().toISOString(),
-        minutes: minutes,
+        date: date,
+        minutes: totalMinutes,
         // TODO: USER ID NEEDS TO CHANGE
-        userId: userId,
         notes: notes,
         paid: false
     }
+    console.log("THIS IS THE RECORD OBJECT", newRecord);
+    console.log("THIS IS TYPE OF RECORD", typeof(newRecord));
     //TODO adding to the databse
     // records.push(newRecord);
-    await records.createRecord(newRecord);
+    // Add 2 records to the database if the time rolls over
+    if (await endTime <= await startTime) {
+        // Create record for start date
+        console.log("24 HOURS OR LESS");
+        d2 = '0000-01-02 00:00';
+        totalMinutes = Math.abs(Math.floor((new Date(d2).getTime() - new Date(d1).getTime()) / 60000));
+        newRecord.minutes = totalMinutes;
+        console.log("MINUTES IS", totalMinutes, "ON DATE", date);
+        await records.createRecord(newRecord, await req.user.id);
+        // Create record for end date (rolling over hours) if the end date isn't midnight
+        if (await endTime !== '00:00') {
+            console.log("IN IF STATEMENT");
+            d1 = '0000-01-02 00:00';
+            d2 = '0000-01-02 ' + await endTime;
+            totalMinutes = Math.abs(Math.floor((new Date(d2).getTime() - new Date(d1).getTime()) / 60000));
+            newRecord.minutes = totalMinutes;
+            console.log("MINUTES IS", totalMinutes);
+            // newRecord.date = new Date(await date).setDate(new Date(await date).getDate() + 1);
+            console.log("DATE IS BEFORE CHANGE", await newRecord.date);
+            // This cursed code is to increment the date by 1 day
+            newRecord.date = new Date(new Date(await date).setDate(new Date(await date).getDate() + 1));
+            // newRecord.date = new Date(new Date(await date).getDate() + 1);
+            console.log("DATE IS AFTER CHANGE", await newRecord.date);
+            await records.createRecord(newRecord, await req.user.id);    
+        }
+    }
+    // Otherwise, add 1 record for the current date
+    else {
+        await records.createRecord(newRecord, await req.user.id);
+    }
+
     return res.json({ success: true, message: 'Record added successfully!' });
 })
 
 router.post("/payments/:recipientId", TokenMiddleware, async (req, res) => {
     try {
-        const senderId = req.user.id;
+        const senderId = await req.user.id;
         const recipientId = req.params.recipientId;
         let unpaidRecords = await records.getUnpaidRecordsByUserId(recipientId);
         let employee = await users.getEmployeeById(recipientId);
         let amount = 0;
-        unpaidRecords.forEach((record) => {
+        await unpaidRecords.forEach((record) => {
             amount += record.minutes * employee.hourly_rate;
         });
-        let payment = req.body;
-        await payments.createPayment(payment).then((payment) => {
+        let payment = await req.body;
+        await payments.createPayment(await payment).then((payment) => {
             return res.json({ success: true, message: 'Payment added successfully!' });
         });
     }
     catch (error) {
-        return res.status(error.status).json({ success: false, message: error.message });
+        return res.status(error.status || 400).json({ success: false, message: error.message || 'Bad request for creating payment' });
     }
 });
 
 router.put("/records/:id", TokenMiddleware, async (req, res) => {
     try {
-        const { notes, minutes } = req.body;
+        const { notes, minutes } = await req.body;
         let record = await records.getRecordById(req.params.id);
         record.notes = notes;
         record.minutes = minutes;
         await records.updateRecord(record);    
     }
     catch (error) {
-        res.status(error.status).json({ success: false, message: error.message });
+        res.status(error.status || 404).json({ success: false, message: error.message || 'Record not found by ID ' + req.params.id });
     }
     //TODO editing in the database
     // let record = records.find(record => record.id === parseInt(req.params.id));
@@ -203,7 +248,7 @@ router.put("/records/:id", TokenMiddleware, async (req, res) => {
 });
 
 router.put("/users/:id", TokenMiddleware, async (req, res) => {
-    const { first_name, last_name, username, avatar, role, affiliation, hourly_rate } = req.body;
+    const { first_name, last_name, username, avatar, role, affiliation, hourly_rate } = await req.body;
     try {
         let user = await users.getUserById(req.params.id);
         user.first_name = first_name;
@@ -217,7 +262,7 @@ router.put("/users/:id", TokenMiddleware, async (req, res) => {
         return res.json({ success: true, message: 'User edited successfully!' });
     }
     catch (error) {
-        res.status(error.status).json({ success: false, message: error.message });
+        res.status(error.status || 404).json({ success: false, message: error.message || 'User not found by ID ' + req.params.id });
     }
     //TODO editing in the database
     // let user = users.find(user => user.id === parseInt(req.params.id));
@@ -233,14 +278,14 @@ router.put("/users/:id", TokenMiddleware, async (req, res) => {
 });
 
 router.delete("/records/:id", TokenMiddleware, async (req, res) => {
-    const { id } = req.body;
+    const { id } = await req.body;
     try {
         let record = await records.getRecordById(id);
         await records.deleteRecord(record);
         return res.json({ success: true, message: 'Record deleted successfully!' });
     }
     catch (error) {
-        res.status(error.status).json({ success: false, message: error.message });
+        res.status(error.status || 404).json({ success: false, message: error.message || 'Record not found by ID ' + id});
     }
     // let record = records.find(record => record.id === parseInt(req.params.id))
     // let recordIndex = records.findIndex(record => record.id === parseInt(req.params.id));
