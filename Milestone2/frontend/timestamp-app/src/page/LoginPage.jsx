@@ -29,7 +29,7 @@ const LoginPage = () => {
             const userData = await response.json();
             toast.success('Login successful: ', userData.username);
             setTimeout(function() {
-                navigate('/dashboard/home');
+                navigate('/dashboard');
             }, 3000);
         } catch (error) {
             toast.error(error.message);

@@ -24,7 +24,7 @@ const HoursRecord = () => {
     if (user !== undefined && user !== null && user.role !== undefined) {
       if (user.role === "employer") {
         // TODO: Navigate employer to employer page
-        console.log("THIS IS AN EMPLOYER");
+        navigate('/dashboard/employer_home');
       }
       try {
         const data = await (await fetch("/api/records/" + user.id)).json();
