@@ -35,7 +35,7 @@ const Dashboard = () => {
     };
     useEffect(() => {
         checkUser();
-    }, [navigate]);
+    }, []);
     return (
         <div>
             <Header></Header>
