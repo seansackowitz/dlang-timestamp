@@ -24,7 +24,7 @@ const HoursRecord = () => {
     if (user !== undefined && user !== null && user.role !== undefined) {
       if (user.role === "employer") {
         // TODO: Navigate employer to employer page
-        console.log("THIS IS AN EMPLOYER");
+        navigate('/dashboard/employer_home');
       }
       try {
         const data = await (await fetch("/api/records/" + user.id)).json();
@@ -135,7 +135,7 @@ const HoursRecord = () => {
                     {formatDateString(new Date(item.date))}
                   </h5>
                   <h5 className="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
-                    {`${Math.floor(item.minutes / 60)}H ${item.minutes % 60}M`}
+                    {Math.floor(item.minutes / 60)}H {item.minutes % 60}M
                   </h5>
                 </div>
                 <p className="block font-sans text-base font-light leading-relaxed text-inherit antialiased">

@@ -24,7 +24,7 @@ function App() {
                 <Route path='/' element={<SplashScreenPage/>}></Route>
                 <Route path='/login' element={<LoginPage/>}></Route>
                 <Route path='/dashboard' element={<Dashboard/>}>
-                    <Route path='home' element={<Homepage/>}></Route>
+                    <Route path='employee_home' element={<Homepage/>}></Route>
                     <Route path='hours' element={<HoursRecord/>}></Route>
                     <Route path='profile' element={<ProfilePage/>}></Route>
                 </Route>

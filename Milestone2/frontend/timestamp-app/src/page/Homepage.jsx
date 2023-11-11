@@ -7,6 +7,8 @@ import toast from 'react-hot-toast';
 const Homepage = () => {
     const navigate = useNavigate();
     let user;
+    const [records, setRecords] = useState([]);
+    const [minutes, setMinutes] = useState(0);
     const checkUser = async () => {
         user = await ((await fetch('/api/login/users/current')).json());
         console.log("USER IS", user);
@@ -14,8 +16,19 @@ const Homepage = () => {
             if (user.role === 'employer') {
                 // TODO: Navigate employer to employer page
                 console.log("THIS IS AN EMPLOYER");
+                navigate('/dashboard/employer_home');
             }
-            // loggedUser.current = "Hello " + user.first_name + " " + user.last_name;
+            try {
+                const data = await (await fetch("/api/records/" + user.id)).json();
+                console.log(data);
+                setRecords(data);
+                let totalMinutes = 0;
+                await data.forEach(record => totalMinutes += record.minutes);
+                setMinutes(totalMinutes);
+            } catch (error) {
+
+            }
+            // loggedUser.current.value = "Hello " + user.first_name + " " + user.last_name;
         }
         else {
             navigate('/login');
@@ -69,7 +82,7 @@ const Homepage = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body:  JSON.stringify(body)
+            body: JSON.stringify(body)
         })).json();
         setManualHours('');
         setManualMinutes('');
@@ -88,7 +101,7 @@ const Homepage = () => {
     const calculatedMessage = useRef();
     const calculatedDate = useRef();
     const handleSubmitCalculatedTime = async (e) => {
-        if (startTime.current.value === '' || endTime.current.value === '' ||calculatedDate.current.value === '') {
+        if (startTime.current.value === '' || endTime.current.value === '' || calculatedDate.current.value === '') {
             toast.error('Please enter the start time, end time, and date of the log.');
             return;
         }
@@ -124,7 +137,7 @@ const Homepage = () => {
     return (
         <div className="flex flex-col items-center">
             <h1 className=" text-5xl mt-24 text-center">Total Hours</h1>
-            <h2 className=" text-center text-4xl mt-4">23H56M</h2>
+            <h2 className=" text-center text-4xl mt-4">{`${Math.floor(minutes / 60)} H ${minutes % 60}M`}</h2>
             <div className="flex gap-8 mt-8">
                 <button
                     className="block w-full select-none rounded-lg bg-zinc-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-zinc-500/20 transition-all hover:shadow-lg hover:shadow-zinc-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"

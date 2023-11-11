@@ -12,7 +12,7 @@ const Header = () => {
                 // TODO: Navigate employer to employer page
                 console.log("THIS IS AN EMPLOYER");
             }
-            loggedUser.current = "Hello " + user.first_name + " " + user.last_name;
+            loggedUser.current.value = "Hello " + await user.first_name + " " + await user.last_name;
         }
         else {
             navigate('/login');
@@ -35,7 +35,7 @@ const Header = () => {
                         <ul className="hidden items-center gap-6 lg:flex">
                             <li className="block p-1 font-sans text-sm font-normal leading-normal text-inherit antialiased">
                                 <a className="flex items-center text-2xl" href="#" ref={loggedUser}>
-                                    Hello Big Boy!
+                                    {/* Hello {loggedUser.first_name} {loggedUser.last_name}! */}
                                 </a>
                             </li>
                         </ul>

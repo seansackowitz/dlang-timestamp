@@ -22,9 +22,13 @@ const Dashboard = () => {
             if (user.role === 'employer') {
                 // TODO: Navigate employer to employer page
                 console.log("THIS IS AN EMPLOYER");
+                navigate('/dashboard/employer_home');
+            }
+            else {
+                navigate('/dashboard/employee_home');
             }
             // loggedUser.current = "Hello " + user.first_name + " " + user.last_name;
-        }
+        }   
         else {
             navigate('/login');
         }
