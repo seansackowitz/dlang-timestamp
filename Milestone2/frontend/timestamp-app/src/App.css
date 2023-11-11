@@ -56,3 +56,19 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #7878a3;
 }
+.table-container {
+    display: none;
+}
+
+.sm-table {
+    display: block;
+}
+
+@media screen and (min-width: 650px) {
+    .table-container {
+        display: block;
+    }
+    .sm-table {
+        display: none;
+    }
+}

@@ -346,4 +346,44 @@ router.delete("/records/:id", TokenMiddleware, async (req, res) => {
 //     return res.json({ success: true, message: 'User deleted successfully!' });
 // });
 
+router.get('/users/:username/employees', TokenMiddleware, async (req, res) => {
+    const { username } = req.params;
+    try {
+        const usersWithTheSameAffiliation =
+            await users.getUsersWithSameAffilaitionAsEmployer(username);
+        res.json(usersWithTheSameAffiliation);
+    } catch (error) {
+        res.status(error.code || 500).json({
+            success: false,
+            message: error.message || 'Error getting employees',
+        });
+    }
+});
+
+router.put('/users/employer/:username', TokenMiddleware, async (req, res) => {
+    const { username } = req.params;
+    const { newPassword, ...updateData } = req.body;
+    try {
+        console.log(req.body);
+        console.log('This is the username: ', username);
+        console.log('This is the update data: ', updateData);
+        // console.log('This is the new password: ', newPassword);
+        const result = await users.updateUser(
+            username,
+            updateData,
+            newPassword
+        );
+        // const updatedUser = await users.getUserByUsername(username);
+        // updateToken(req, res, updatedUser);
+        res.json({
+            message: result.message,
+        });
+    } catch (error) {
+        res.status(error.code || 500).json({
+            success: false,
+            message: error.message || 'Error updating user',
+        });
+    }
+});
+
 module.exports = router;
