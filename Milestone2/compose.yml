@@ -12,11 +12,9 @@ services:
     restart: unless-stopped
     volumes:
       - ./api/src:/app/src
-      - /usr/src/app/node_modules
     environment:
       - PORT=80
     env_file:
-      # this is new
       - .env # this is new
 
   frontend:
@@ -24,7 +22,6 @@ services:
     restart: unless-stopped
     volumes:
       - ./frontend/src:/app/src
-      - /usr/src/app/node_modules
     environment:
       - PORT=80
 
