@@ -276,7 +276,7 @@ const ProfilePage = () => {
                     </div>
                 </div>
 
-                <div className=" mx-4 mt-4 flex lg:mx-36">
+                {/* <div className=" mx-4 mt-4 flex lg:mx-36">
                     <div className="flex justify-between w-full lg:flex-nowrap flex-wrap gap-4">
                         <div>
                             <b>Delete your account</b>
@@ -293,7 +293,7 @@ const ProfilePage = () => {
                             Delete Account
                         </button>
                     </div>
-                </div>
+                </div> */}
                 <div className=" mx-4 mt-4 flex lg:mx-36">
                     <div className="flex justify-between w-full lg:flex-nowrap flex-wrap gap-4">
                         <div>
