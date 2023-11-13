@@ -21,7 +21,7 @@ services:
     build: ./frontend/timestamp-app
     restart: unless-stopped
     volumes:
-      - ./frontend/src:/app/src
+      - ./frontend/timestamp-app:/app
     environment:
       - PORT=80
 
