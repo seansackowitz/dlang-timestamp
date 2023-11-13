@@ -1,6 +1,6 @@
 FROM node:lts    
 # Set working directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # install node modules
 COPY ./package*.json ./
