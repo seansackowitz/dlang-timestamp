@@ -31,6 +31,10 @@ function App() {
                         path="employer_home"
                         element={<EmployerHomepage />}
                     ></Route>
+                    <Route
+                        path="payment"
+                        element={<BusinessPaymentPage />}
+                    ></Route>
                 </Route>
                 <Route path="/register" element={<Register />}></Route>
                 <Route

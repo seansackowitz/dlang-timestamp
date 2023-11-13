@@ -9,34 +9,40 @@ const Homepage = () => {
     let user;
     const [records, setRecords] = useState([]);
     const [minutes, setMinutes] = useState(0);
-    const checkUser = async () => {
-        user = await ((await fetch('/api/login/users/current')).json());
-        console.log("USER IS", user);
-        if (user !== undefined && user !== null && user.role !== undefined) {
-            if (user.role === 'employer') {
-                // TODO: Navigate employer to employer page
-                console.log("THIS IS AN EMPLOYER");
-                navigate('/dashboard/employer_home');
-            }
-            try {
-                const data = await (await fetch("/api/records/" + user.id)).json();
-                console.log(data);
-                setRecords(data);
-                let totalMinutes = 0;
-                await data.forEach(record => totalMinutes += record.minutes);
-                setMinutes(totalMinutes);
-            } catch (error) {
 
-            }
-            // loggedUser.current.value = "Hello " + user.first_name + " " + user.last_name;
-        }
-        else {
-            navigate('/login');
-        }
-    };
     useEffect(() => {
+        const checkUser = async () => {
+            user = await (await fetch('/api/login/users/current')).json();
+            console.log('USER IS', user);
+            if (
+                user !== undefined &&
+                user !== null &&
+                user.role !== undefined
+            ) {
+                if (user.role === 'employer') {
+                    // TODO: Navigate employer to employer page
+                    console.log('THIS IS AN EMPLOYER');
+                    navigate('/dashboard/employer_home');
+                }
+                try {
+                    const data = await (
+                        await fetch('/api/records/' + user.id)
+                    ).json();
+                    console.log(data);
+                    setRecords(data);
+                    let totalMinutes = 0;
+                    await data.forEach(
+                        (record) => (totalMinutes += record.minutes)
+                    );
+                    setMinutes(totalMinutes);
+                } catch (error) {}
+                // loggedUser.current.value = "Hello " + user.first_name + " " + user.last_name;
+            } else {
+                navigate('/login');
+            }
+        };
         checkUser();
-    }, []);
+    }, [navigate]);
     //Enter time manually
     const [manualHours, setManualHours] = useState('');
     const [manualMinutes, setManualMinutes] = useState('');
@@ -52,43 +58,61 @@ const Homepage = () => {
         }
     };
     const handleManualTimeSubmit = async (e) => {
-        if (manualHours === '' || manualMinutes === '' || manualDate.current.value === '') {
-            toast.error('Please input the date of the log and the amount of time in hours and minutes.');
+        if (
+            manualHours === '' ||
+            manualMinutes === '' ||
+            manualDate.current.value === ''
+        ) {
+            toast.error(
+                'Please input the date of the log and the amount of time in hours and minutes.'
+            );
             return;
             // e.preventDefault();
-        }
-        else if (manualHours > 24 || manualMinutes > 59 || manualHours < 0 || manualMinutes < 0 || (manualHours == 0 && manualMinutes == 0)) {
+        } else if (
+            manualHours > 24 ||
+            manualMinutes > 59 ||
+            manualHours < 0 ||
+            manualMinutes < 0 ||
+            (manualHours == 0 && manualMinutes == 0)
+        ) {
             toast.error('Please input a valid amount of hours and minutes.');
             return;
-        }
-        else if (!/^\d{4}$/.test('' + new Date(manualDate.current.value).getFullYear())) {
-            toast.error('Please input a valid date. The year must be 4 digits long.');
+        } else if (
+            !/^\d{4}$/.test(
+                '' + new Date(manualDate.current.value).getFullYear()
+            )
+        ) {
+            toast.error(
+                'Please input a valid date. The year must be 4 digits long.'
+            );
             return;
         }
         setOpen(false);
         // setManualHours('');
-        console.log("MANUAL HOURS", manualHours);
-        console.log("MANUAL MINUTES", manualMinutes);
-        console.log("MANUAL MESSAGE", await manualMessage.current.value);
-        console.log("MANUAL DATE", await manualDate.current.value);
+        console.log('MANUAL HOURS', manualHours);
+        console.log('MANUAL MINUTES', manualMinutes);
+        console.log('MANUAL MESSAGE', await manualMessage.current.value);
+        console.log('MANUAL DATE', await manualDate.current.value);
         let minutes = parseInt(manualHours) * 60 + parseInt(manualMinutes);
         let body = {
             date: await manualDate.current.value,
             notes: await manualMessage.current.value,
-            minutes: minutes
+            minutes: minutes,
         };
-        let record = await (await fetch('/api/records/manual', {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(body)
-        })).json();
+        let record = await (
+            await fetch('/api/records/manual', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            })
+        ).json();
         setManualHours('');
         setManualMinutes('');
         manualDate.current.value = '';
         manualMessage.current.value = '';
-        toast.success("Record entered successfully!");
+        toast.success('Record entered successfully!');
     };
     const manualMessage = useRef();
 
@@ -101,12 +125,23 @@ const Homepage = () => {
     const calculatedMessage = useRef();
     const calculatedDate = useRef();
     const handleSubmitCalculatedTime = async (e) => {
-        if (startTime.current.value === '' || endTime.current.value === '' || calculatedDate.current.value === '') {
-            toast.error('Please enter the start time, end time, and date of the log.');
+        if (
+            startTime.current.value === '' ||
+            endTime.current.value === '' ||
+            calculatedDate.current.value === ''
+        ) {
+            toast.error(
+                'Please enter the start time, end time, and date of the log.'
+            );
             return;
-        }
-        else if (!/^\d{4}$/.test('' + new Date(calculatedDate.current.value).getFullYear())) {
-            toast.error('Please input a valid date. The year must be 4 digits long.');
+        } else if (
+            !/^\d{4}$/.test(
+                '' + new Date(calculatedDate.current.value).getFullYear()
+            )
+        ) {
+            toast.error(
+                'Please input a valid date. The year must be 4 digits long.'
+            );
             return;
         }
         console.log(await startTime.current.value);
@@ -117,16 +152,18 @@ const Homepage = () => {
             notes: await calculatedMessage.current.value,
             startTime: await startTime.current.value,
             endTime: await endTime.current.value,
-        }
-        console.log("RECORD IS ABOUT TO BE POSTED");
-        let record = await (await fetch('/api/records/calculate', {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(body)
-        })).json();
-        console.log("RECORD IS", await record);
+        };
+        console.log('RECORD IS ABOUT TO BE POSTED');
+        let record = await (
+            await fetch('/api/records/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            })
+        ).json();
+        console.log('RECORD IS', await record);
         calculatedMessage.current.value = '';
         startTime.current.value = '';
         endTime.current.value = '';
@@ -137,7 +174,9 @@ const Homepage = () => {
     return (
         <div className="flex flex-col items-center">
             <h1 className=" text-5xl mt-24 text-center">Total Hours</h1>
-            <h2 className=" text-center text-4xl mt-4">{`${Math.floor(minutes / 60)} H ${minutes % 60}M`}</h2>
+            <h2 className=" text-center text-4xl mt-4">{`${Math.floor(
+                minutes / 60
+            )} H ${minutes % 60}M`}</h2>
             <div className="flex gap-8 mt-8">
                 <button
                     className="block w-full select-none rounded-lg bg-zinc-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-zinc-500/20 transition-all hover:shadow-lg hover:shadow-zinc-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
@@ -187,7 +226,12 @@ const Homepage = () => {
                         <div className="flex flex-col gap-7 justify-center">
                             <div className="flex gap-3 justify-center items-center">
                                 <label>Date: </label>
-                                <input name="date" type="date" ref={manualDate} required />
+                                <input
+                                    name="date"
+                                    type="date"
+                                    ref={manualDate}
+                                    required
+                                />
                             </div>
                             <div className="">
                                 <div className="relative h-11 w-full min-w-[180]">
@@ -251,13 +295,18 @@ const Homepage = () => {
                         <form className="flex flex-col gap-7 justify-center">
                             <div className="flex gap-3 justify-center items-center">
                                 <label>Date: </label>
-                                <input name="date" type="date" ref={calculatedDate} required />
+                                <input
+                                    name="date"
+                                    type="date"
+                                    ref={calculatedDate}
+                                    required
+                                />
                             </div>
                             <div className="">
                                 <div className="relative h-11 w-full min-w-[180]">
                                     <input
                                         ref={startTime}
-                                        type='time'
+                                        type="time"
                                         placeholder="hours"
                                         className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                     />
