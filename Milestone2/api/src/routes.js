@@ -109,6 +109,16 @@ router.get("/records/:id", TokenMiddleware, async (req, res) => {
     }
 });
 
+router.get("/unpaid_records/:id", TokenMiddleware, async (req, res) => {
+    try {
+        let userId = req.params.id;
+        let unpaid_records = await records.getUnpaidRecordsByUserId(userId);
+        return res.json(await unpaid_records);
+    } catch (error) {
+        res.status(await error.status || 404).json({ error: await error.message || 'Unpaid Record not found by user ID ' + req.params.id });
+    }
+})
+
 router.get("/login/users/current", TokenMiddleware, async (req, res) => {
     res.json(await req.user);
 });

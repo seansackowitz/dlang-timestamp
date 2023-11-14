@@ -144,7 +144,7 @@ const EmployerHomepage = () => {
             setEmployees(await employeeResponse.json());
         };
         checkUser();
-    }, [navigate]);
+    }, []);
 
     // useEffect(() => {
     //     console.log(employees);

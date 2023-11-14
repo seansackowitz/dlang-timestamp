@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import SplashScreen from '../images/TimeStamp.png'
+import SplashScreen from '../images/TimeStamp2.png'
 import '../App.css'
 import { useNavigate} from 'react-router-dom';
 
