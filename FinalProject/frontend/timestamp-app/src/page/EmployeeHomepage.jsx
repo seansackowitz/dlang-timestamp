@@ -50,8 +50,13 @@ const EmployeeHomepage = () => {
         console.log(clockedIn)
         if (clockedIn) {
             interval = setInterval(() => {
-                setTimer((prevTimer) => prevTimer + 1);
-                setMinutes(minutes + timer);
+                
+                setTimer((prevTimer) => {
+                    console.log('TIMER IS', prevTimer);
+                    setMinutes(minutes + Math.floor(prevTimer / 60));
+                    return prevTimer + 1;
+                });
+                // setMinutes(minutes + timer);
             }, 1000);
             // setMinutes(minutes + timer);  //Math.floor(timer / 60)
         } else {
@@ -248,7 +253,7 @@ const EmployeeHomepage = () => {
                 {clockInText}
             </button>
             <p>Timer: {timer} seconds</p>
-            <p>Note: You must remember to clock out in order to conclude session and get paid for that time.</p>
+            <p><b>Note</b>: You must remember to clock out in order to conclude session and get paid for that time.</p>
 
             <Modal open={open} onClose={() => setOpen(false)}>
                 {openCalculatedModal ? (
