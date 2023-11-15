@@ -5,7 +5,7 @@ import BusinessRegistrationPage from './page/BusinessRegistrationPage';
 
 import { EmployeeRegistrationPage } from './page/EmployeeRegistrationPage';
 import LoginPage from './page/LoginPage';
-import Homepage from './page/Homepage';
+import EmployeeHomepage from './page/EmployerHomepage';
 import Register from './page/Register';
 import HoursRecord from './page/HoursRecord';
 import { Routes, Route } from 'react-router-dom';
@@ -24,7 +24,7 @@ function App() {
                 <Route path="/" element={<SplashScreenPage />}></Route>
                 <Route path="/login" element={<LoginPage />}></Route>
                 <Route path="/dashboard" element={<Dashboard />}>
-                    <Route path="employee_home" element={<Homepage />}></Route>
+                    <Route path="employee_home" element={<EmployeeHomepage />}></Route>
                     <Route path="hours" element={<HoursRecord />}></Route>
                     <Route path="profile" element={<ProfilePage />}></Route>
                     <Route

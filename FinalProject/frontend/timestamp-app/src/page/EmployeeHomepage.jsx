@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-const Homepage = () => {
+const EmployeeHomepage = () => {
     const navigate = useNavigate();
     let user;
     const [records, setRecords] = useState([]);
@@ -358,4 +358,4 @@ const Homepage = () => {
     );
 };
 
-export default Homepage;
+export default EmployeeHomepage;
