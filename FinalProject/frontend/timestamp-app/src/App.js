@@ -5,7 +5,7 @@ import BusinessRegistrationPage from './page/BusinessRegistrationPage';
 
 import { EmployeeRegistrationPage } from './page/EmployeeRegistrationPage';
 import LoginPage from './page/LoginPage';
-import EmployeeHomepage from './page/EmployerHomepage';
+import EmployeeHomepage from './page/EmployeeHomepage';
 import Register from './page/Register';
 import HoursRecord from './page/HoursRecord';
 import { Routes, Route } from 'react-router-dom';
