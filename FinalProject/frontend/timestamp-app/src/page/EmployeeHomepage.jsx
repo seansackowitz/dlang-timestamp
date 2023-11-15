@@ -9,6 +9,8 @@ const EmployeeHomepage = () => {
     let user;
     const [records, setRecords] = useState([]);
     const [minutes, setMinutes] = useState(0);
+    const [timer, setTimer] = useState(0);
+    const [clockedIn, setClockedIn] = useState(false);
 
     useEffect(() => {
         const checkUser = async () => {
@@ -42,7 +44,21 @@ const EmployeeHomepage = () => {
             }
         };
         checkUser();
-    }, [navigate]);
+
+        let interval;
+        console.log(clockedIn)
+        if (clockedIn) {
+            interval = setInterval(() => {
+                setTimer((prevTimer) => prevTimer + 1);
+            }, 1000);
+        } else {
+            clearInterval(interval);
+        }
+
+        // Cleanup the interval when the component unmounts or when isRunning changes
+        return () => clearInterval(interval);
+    }, [navigate, clockedIn]);
+    
     //Enter time manually
     const [manualHours, setManualHours] = useState('');
     const [manualMinutes, setManualMinutes] = useState('');
@@ -171,6 +187,14 @@ const EmployeeHomepage = () => {
         toast.success('Record entered successfully!');
     };
 
+    const handleClockInButtonClicked = () => {
+        // TODO: Handle clock in button clicked
+        setClockedIn((prevState) => !prevState);
+        if (!clockedIn) {
+            setTimer(0);
+        }
+    };
+
     return (
         <div className="flex flex-col items-center">
             <h1 className=" text-5xl mt-24 text-center">Total Hours</h1>
@@ -201,21 +225,17 @@ const EmployeeHomepage = () => {
                     Enter hours manually
                 </button>
             </div>
-            {/* <button className="w-60 h-60 mt-10 flex items-center justify-center bg-white hover:bg-slate-50 text-white font-bold py-2 px-4 rounded-full focus:outline-none">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="15em"
-                    viewBox="0 0 512 512"
-                >
-                    <path d="M464 256A208 208 0 1 1 48 256a208 208 0 1 1 416 0zM0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z" />
-                </svg>
-            </button> */}
+
             <button
                 className=" middle none center w-60 h-60 mt-10 rounded-full bg-slate-500 py-3.5 px-7 font-sans text-4xl font-bold uppercase text-white shadow-md shadow-slate-500/20 transition-all hover:shadow-lg hover:shadow-slate-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 data-ripple-light="true"
+                onClick={() => {
+                    handleClockInButtonClicked()
+                }}
             >
                 CLOCK IN
             </button>
+            <p>Timer: {timer} seconds</p>
 
             <Modal open={open} onClose={() => setOpen(false)}>
                 {openCalculatedModal ? (
