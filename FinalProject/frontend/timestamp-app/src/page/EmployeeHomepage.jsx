@@ -11,6 +11,7 @@ const EmployeeHomepage = () => {
     const [minutes, setMinutes] = useState(0);
     const [timer, setTimer] = useState(0);
     const [clockedIn, setClockedIn] = useState(false);
+    const [clockInText, setClockInText] = useState('CLOCK IN');
 
     useEffect(() => {
         const checkUser = async () => {
@@ -50,7 +51,9 @@ const EmployeeHomepage = () => {
         if (clockedIn) {
             interval = setInterval(() => {
                 setTimer((prevTimer) => prevTimer + 1);
+                setMinutes(minutes + timer);
             }, 1000);
+            // setMinutes(minutes + timer);  //Math.floor(timer / 60)
         } else {
             clearInterval(interval);
         }
@@ -73,6 +76,7 @@ const EmployeeHomepage = () => {
             setManualMinutes(e.target.value);
         }
     };
+    
     const handleManualTimeSubmit = async (e) => {
         if (
             manualHours === '' ||
@@ -190,6 +194,13 @@ const EmployeeHomepage = () => {
     const handleClockInButtonClicked = () => {
         // TODO: Handle clock in button clicked
         setClockedIn((prevState) => !prevState);
+
+        if (clockInText == 'CLOCK IN') {
+            setClockInText('CLOCK OUT');
+        } else {
+            setClockInText('CLOCK IN');
+        }
+
         if (!clockedIn) {
             setTimer(0);
         }
@@ -200,7 +211,8 @@ const EmployeeHomepage = () => {
             <h1 className=" text-5xl mt-24 text-center">Total Hours</h1>
             <h2 className=" text-center text-4xl mt-4">{`${Math.floor(
                 minutes / 60
-            )} H ${minutes % 60}M`}</h2>
+            )} H ${minutes % 60} M`}</h2>
+            <h1>{minutes}</h1>
             <div className="flex gap-8 mt-8">
                 <button
                     className="block w-full select-none rounded-lg bg-zinc-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-zinc-500/20 transition-all hover:shadow-lg hover:shadow-zinc-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
@@ -227,15 +239,16 @@ const EmployeeHomepage = () => {
             </div>
 
             <button
-                className=" middle none center w-60 h-60 mt-10 rounded-full bg-slate-500 py-3.5 px-7 font-sans text-4xl font-bold uppercase text-white shadow-md shadow-slate-500/20 transition-all hover:shadow-lg hover:shadow-slate-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                className="middle none center w-60 h-60 mt-10 rounded-full bg-slate-500 py-3.5 px-7 font-sans text-3xl font-bold uppercase text-white shadow-md shadow-slate-500/20 transition-all hover:shadow-lg hover:shadow-slate-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 data-ripple-light="true"
                 onClick={() => {
                     handleClockInButtonClicked()
                 }}
             >
-                CLOCK IN
+                {clockInText}
             </button>
             <p>Timer: {timer} seconds</p>
+            <p>Note: You must remember to clock out in order to conclude session and get paid for that time.</p>
 
             <Modal open={open} onClose={() => setOpen(false)}>
                 {openCalculatedModal ? (
