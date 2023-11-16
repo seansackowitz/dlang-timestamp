@@ -268,6 +268,9 @@ router.post("/payments/:recipientId", TokenMiddleware, async (req, res) => {
 router.put("/records/:id", TokenMiddleware, async (req, res) => {
     try {
         const { notes, minutes, date } = await req.body;
+        if (minutes < 0) {
+            throw new Error("Minutes can't be less than 0");
+        }
         console.log("GOT NOTES", notes);
         console.log("GOT MINUTES", minutes);
         console.log("GOT DATE", date);
