@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `avatar` TEXT NOT NULL,
   `role` varchar(13) NOT NULL,
   `affiliation` varchar(100) NOT NULL,
-  `hourly_rate` DECIMAL,
+  `hourly_rate` DECIMAL(10, 2),
   `salt` TEXT NOT NULL,
   `password` TEXT NOT NULL,
   PRIMARY KEY (`id`),

@@ -73,7 +73,7 @@ const Homepage = () => {
             manualMinutes > 59 ||
             manualHours < 0 ||
             manualMinutes < 0 ||
-            (manualHours == 0 && manualMinutes == 0)
+            (manualHours == 0 && manualMinutes == 0) || (manualHours == 24 && manualMinutes > 0)
         ) {
             toast.error('Please input a valid amount of hours and minutes.');
             return;

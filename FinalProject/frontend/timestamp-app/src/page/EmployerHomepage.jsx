@@ -209,7 +209,7 @@ const EmployerHomepage = () => {
                                             {employee.username}
                                         </td>
                                         <td class="px-6 py-4">{`${employee.first_name} ${employee.last_name}`}</td>
-                                        <td class="px-6 py-4">{`$${employee.hourly_rate}/hr`}</td>
+                                        <td class="px-6 py-4">{`$${employee.hourly_rate.toFixed(2)}/hr`}</td>
                                         <td class="px-2 py-4 flex justify-center">
                                             <button
                                                 // to='/dashboard/home'
@@ -252,7 +252,7 @@ const EmployerHomepage = () => {
                                             </p>
                                         </div>
                                         <div class="inline-flex items-center text-base font-semibold text-gray-900">
-                                            {`$${employee.hourly_rate}/hr`}
+                                            {`$${employee.hourly_rate.toFixed(2)}/hr`}
                                         </div>
                                         <div class="inline-flex items-center text-base font-semibold text-gray-900">
                                             <button
