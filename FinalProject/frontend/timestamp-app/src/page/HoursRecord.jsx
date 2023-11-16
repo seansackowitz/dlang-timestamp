@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import toast from 'react-hot-toast';
+import Select from "react-select";
 
 const HoursRecord = () => {
   const navigate = useNavigate();
@@ -20,7 +21,42 @@ const HoursRecord = () => {
   // const [recordMinutes, setRecordMinutes] = useState("");
   // const [recordNotes, setRecordNotes] = useState("");
   const date = useRef();
-
+  const options = [
+    { value: '0', label: 'None' },
+    { value: '1', label: 'Paid Records' },
+    { value: '2', label: 'Unpaid Records' }
+  ];
+  const [selectedFilter, setSelectedFilter] = useState({ value: '0', label: 'None' });
+  useEffect(() => {
+    filterRecords();
+  }, [selectedFilter]);
+  const filterRecords = () => {
+    let recordCards = document.getElementsByClassName('recordCard');
+    console.log("LENGTH OF RECORD CARDS", recordCards.length);
+    let index = 0;
+    for (const record of recordCards) {
+      console.log("RECORD", record);
+      console.log("SELECTED FILTER", selectedFilter);
+      console.log("SELECTED FILTER VALUE", selectedFilter.value);
+      console.log("IS IT PAID?", records[index].paid);
+      console.log("IS selectedFilter.value == 1 TRUE?", selectedFilter.value == 1);
+      console.log("IS records[index].paid != 1 TRUE?", records[index].paid != 1);
+      console.log("IS selectedFilter.value == 2 TRUE?", selectedFilter.value == 2);
+      console.log("IS records[index] != 0 TRUE?", records[index] != 0);
+      if ((selectedFilter.value == 1 && records[index].paid == 0) || (selectedFilter.value == 2 && records[index].paid == 1)) {
+        console.log("HIDE RECORD", record.id);
+        record.style.display = "none";
+      }
+      else {
+        record.style.display = "block";
+      }
+      index++;
+    }
+  }
+  const handleChange = (e) => {
+    // console.log("THIS IS E", e);
+    setSelectedFilter(e, filterRecords());
+  }
   const handleEditRecord = (record) => {
     setSelectedRecord(record);
     setManualHours(parseInt(record.minutes / 60));
@@ -159,7 +195,7 @@ const HoursRecord = () => {
         console.log("was i ehre");
         return records.map((item) => {
           return (
-            <div id="${item.id}" className="relative mt-6 flex w-96 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
+            <div className="relative mt-6 flex w-96 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md recordCard">
               <div className="p-6 pb-0">
                 <div className="flex justify-between">
                   <h5 className="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
@@ -218,7 +254,16 @@ const HoursRecord = () => {
       className="overflow-y-auto w-full flex flex-col items-center"
       style={{ maxHeight: "calc(100vh - 5rem)" }}
     >
-      <h1 className=" text-4xl mt-8 text-center">My Hours</h1>
+      <h1 className="text-4xl mt-8 text-center">My Hours</h1>
+      <div className="w-72 mt-5">
+        <div className="text-center">
+          <label className="">Filters Applied:</label>
+        </div>
+        <div className="mt-3">
+          <Select options={options} defaultValue={{ value: 0, label: 'None' }} value={selectedFilter} onChange={handleChange}>
+          </Select>
+        </div>
+      </div>
       {renderRecords()}
       <Modal open={open} onClose={() => setOpen(false)}>
         <div className="text-center w-64 flex flex-col justify-center">
