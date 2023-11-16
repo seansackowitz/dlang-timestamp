@@ -7,15 +7,77 @@ import { Link } from 'react-router-dom';
 const BusinessPaymentPage = () => {
     const [employees, setEmployees] = useState([]);
     const navigate = useNavigate();
+    const [currentEmployee, setCurrentEmployee] = useState(null);
+    const [employer, setEmployer] = useState(null);
+
+    const handlePayEmployee = async (employee) => {
+        console.log(employee);
+        if (employee.hours <= 0) {
+            toast.error('This employee has 0 hour');
+            return;
+        }
+        const paymentDetail = {
+            amount: employee.hourly_rate * employee.hours,
+            date: new Date().toLocaleDateString('en-US'),
+            recipientId: employee.id,
+            senderId: employer.id,
+        };
+        try {
+            const response = await fetch(`/api/payments`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(paymentDetail),
+            });
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+            const data = await response.json();
+            console.log('Response back with data: ', data);
+            toast.success('Payment successful!');
+            setTimeout(() => {
+                window.location.reload(false);
+            }, 1000);
+        } catch (error) {
+            toast.error("Couldn't make it payment");
+            console.log(error);
+        }
+        // setCurrentEmployee(employee);
+        // console.log(employee);
+        // try {
+        //     const employeeUnpaidRecords = await getUnpaidRecordsById(
+        //         employee.id
+        //     );
+        //     console.log(employeeUnpaidRecords);
+
+        //     if (employeeUnpaidRecords.length === 0) {
+        //         toast.error("This employee is lazy");
+        //     }
+
+        // } catch (error) {
+        //     console.log(error);
+        // }
+    };
+
+    async function getUnpaidRecordsById(id) {
+        try {
+            const response = await fetch(`/api/unpaid_records/${id}`);
+            if (!response.ok) {
+                console.log(response);
+                throw new Error(response.status);
+            }
+            const unpaidRecords = await response.json();
+            return unpaidRecords;
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     async function getRecordsHoursByUserId(id) {
         console.log('Im getting ur records');
         try {
-            const response = await fetch(`/api/unpaid_records/${id}`);
-            if (!response.ok) {
-                throw new Error(response.status);
-            }
-            const unpaidRecords = await response.json();
+            const unpaidRecords = await getUnpaidRecordsById(id);
             let totalMins = 0;
             unpaidRecords.forEach((item) => {
                 totalMins += item.minutes;
@@ -34,7 +96,7 @@ const BusinessPaymentPage = () => {
                 navigate('/login');
                 return;
             }
-
+            setEmployer(user);
             let employeeResponse = await fetch(
                 `/api/users/${user.username}/employees`
             );
@@ -81,7 +143,10 @@ const BusinessPaymentPage = () => {
                         <tbody>
                             {employees.map((employee) => {
                                 return (
-                                    <tr key={employee.id} class="cursor-pointer hover:bg-gray-100">
+                                    <tr
+                                        key={employee.id}
+                                        class="cursor-pointer hover:bg-gray-100"
+                                    >
                                         <td class="px-6 py-4">{`${employee.first_name} ${employee.last_name}`}</td>
                                         <td class="px-6 py-4">{`${employee.hours} hour(s)`}</td>
                                         <td class="px-6 py-4">{`$${employee.hourly_rate}/hr`}</td>
@@ -90,9 +155,9 @@ const BusinessPaymentPage = () => {
                                                 className="block w-[100px] select-none rounded-lg bg-pink-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                                 type="button"
                                                 data-ripple-light="true"
-                                                // onClick={() =>
-                                                //     handlePay(employee)
-                                                // }
+                                                onClick={() =>
+                                                    handlePayEmployee(employee)
+                                                }
                                             >
                                                 Pay
                                             </button>

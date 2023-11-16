@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `payments` (
   `date` DATE NOT NULL,
   `sender_id` INTEGER NOT NULL,
   `recipient_id` INTEGER NOT NULL,
-  `amount` NUMERIC NOT NULL
+  `amount` DECIMAL(10, 2) NOT NULL
 );
 
 -- Create records_payments join table
