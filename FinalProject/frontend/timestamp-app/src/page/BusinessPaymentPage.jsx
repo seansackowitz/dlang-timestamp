@@ -12,7 +12,10 @@ const BusinessPaymentPage = () => {
 
     const handlePayEmployee = async (employee) => {
         console.log(employee);
-
+        if (employee.hours <= 0) {
+            toast.error('This employee has 0 hour');
+            return;
+        }
         const paymentDetail = {
             amount: employee.hourly_rate * employee.hours,
             date: new Date().toLocaleDateString('en-US'),
@@ -33,8 +36,12 @@ const BusinessPaymentPage = () => {
             const data = await response.json();
             console.log('Response back with data: ', data);
             toast.success('Payment successful!');
+            setTimeout(() => {
+                window.location.reload(false);
+            }, 1000);
         } catch (error) {
             toast.error("Couldn't make it payment");
+            console.log(error);
         }
         // setCurrentEmployee(employee);
         // console.log(employee);
