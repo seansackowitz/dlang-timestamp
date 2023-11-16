@@ -39,8 +39,8 @@ const LoginPage = () => {
     const username = useRef();
     const password = useRef();
     return (
-        <div className="flex flex-col justify-center h-full items-center">
-            <h1 className="text-5xl mb-8 text-center max-lg:mt-24">Login</h1>
+        <div className="flex flex-col justify-center h-full items-center max-auto">
+            <h1 className="text-5xl mb-8 text-center">Login</h1>
             <form className="flex flex-col gap-7">
                 <div className="w-72">
                     <div className="relative h-10 w-full min-w-[200px]">

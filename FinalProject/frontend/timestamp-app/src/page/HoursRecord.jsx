@@ -7,19 +7,41 @@ import toast from 'react-hot-toast';
 
 const HoursRecord = () => {
   const navigate = useNavigate();
-  let user;
-  // let records;
-  let recordCards;
+  const [open, setOpen] = useState(false);
+  //Enter time manually
+  const [manualHours, setManualHours] = useState("");
+  const [manualMinutes, setManualMinutes] = useState("");
+  const message = useRef();
   const [records, setRecords] = useState([]);
   const [status, setStatus] = useState("idle");
-  const [selectedRecord, setSelectedRecord] = useState({date: '', minutes: 0, notes: ''});
+  const [selectedRecord, setSelectedRecord] = useState({ date: '', minutes: 0, notes: '' });
+  const [recordDate, setRecordDate] = useState("");
+  // const [recordHours, setRecordHours] = useState("");
+  // const [recordMinutes, setRecordMinutes] = useState("");
+  // const [recordNotes, setRecordNotes] = useState("");
   const date = useRef();
+
+  const handleEditRecord = (record) => {
+    setSelectedRecord(record);
+    setManualHours(parseInt(record.minutes / 60));
+    setManualMinutes(record.minutes % 60);
+    // setRecordNotes(record.notes);
+    setRecordDate(record.date);
+    setOpen(true);
+  }
+
+  // Sort in descending order; show most recent records at the top
+  const sortByDate = (a, b) => {
+    return new Date(b.date) - new Date(a.date);
+  };
+
   useEffect(() => {
     // re-render modal when selectedRecord changes
-  }, [selectedRecord])
+  }, [selectedRecord]);
+
   const checkUser = async () => {
     setStatus("loading");
-    user = await (await fetch("/api/login/users/current")).json();
+    const user = await (await fetch("/api/login/users/current")).json();
     console.log("USER IS", user);
     if (user !== undefined && user !== null && user.role !== undefined) {
       if (user.role === "employer") {
@@ -29,6 +51,7 @@ const HoursRecord = () => {
       try {
         const data = await (await fetch("/api/records/" + user.id)).json();
         console.log(data);
+        data.sort(sortByDate);
         setRecords(data);
         setStatus("success");
       } catch (error) {
@@ -43,18 +66,14 @@ const HoursRecord = () => {
     checkUser();
   }, []);
 
-  const [open, setOpen] = useState(false);
-  //Enter time manually
-  const [manualHours, setManualHours] = useState("");
-  const [manualMinutes, setManualMinutes] = useState("");
   const handleManualHoursInput = (e) => {
     if (!isNaN(e.target.value)) {
       setManualHours(e.target.value);
     }
   };
-  const message = useRef();
+
   const handleSubmitEditedTime = async () => {
-    if (manualHours === "" || manualMinutes === "" || isNaN(manualHours) || isNaN(manualMinutes) || (manualHours === "0" || manualMinutes === "0") || manualHours > 24 || manualMinutes > 59 || date.current.value === '') {
+    if (manualHours === "" || manualMinutes === "" || isNaN(manualHours) || isNaN(manualMinutes) || manualHours < 0 || manualMinutes < 0 || (manualHours == 0 && manualMinutes == 0) || manualHours > 24 || manualMinutes >= 60 || date.current.value === '') {
       toast.error("Please enter a valid date and hours and minutes.");
       return;
     }
@@ -65,9 +84,9 @@ const HoursRecord = () => {
     selectedRecord.date = await date.current.value;
     selectedRecord.notes = await message.current.value;
     let body = {
-      date: await date.current.value,
+      date: await recordDate,
       notes: await message.current.value,
-      minutes: minutes
+      minutes: manualMinutes
     };
     console.log("BODY IS", body, "BEFORE PUT");
     let updatedRecord = await (await fetch('/api/records/' + selectedRecord.id, {
@@ -85,7 +104,11 @@ const HoursRecord = () => {
     setOpen(false);
     toast.success("Record updated successfully!");
   };
+
   const formatDate = (date) => {
+    if (typeof(date) === 'string') {
+      date = new Date(date);
+    }
     let tempDate = new Date(date.setDate(date.getDate() + 1));
     let month = tempDate.getMonth() + 1;
     // // let temp = [];
@@ -95,29 +118,36 @@ const HoursRecord = () => {
     let temp;
     if (month < 10 && day < 10) {
       temp = ''.concat(year, "-0", month, "-0", day);
+      // temp = ''.concat("0", month, "/0", day, "/", year);
     }
     else if (month < 10) {
       temp = ''.concat(year, "-0", month, "-", day);
+      // temp = ''.concat("0", month, "/", day, "/", year);
     }
     else if (day < 10) {
       temp = ''.concat(year, "-", month, "-0", day);
+      // temp = ''.concat(month, "/0", day, "/", year);
     }
     else {
       temp = ''.concat(year, "-", month, "-", day);
+      // temp = ''.concat(month, "/", day, "/", year);
     }
     // let temp = date.toLocaleDateString("en-US");
     // let temp2 = temp.replaceAll('/', '-');
     return temp;
-  }
+  };
+
   const formatDateString = (date) => {
     let tempDate = new Date(date.setDate(date.getDate() + 1));
     return tempDate.toDateString();
-  }
+  };
+
   const handleManualMinutesInput = (e) => {
     if (!isNaN(e.target.value)) {
       setManualMinutes(e.target.value);
     }
-  }
+  };
+
   const renderRecords = () => {
     switch (status) {
       case "loading":
@@ -151,7 +181,7 @@ const HoursRecord = () => {
                     className="flex select-none items-center gap-2 rounded-lg py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-pink-500 transition-all hover:bg-pink-500/10 active:bg-pink-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
                     data-ripple-dark="true"
-                    onClick={() => { setOpen(true); setSelectedRecord(item); console.log("THIS IS THE ITEM", item); console.log("THIS IS THE RECORD", selectedRecord); }}
+                    onClick={() => { handleEditRecord(item) }}
                   >
                     Edit
                     <svg
@@ -179,6 +209,7 @@ const HoursRecord = () => {
         return <div>Idle...</div>;
     }
   };
+
   return (
     <div
       className="overflow-y-auto w-full flex flex-col items-center"
@@ -192,15 +223,17 @@ const HoursRecord = () => {
           <form className="flex flex-col gap-7 justify-center">
             <div className="flex gap-3 justify-center items-center">
               <label>Date: </label>
-              <input name="date" type="date" ref={date} required /*defaultValue={formatDate(new Date(selectedRecord.date))}*/ />
-            </div> 
+              <input name="date" type="date" ref={date} value={formatDate(recordDate)} onChange={(e) => setRecordDate(e.target.value)} required /*defaultValue={formatDate(new Date(selectedRecord.date))}*/ />
+            </div>
             <div className="">
               <div className="relative h-11 w-full min-w-[180]">
                 <input
                   placeholder="hours"
                   className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
-                  // defaultValue={`${parseInt(parseInt(selectedRecord.minutes) / 60)}`}
-                  onInput={(e) => handleManualHoursInput(e)}
+                  value={`${manualHours}`}
+                  type="number"
+                  min={0}
+                  onChange={(e) => setManualHours(e.target.value)}
                 />
                 <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 flex h-full w-full select-none text-sm font-normal leading-tight text-blue-gray-500 transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-pink-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:after:scale-x-100 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
                   Enter your hours
@@ -211,9 +244,10 @@ const HoursRecord = () => {
               <div className="relative h-11 w-full min-w-[180]">
                 <input
                   placeholder="minutes"
+                  type="number"
+                  value={`${manualMinutes}`}
                   className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
-                  // defaultValue={parseInt(parseInt(selectedRecord.minutes) % 60)}
-                  onInput={(e) => handleManualMinutesInput(e)}
+                  onChange={(e) => setManualMinutes(e.target.value)}
                 />
                 <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 flex h-full w-full select-none text-sm font-normal leading-tight text-blue-gray-500 transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-pink-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:after:scale-x-100 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
                   Enter your minutes

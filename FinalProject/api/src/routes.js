@@ -320,10 +320,13 @@ router.post('/payments/:recipientId', TokenMiddleware, async (req, res) => {
 router.put('/records/:id', TokenMiddleware, async (req, res) => {
     try {
         const { notes, minutes, date } = await req.body;
-        console.log('GOT NOTES', notes);
-        console.log('GOT MINUTES', minutes);
-        console.log('GOT DATE', date);
-        console.log('BEFORE GETTING RECORD BY ID', req.params.id);
+        if (minutes < 0) {
+            throw new Error("Minutes can't be less than 0");
+        }
+        console.log("GOT NOTES", notes);
+        console.log("GOT MINUTES", minutes);
+        console.log("GOT DATE", date);
+        console.log("BEFORE GETTING RECORD BY ID", req.params.id);
         let record = await records.getRecordById(req.params.id);
         console.log('AFTER GETTING RECORD BY ID', req.params.id);
         console.log('OLD RECORD IS', record);

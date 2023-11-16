@@ -154,7 +154,7 @@ async function updateRecord(record) {
     try {
         const sql = `UPDATE records SET date=?, minutes=?, notes=?, paid=? WHERE id=?`;
         const { results } = await db.query(sql, [record.date, record.minutes, record.notes, record.paid, record.id]);
-        return await results[0];
+        return await results;
     }
     catch (error) {
         throw {
