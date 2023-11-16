@@ -35,7 +35,7 @@ const Homepage = () => {
                         (record) => (totalMinutes += record.minutes)
                     );
                     setMinutes(totalMinutes);
-                } catch (error) {}
+                } catch (error) { }
                 // loggedUser.current.value = "Hello " + user.first_name + " " + user.last_name;
             } else {
                 navigate('/login');
@@ -46,7 +46,7 @@ const Homepage = () => {
     //Enter time manually
     const [manualHours, setManualHours] = useState('');
     const [manualMinutes, setManualMinutes] = useState('');
-    const manualDate = useRef();
+    const [manualDate, setManualDate] = useState('');
     const handleManualHoursInput = (e) => {
         if (!isNaN(e.target.value) && e.target.value != '.') {
             setManualHours(e.target.value);
@@ -61,8 +61,11 @@ const Homepage = () => {
         if (
             manualHours === '' ||
             manualMinutes === '' ||
-            manualDate.current.value === ''
+            manualDate === ''
         ) {
+            console.log("MANUAL HOURS", manualHours);
+            console.log("MANUAL MINUTES", manualMinutes);
+            console.log("MANUAL DATE", manualDate);
             toast.error(
                 'Please input the date of the log and the amount of time in hours and minutes.'
             );
@@ -79,7 +82,7 @@ const Homepage = () => {
             return;
         } else if (
             !/^\d{4}$/.test(
-                '' + new Date(manualDate.current.value).getFullYear()
+                '' + new Date(manualDate).getFullYear()
             )
         ) {
             toast.error(
@@ -92,10 +95,10 @@ const Homepage = () => {
         console.log('MANUAL HOURS', manualHours);
         console.log('MANUAL MINUTES', manualMinutes);
         console.log('MANUAL MESSAGE', await manualMessage.current.value);
-        console.log('MANUAL DATE', await manualDate.current.value);
+        console.log('MANUAL DATE', await manualDate);
         let minutes = parseInt(manualHours) * 60 + parseInt(manualMinutes);
         let body = {
-            date: await manualDate.current.value,
+            date: await manualDate,
             notes: await manualMessage.current.value,
             minutes: minutes,
         };
@@ -110,7 +113,7 @@ const Homepage = () => {
         ).json();
         setManualHours('');
         setManualMinutes('');
-        manualDate.current.value = '';
+        manualDate = '';
         manualMessage.current.value = '';
         toast.success('Record entered successfully!');
     };
@@ -229,7 +232,7 @@ const Homepage = () => {
                                 <input
                                     name="date"
                                     type="date"
-                                    ref={manualDate}
+                                    onChange={(e) => setManualDate(e.target.value)}
                                     required
                                 />
                             </div>
@@ -240,7 +243,9 @@ const Homepage = () => {
                                             handleManualHoursInput(e)
                                         }
                                         value={manualHours}
+                                        onChange={(e) => setManualHours(e.target.value)}
                                         placeholder="Hours"
+                                        type="number"
                                         className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                     />
                                     <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 flex h-full w-full select-none text-sm font-normal leading-tight text-blue-gray-500 transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-pink-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:after:scale-x-100 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
@@ -255,6 +260,9 @@ const Homepage = () => {
                                             handleManualMinutesInput(e)
                                         }
                                         value={manualMinutes}
+                                        onChange={(e) =>
+                                            setManualMinutes(e.target.value)}
+                                        type="number"
                                         placeholder="Minutes"
                                         className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                     />
