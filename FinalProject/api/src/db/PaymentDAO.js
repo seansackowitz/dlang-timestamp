@@ -75,10 +75,13 @@ function getPaymentsByRecipientId(recipientId) {
 }
 
 function createPayment(payment) {
-    return db.query('INSERT INTO payments (date, senderId, recipientId, amount) VALUES (?, ?, ?, ?)', [payment.date, payment.senderId, payment.recipientId, payment.amount]).then(() => {
+    console.log("This is payment inside of the DAO: ", payment.amount);
+    const currentDate = new Date(payment.date);
+    console.log("This is date inside of the DAO: ", currentDate);
+
+    return db.query('INSERT INTO payments (date, sender_id, recipient_id, amount) VALUES (?, ?, ?, ?)', [currentDate, payment.senderId, payment.recipientId, payment.amount]).then(() => {
         // respond(201, { message: 'Payment created successfully.' });
         // db.query('SELECT * FROM payments WHERE userId = ? AND paid = ?', [payment.recipientId, false]).then(({ results }) => {
-            
         // });
         let unpaidRecords = records.getUnpaidRecordsByUserId(payment.recipientId);
         for (record in unpaidRecords) {

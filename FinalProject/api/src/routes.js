@@ -64,8 +64,7 @@ router.post("/payments", TokenMiddleware, async (req, res) => {
             recipientId: recipientId,
             senderId: senderId
         }
-        //TODO adding to the database
-        // payments.push(payment);
+        console.log("Here is the payment", payment);
         await payments.createPayment(payment);
         return res.json({ success: true, message: 'Payment added successfully!' });
     }
