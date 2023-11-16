@@ -55,7 +55,7 @@ const HoursRecord = () => {
   }
   const handleChange = (e) => {
     // console.log("THIS IS E", e);
-    setSelectedFilter(e, filterRecords());
+    setSelectedFilter(e);
   }
   const handleEditRecord = (record) => {
     setSelectedRecord(record);
