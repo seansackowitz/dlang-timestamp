@@ -83,10 +83,11 @@ const HoursRecord = () => {
     selectedRecord.minutes = minutes;
     selectedRecord.date = await date.current.value;
     selectedRecord.notes = await message.current.value;
+    let tempDate = new Date(recordDate);
     let body = {
-      date: await recordDate,
+      date: tempDate,
       notes: await message.current.value,
-      minutes: manualMinutes
+      minutes: minutes
     };
     console.log("BODY IS", body, "BEFORE PUT");
     let updatedRecord = await (await fetch('/api/records/' + selectedRecord.id, {

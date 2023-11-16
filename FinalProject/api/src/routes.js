@@ -330,17 +330,17 @@ router.put('/records/:id', TokenMiddleware, async (req, res) => {
         let record = await records.getRecordById(req.params.id);
         console.log('AFTER GETTING RECORD BY ID', req.params.id);
         console.log('OLD RECORD IS', record);
+        console.log("TYPE OF DATE OF OLD RECORD IS", typeof(record.date));
         record.notes = notes;
         record.minutes = minutes;
-        record.date = date;
-        console.log('NEW RECORD IS', record);
-        console.log('BEFORE UPDATE RECORD');
-        await records.updateRecord(record);
-    } catch (error) {
-        res.status(error.status || 404).json({
-            success: false,
-            message: error.message || 'Record not found by ID ' + req.params.id,
-        });
+        record.date = new Date(date);
+        console.log("TYPE OF DATE OF NEW RECORD IS", typeof(record.date));
+        console.log("NEW RECORD IS", record);
+        console.log("BEFORE UPDATE RECORD");
+        res.json(await records.updateRecord(record));    
+    }
+    catch (error) {
+        res.status(error.status || 404).json({ success: false, message: error.message || 'Record not found by ID ' + req.params.id });
     }
     //TODO editing in the database
     // let record = records.find(record => record.id === parseInt(req.params.id));
