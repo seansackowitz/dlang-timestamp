@@ -35,7 +35,13 @@ const Homepage = () => {
                         (record) => (totalMinutes += record.minutes)
                     );
                     setMinutes(totalMinutes);
-                } catch (error) { }
+                } catch (error) {
+                    if (!window.navigator.onLine) {
+                        toast.error("You are offline. Please go back online to view your total time logged.");
+                        return;
+                    }
+                    toast.error("An error has occurred while obtaining records.");
+                 }
                 // loggedUser.current.value = "Hello " + user.first_name + " " + user.last_name;
             } else {
                 navigate('/login');
@@ -102,20 +108,29 @@ const Homepage = () => {
             notes: await manualMessage.current.value,
             minutes: minutes,
         };
-        let record = await (
-            await fetch('/api/records/manual', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(body),
-            })
-        ).json();
-        setManualHours('');
-        setManualMinutes('');
-        manualDate = '';
-        manualMessage.current.value = '';
-        toast.success('Record entered successfully!');
+        try {
+            let record = await (
+                await fetch('/api/records/manual', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(body),
+                })
+            ).json();
+            setManualHours('');
+            setManualMinutes('');
+            manualDate = '';
+            manualMessage.current.value = '';
+            toast.success('Record entered successfully!');    
+        } catch (error) {
+            if (!window.navigator.onLine) {
+                toast.error("You are offline. Please go back online to make new records.");
+            }
+            else {
+                toast.error("An error has occurred while creating your manual record.");
+            }
+        }
     };
     const manualMessage = useRef();
 
@@ -157,21 +172,30 @@ const Homepage = () => {
             endTime: await endTime.current.value,
         };
         console.log('RECORD IS ABOUT TO BE POSTED');
-        let record = await (
-            await fetch('/api/records/calculate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(body),
-            })
-        ).json();
-        console.log('RECORD IS', await record);
-        calculatedMessage.current.value = '';
-        startTime.current.value = '';
-        endTime.current.value = '';
-        setOpen(false);
-        toast.success('Record entered successfully!');
+        try {
+            let record = await (
+                await fetch('/api/records/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(body),
+                })
+            ).json();
+            console.log('RECORD IS', await record);
+            calculatedMessage.current.value = '';
+            startTime.current.value = '';
+            endTime.current.value = '';
+            setOpen(false);
+            toast.success('Record entered successfully!');    
+        } catch (error) {
+            if (!window.navigator.onLine) {
+                toast.error("You are offline. Please go back online to make new records.");
+            }
+            else {
+                toast.error("An error occurred while creating your calculated record.");
+            }
+        }
     };
 
     return (

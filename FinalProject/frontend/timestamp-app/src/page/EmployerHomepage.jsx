@@ -44,6 +44,10 @@ const EmployerHomepage = () => {
             }, 1000);
             navigate('/dashboard/employer_home');
         } catch (error) {
+            if (!window.navigator.onLine) {
+                toast.error("You are offline. Please go back online to add new employees.");
+                return;
+            }
             console.error('Error adding:', error);
             toast.error('Invalid User');
         }
@@ -87,6 +91,10 @@ const EmployerHomepage = () => {
             }, 1000);
             navigate('/dashboard/employer_home');
         } catch (error) {
+            if (!window.navigator.onLine) {
+                toast.error("You are offline. Please go back online to remove an employee.");
+                return;
+            }
             console.error('Error removing:', error);
             toast.error('Error Removing Employee');
         }
@@ -122,6 +130,10 @@ const EmployerHomepage = () => {
                 window.location.reload(false);
             }, 1000);
         } catch (error) {
+            if (!window.navigator.onLine) {
+                toast.error("You are offline. Please go back online to update your employee's hourly rate.");
+                return;
+            }
             console.error('Error updating hourly rate:', error);
             toast.error('Error updating hourly rate');
         }
@@ -135,13 +147,21 @@ const EmployerHomepage = () => {
                 return;
             }
             setUser(user);
-            let employeeResponse = await fetch(
-                `/api/users/${user.username}/employees`
-            );
-            if (!employeeResponse.ok) {
-                throw new Error('Failed to fetch employees data');
+            try {
+                let employeeResponse = await fetch(
+                    `/api/users/${user.username}/employees`
+                );
+                if (!employeeResponse.ok) {
+                    throw new Error('Failed to fetch employees data');
+                }
+                setEmployees(await employeeResponse.json());    
+            } catch (error) {
+                if (!window.navigator.onLine) {
+                    toast.error("You are offline. Please go back online to view all employee data.");
+                    return;
+                }
+                toast.error("An error has occurred while obtaining all employee data.");
             }
-            setEmployees(await employeeResponse.json());
         };
         checkUser();
     }, []);

@@ -40,7 +40,11 @@ const BusinessPaymentPage = () => {
                 window.location.reload(false);
             }, 1000);
         } catch (error) {
-            toast.error("Couldn't make it payment");
+            if (!window.navigator.onLine) {
+                toast.error('You are offline. Please go back online to make a payment.');
+                return;
+            }
+            toast.error("An error has occurred while making a payment.");
             console.log(error);
         }
         // setCurrentEmployee(employee);
@@ -71,6 +75,11 @@ const BusinessPaymentPage = () => {
             return unpaidRecords;
         } catch (error) {
             console.log(error);
+            if (!window.navigator.onLine) {
+                toast.error("You are offline. Please go back online to view all employees that need to be paid.");
+                return;
+            }
+            toast.error("An error has occurred while obtaining all employees with unpaid time.");
         }
     }
 
@@ -97,20 +106,28 @@ const BusinessPaymentPage = () => {
                 return;
             }
             setEmployer(user);
-            let employeeResponse = await fetch(
-                `/api/users/${user.username}/employees`
-            );
-            if (!employeeResponse.ok) {
-                throw new Error('Failed to fetch employees data');
+            try {
+                let employeeResponse = await fetch(
+                    `/api/users/${user.username}/employees`
+                );
+                if (!employeeResponse.ok) {
+                    throw new Error('Failed to fetch employees data. Please check your internet connection.');
+                }
+                let employeeList = await employeeResponse.json();
+                const employeesWithHours = await Promise.all(
+                    employeeList.map(async (employee) => {
+                        const hours = await getRecordsHoursByUserId(employee.id);
+                        return { ...employee, hours };
+                    })
+                );
+                setEmployees(employeesWithHours);    
+            } catch (error) {
+                if (!window.navigator.onLine) {
+                    toast.error("You are offline. Please go back online to view all of the employee data.");
+                    return;
+                }
+                toast.error("An error has occurred while obtaining employee data.");
             }
-            let employeeList = await employeeResponse.json();
-            const employeesWithHours = await Promise.all(
-                employeeList.map(async (employee) => {
-                    const hours = await getRecordsHoursByUserId(employee.id);
-                    return { ...employee, hours };
-                })
-            );
-            setEmployees(employeesWithHours);
         };
         checkUser();
     }, []);

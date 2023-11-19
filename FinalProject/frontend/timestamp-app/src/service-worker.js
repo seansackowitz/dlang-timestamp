@@ -1,4 +1,3 @@
-// require('dotenv').config();
 /* eslint-disable no-restricted-globals */
 
 // This service worker can be customized!
@@ -13,6 +12,14 @@ import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
+
+function log(...data) {
+  console.log("SWv1.0", ...data);
+}
+
+log("SW Script executing - adding event listeners");
+
+const STATIC_CACHE_NAME = "timestamp-static-1.0";
 
 clientsClaim();
 
@@ -71,3 +78,156 @@ self.addEventListener('message', (event) => {
 });
 
 // Any other custom service worker logic can go here.
+
+self.addEventListener('install', event => {
+  log('install', event);
+  event.waitUntil(
+    caches.open(STATIC_CACHE_NAME).then(cache => {
+      return cache.addAll([
+        // '/offline',
+        //CSS
+        // '/css/base.css',
+        // '/css/error.css',
+        // '/css/home.css',
+        // '/css/login.css',
+        // '/css/offline.css',
+        // '/css/park.css',
+        //Images
+        // '/img/ncparkmap.png',
+        // '/img/park.jpg',
+        // '/favicon.ico',
+        '/images/TimeStamp2.png',
+        //Scripts
+        // '/js/APIClient.js',
+        // '/js/common.js',
+        // '/js/home.js',
+        // '/js/HTTPClient.js',
+        // '/js/login.js',
+        // '/js/park.js',
+        '/page/ProfilePage.jsx',
+        '/page/Homepage.jsx',
+        '/page/HoursRecord.jsx',
+        '/page/BusinessPaymentPage.jsx',
+        '/page/EmployerHomepage.jsx',
+        //External Resources
+        // 'https://unpkg.com/leaflet@1.9.1/dist/leaflet.css',
+        // 'https://unpkg.com/leaflet@1.9.1/dist/leaflet.js',
+        // 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css'
+      ]);
+    })
+  );
+});
+
+// Remove all previous caches when the new service worker is activated
+self.addEventListener('activate', (event) => {
+  log('activate', event);
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.filter(cacheName => {
+          return cacheName.startsWith('timestamp-') && cacheName != STATIC_CACHE_NAME;
+        }).map(cacheName => {
+          return caches.delete(cacheName);
+        })
+      );
+    })
+  );
+  // const cacheWhitelist = ['pages-cache', 'runtime-cache'];
+  // event.waitUntil(
+  //   caches.keys().then((cacheNames) => {
+  //     return Promise.all(
+  //       cacheNames.map((cacheName) => {
+  //         if (cacheWhitelist.indexOf(cacheName) === -1) {
+  //           return caches.delete(cacheName);
+  //         }
+  //       }
+  //       ));
+  //   }
+  //   ).then(() => self.clients.claim())
+  // );
+});
+
+self.addEventListener('fetch', (event) => {
+  var requestUrl = new URL(event.request.url);
+  //Treat API calls (to our API) differently
+  if (requestUrl.origin === location.origin && requestUrl.pathname.startsWith('/api/')) {
+    if (event.request.method === "GET") {
+      //Only intercept (and cache) GET API requests
+      event.respondWith(
+        cacheFirst(event.request)
+      );
+    }
+    // If the user is logging out, then log them out and remove all API cache
+    else if (event.request.method === "POST" && requestUrl.pathname.startsWith('/api/logout')) {
+      caches.open(STATIC_CACHE_NAME).then(cache => {
+        cache.keys().then((cacheRequests) => {
+          console.log("CACHE NAME IS", cacheRequests);
+          cacheRequests.filter(cacheRequest => cacheRequest.url.includes('/api/')).map((cacheName) => cache.delete(cacheName));
+        });
+      });
+    }
+    // If the user is logging in and the current user cache exists, then remove user cache and all API cache
+    else if (event.request.method === "POST" && requestUrl.pathname.startsWith('/api/login') && caches.has('/api/login/users/current')) {
+      caches.open(STATIC_CACHE_NAME).then(cache => {
+        cache.keys().then((cacheRequests) => {
+          console.log("CACHE NAME IS", cacheRequests);
+          cacheRequests.filter(cacheRequest => cacheRequest.url.includes('/api/')).map((cacheName) => cache.delete(cacheName));
+        });
+      });
+    }
+  }
+  // If the user is on the login page and the previous user cache exists, get rid of the current user cache
+  // else if (event.request.method === "GET" && requestUrl.pathname.startsWith('/login') && caches.has('/api/login/users/current')) {
+  //   caches.open(STATIC_CACHE_NAME).then(cache => {
+  //     cache.delete('/api/login/users/current');
+  //   });
+  // }
+  else {
+    //If we are here, this was not a call to our API
+    event.respondWith(
+      cacheFirst(event.request)
+    );
+  }
+  // event.respondWith(
+  //   caches.match(event.request).then((cachedResponse) => {
+  //     if (cachedResponse) {
+  //       return cachedResponse;
+  //     }
+
+  //     return caches.open('pages-cache').then((cache) => {
+  //       return fetch(event.request).then((response) => {
+  //         return cache.put(event.request, response.clone()).then(() => {
+  //           return response;
+  //         });
+  //       });
+  //     });
+  //   })
+  // );
+});
+
+
+function cacheFirst(request) {
+  return caches.match(request)
+    .then(response => {
+      //Return a response if we have one cached. Otherwise, get from the network
+      return response || fetchAndCache(request);
+    })
+    .catch(error => {
+      return caches.match('/offline');
+    })
+}
+
+
+
+function fetchAndCache(request) {
+  return fetch(request).then(response => {
+    var requestUrl = new URL(request.url);
+    //Cache everything except login
+    if (response.ok /*&& !requestUrl.pathname.startsWith('/login')*/) {
+      caches.open(STATIC_CACHE_NAME).then((cache) => {
+        cache.put(request, response);
+      });
+    }
+    return response.clone();
+  });
+}

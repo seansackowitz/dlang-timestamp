@@ -92,6 +92,11 @@ const HoursRecord = () => {
         setStatus("success");
       } catch (error) {
         setStatus("Error");
+        if (!window.navigator.onLine) {
+          toast.error("You are offline. Please go back online to view all of your records.");
+          return;
+        }
+        toast.error("An error has occurred while obtaining records.");
       }
     } else {
       navigate("/login");
@@ -126,20 +131,29 @@ const HoursRecord = () => {
       minutes: minutes
     };
     console.log("BODY IS", body, "BEFORE PUT");
-    let updatedRecord = await (await fetch('/api/records/' + selectedRecord.id, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(body)
-    })).json();
-    console.log("AFTER PUT, UPDATED RECORD IS", updatedRecord);
-    setManualHours("");
-    setManualMinutes("");
-    message.current.value = "";
-    setOpen(false);
-    toast.success("Record updated successfully!");
+    try {
+      let updatedRecord = await (await fetch('/api/records/' + selectedRecord.id, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(body)
+      })).json();
+      console.log("AFTER PUT, UPDATED RECORD IS", updatedRecord);
+      setManualHours("");
+      setManualMinutes("");
+      message.current.value = "";
+      setOpen(false);
+      toast.success("Record updated successfully!");  
+    } catch (error) {
+      if (!window.navigator.onLine) {
+        toast.error("You are offline. Please go back online to edit your records.");
+      }
+      else {
+        toast.error("An error has occurred while updating your record.");
+      }
+    }
   };
 
   const formatDate = (date) => {

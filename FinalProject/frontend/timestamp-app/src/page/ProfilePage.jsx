@@ -101,8 +101,12 @@ const ProfilePage = () => {
             // Notify the user of success
             toast.success("Profile Updated!");
         } catch (error) {
+            if (!window.navigator.onLine) {
+                toast.error("You are offline. Please go back online to update your profile.");
+                return;
+            }
             console.log("error: ", error);
-            toast.error("An error occurred while updating the profile.");
+            toast.error("An error occurred while updating your profile.");
         }
     };
 

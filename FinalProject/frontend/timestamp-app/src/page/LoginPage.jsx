@@ -33,6 +33,10 @@ const LoginPage = () => {
                 navigate('/dashboard');
             }, 3000);
         } catch (error) {
+            if (!window.navigator.onLine) {
+                toast.error('You are offline. Please go back online to login');
+                return;
+            }
             toast.error(error.message);
         }
     }
