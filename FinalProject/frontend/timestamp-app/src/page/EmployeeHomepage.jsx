@@ -142,7 +142,7 @@ const EmployeeHomepage = () => {
     const manualMessage = useRef();
 
     const [open, setOpen] = useState(false);
-    const [openCalculatedModal, setOpenCalcualtedModal] = useState(false);
+    const [openCalculatedModal, setOpenCalculatedModal] = useState(false);
 
     // Enter start time and end time modal (automatically calculated)
     const startTime = useRef();
@@ -225,7 +225,7 @@ const EmployeeHomepage = () => {
                     data-ripple-light="true"
                     onClick={() => {
                         setOpen(true);
-                        setOpenCalcualtedModal(false);
+                        setOpenCalculatedModal(false);
                     }}
                 >
                     Enter Hours
@@ -236,7 +236,7 @@ const EmployeeHomepage = () => {
                     data-ripple-light="true"
                     onClick={() => {
                         setOpen(true);
-                        setOpenCalcualtedModal(true);
+                        setOpenCalculatedModal(true);
                     }}
                 >
                     Enter hours manually
