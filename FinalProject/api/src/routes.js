@@ -233,7 +233,7 @@ router.post("/records/calculate", TokenMiddleware, async (req, res) => {
 });
 
 router.post("/records/manual", TokenMiddleware, async (req, res) => {
-    const { date, notes, minutes } = await req.body;
+    const { date, notes, minutes } = req.body;
     const newRecord = {
         // id: records[records.length - 1].id + 1,
         date: date,
@@ -243,6 +243,7 @@ router.post("/records/manual", TokenMiddleware, async (req, res) => {
         paid: false
     };
     await records.createRecord(newRecord, await req.user.id);
+    return res.json({ success: true, message: 'Record added successfully!' });
 });
 
 router.post("/payments/:recipientId", TokenMiddleware, async (req, res) => {

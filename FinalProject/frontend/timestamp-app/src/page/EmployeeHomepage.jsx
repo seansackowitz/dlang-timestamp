@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 
 const EmployeeHomepage = () => {
     const navigate = useNavigate();
-    let user;
+    const user = useRef();
     const [records, setRecords] = useState([]);
     const [minutes, setMinutes] = useState(0);
     const [timer, setTimer] = useState(0);
@@ -15,21 +15,21 @@ const EmployeeHomepage = () => {
 
     useEffect(() => {
         const checkUser = async () => {
-            user = await (await fetch('/api/login/users/current')).json();
-            console.log('USER IS', user);
+            user.current = await (await fetch('/api/login/users/current')).json();
+            console.log('USER IS', user.current);
             if (
-                user !== undefined &&
-                user !== null &&
-                user.role !== undefined
+                user.current !== undefined &&
+                user.current !== null &&
+                user.current.role !== undefined
             ) {
-                if (user.role === 'employer') {
+                if (user.current.role === 'employer') {
                     // TODO: Navigate employer to employer page
                     console.log('THIS IS AN EMPLOYER');
                     navigate('/dashboard/employer_home');
                 }
                 try {
                     const data = await (
-                        await fetch('/api/records/' + user.id)
+                        await fetch('/api/records/' + user.current.id)
                     ).json();
                     console.log(data);
                     setRecords(data);
@@ -224,6 +224,27 @@ const EmployeeHomepage = () => {
                 }).then(res => res.json());
             console.log('RECORD IS', record);
             toast.success('Time logged successfully!');
+
+            // Retrieve the latest total time
+            try {
+                const data = fetch('/api/records/' + user.current.id)
+                .then(res => {
+                    console.log("res.json()", res)
+                    res.json()
+                    console.log("res", res)
+                });
+
+                console.log("New records data", data);
+                // setRecords(data);
+                console.log("start minutes", minutes);
+                let totalMinutes = 0;
+                data.forEach(
+                    (record) => (totalMinutes += record.minutes)
+                );
+
+                console.log("New minutes", totalMinutes);
+                setMinutes(totalMinutes);
+            } catch (error) {}
         }
 
         if (!clockedIn) {
