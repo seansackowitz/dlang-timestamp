@@ -133,6 +133,7 @@ const EmployeeHomepage = () => {
                 body: JSON.stringify(body),
             })
         ).json();
+        console.log('RECORD IS', await record);
         setManualHours('');
         setManualMinutes('');
         manualDate.current.value = '';
@@ -203,7 +204,26 @@ const EmployeeHomepage = () => {
         if (clockInText == 'CLOCK IN') {
             setClockInText('CLOCK OUT');
         } else {
+            // clocking out
             setClockInText('CLOCK IN');
+
+            const currentTime = new Date();
+
+            let minutes = Math.floor(timer / 60);
+            let body = {
+                date: currentTime.toISOString().split('T')[0],
+                notes: "",
+                minutes: minutes,
+            };
+            let record = fetch('/api/records/manual', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(body),
+                }).then(res => res.json());
+            console.log('RECORD IS', record);
+            toast.success('Time logged successfully!');
         }
 
         if (!clockedIn) {
