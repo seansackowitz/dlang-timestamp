@@ -228,22 +228,32 @@ const EmployeeHomepage = () => {
             // Retrieve the latest total time
             try {
                 const data = fetch('/api/records/' + user.current.id)
-                .then(res => {
-                    console.log("res.json()", res)
-                    res.json()
-                    console.log("res", res)
-                });
+                .then(res => res.json())
+                .then(data => {
+                    console.log("$$$$$$$$$$$")
+                    console.log("New records data $$$", data);
+                    // setRecords(data);
+                    console.log("start minutes", minutes);
+                    let totalMinutes = 0;
+                    data.forEach(
+                        (record) => (totalMinutes += record.minutes)
+                    );
 
-                console.log("New records data", data);
+                    console.log("New minutes $$$", totalMinutes + minutes);
+                    setMinutes(totalMinutes + minutes);
+                });
+                console.log("*************")
+
+                console.log("New records data ***", data);
                 // setRecords(data);
-                console.log("start minutes", minutes);
+                // console.log("start minutes", minutes);
                 let totalMinutes = 0;
                 data.forEach(
                     (record) => (totalMinutes += record.minutes)
                 );
 
-                console.log("New minutes", totalMinutes);
-                setMinutes(totalMinutes);
+                console.log("New minutes ***", totalMinutes);
+                setMinutes(totalMinutes + minutes);
             } catch (error) {}
         }
 
