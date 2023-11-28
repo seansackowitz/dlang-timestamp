@@ -120,7 +120,7 @@ const BusinessPaymentPage = () => {
                         return { ...employee, hours };
                     })
                 );
-                setEmployees(employeesWithHours);    
+                setEmployees(employeesWithHours);
             } catch (error) {
                 if (!window.navigator.onLine) {
                     toast.error("You are offline. Please go back online to view all of the employee data.");
@@ -139,8 +139,49 @@ const BusinessPaymentPage = () => {
     return (
         <div className="flex flex-col justify-center items-center h-full">
             <h1 className="text-5xl text-center mb-8">Payroll</h1>
+            <div className=' flex items-center gap-8'>
+                <p>Employee</p>
+                <p>Hours</p>
+            </div>
+            <div className="sm-table">
+                <ul
+                    role="list"
+                    className="divide-y divide-gray-200 dark:divide-gray-700 "
+                >
+                    {employees.map((employee) => (
+                        <div>
+                            <li className="py-3 sm:py-4" key={employee.id}>
+                                <div className="flex items-center space-x-4">
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium text-gray-900 truncate ">
+                                            {`${employee.first_name} ${employee.last_name}`}
+                                        </p>
+                                        <p className="text-sm text-gray-500 truncate ">
+                                            {employee.username}
+                                        </p>
+                                    </div>
+                                    <div className="inline-flex items-center text-base font-semibold text-gray-900">
+                                        {`${employee.hours}`}
+                                    </div>
+                                    <div className="inline-flex items-center text-base font-semibold text-gray-900">
+                                        {`$${employee.hourly_rate}/hr`}
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button
+                                            className="block w-[100px] select-none rounded-lg bg-pink-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                            type="button"
+                                            data-ripple-light="true"
+                                            onClick={() => handlePayEmployee(employee)}
+                                        >Pay</button>
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+                    ))}
+                </ul>
+            </div>
 
-            <form className="flex flex-col gap-5" action="" method="POST">
+            <form className="flex flex-col gap-5 table-container" action="" method="POST">
                 <div className="payroll-table w-full">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead>
@@ -184,36 +225,6 @@ const BusinessPaymentPage = () => {
                             })}
                         </tbody>
                     </table>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <p className="text-gray-500">Total:</p>
-                    <h1 className="text-xl font-bold">$520</h1>
-                </div>
-
-                <div className="flex justify-center">
-                    <div className="flex justify-between items-center w-48">
-                        <input
-                            type="hidden"
-                            name="selected_employee"
-                            id="selected_employee"
-                            value=""
-                        ></input>
-                        <input
-                            type="hidden"
-                            name="selected_hours"
-                            id="selected_hours"
-                            value=""
-                        ></input>
-                        <Link
-                            to="/payment-confirmation"
-                            className="block w-full select-none rounded-lg bg-green-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-green-500/20 transition-all hover:shadow-lg hover:shadow-green-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                            type="button"
-                            data-ripple-light="true"
-                        >
-                            Send Payment
-                        </Link>
-                    </div>
                 </div>
             </form>
         </div>
