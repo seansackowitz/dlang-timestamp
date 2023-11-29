@@ -154,7 +154,9 @@ self.addEventListener('fetch', (event) => {
     if (event.request.method === "GET") {
       try {
         // Attempt to fetch and cache the response
-        fetchAndCache(event.request);
+        event.respondWith(
+          fetchAndCache(event.request)
+        );
       }
       catch (error) {
         // Only respond with cache when calling GET API requests if an error occurs (offline)
