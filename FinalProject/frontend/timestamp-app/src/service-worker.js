@@ -152,10 +152,16 @@ self.addEventListener('fetch', (event) => {
   //Treat API calls (to our API) differently
   if (requestUrl.origin === location.origin && requestUrl.pathname.startsWith('/api/')) {
     if (event.request.method === "GET") {
-      //Only intercept (and cache) GET API requests
-      event.respondWith(
-        cacheFirst(event.request)
-      );
+      try {
+        // Attempt to fetch and cache the response
+        fetchAndCache(event.request);
+      }
+      catch (error) {
+        // Only respond with cache when calling GET API requests if an error occurs (offline)
+        event.respondWith(
+          cacheFirst(event.request)
+        );
+      }
     }
     // If the user is logging out, then log them out and remove all API cache
     else if (event.request.method === "POST" && requestUrl.pathname.startsWith('/api/logout')) {
