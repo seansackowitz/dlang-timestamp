@@ -24,52 +24,52 @@ const EmployeeHomepage = () => {
         console.log("Offline status", offline);
     }, [offline]);
 
+    const checkUser = async () => {
+        user.current = await (
+            await fetch('/api/login/users/current')
+        ).json();
+
+        console.log('USER IS', user.current);
+        if (
+            user.current !== undefined &&
+            user.current !== null &&
+            user.current.role !== undefined
+        ) {
+            if (user.current.role === 'employer') {
+                // TODO: Navigate employer to employer page
+                console.log('THIS IS AN EMPLOYER');
+                navigate('/dashboard/employer_home');
+            }
+            try {
+                const data = await (
+                    await fetch('/api/records/' + user.current.id)
+                ).json();
+                console.log(data);
+                setRecords(data);
+                let totalMinutes = 0;
+                await data.forEach(
+                    (record) => (totalMinutes += record.minutes)
+                );
+                setMinutes(totalMinutes);
+            } catch (error) {
+                
+                if (!window.navigator.onLine) {
+                    toast.error(
+                        'You are offline. Please go back online to view your total time logged.'
+                    );
+                    return;
+                }
+                toast.error(
+                    'An error has occurred while obtaining records.'
+                );
+            }
+        } else {
+            navigate('/login');
+        }
+    };
+
     useEffect(() => {
         console.log('test...')
-        const checkUser = async () => {
-
-            user.current = await (
-                await fetch('/api/login/users/current')
-            ).json();
-
-            console.log('USER IS', user.current);
-            if (
-                user.current !== undefined &&
-                user.current !== null &&
-                user.current.role !== undefined
-            ) {
-                if (user.current.role === 'employer') {
-                    // TODO: Navigate employer to employer page
-                    console.log('THIS IS AN EMPLOYER');
-                    navigate('/dashboard/employer_home');
-                }
-                try {
-                    const data = await (
-                        await fetch('/api/records/' + user.current.id)
-                    ).json();
-                    console.log(data);
-                    setRecords(data);
-                    let totalMinutes = 0;
-                    await data.forEach(
-                        (record) => (totalMinutes += record.minutes)
-                    );
-                    setMinutes(totalMinutes);
-                } catch (error) {
-                    
-                    if (!window.navigator.onLine) {
-                        toast.error(
-                            'You are offline. Please go back online to view your total time logged.'
-                        );
-                        return;
-                    }
-                    toast.error(
-                        'An error has occurred while obtaining records.'
-                    );
-                }
-            } else {
-                navigate('/login');
-            }
-        };
         checkUser();
 
         let interval;
@@ -159,6 +159,7 @@ const EmployeeHomepage = () => {
             setManualDate('');
             manualMessage.current.value = '';
             toast.success('Record entered successfully!');
+            checkUser();
         } catch (error) {
             if (!window.navigator.onLine) {
                 toast.error(
@@ -227,6 +228,7 @@ const EmployeeHomepage = () => {
             endTime.current.value = '';
             setOpen(false);
             toast.success('Record entered successfully!');
+            checkUser();
         } catch (error) {
             if (!window.navigator.onLine) {
                 toast.error(
@@ -243,7 +245,7 @@ const EmployeeHomepage = () => {
     const handleClockInButtonClicked = () => {
         if (!window.navigator.onLine) {
             toast.error(
-                'You are offline. Please go back online to clock in.'
+                'You are offline. Please go back online to clock in or out.'
             );
             return
         }
@@ -274,6 +276,7 @@ const EmployeeHomepage = () => {
             }).then((res) => res.json());
             console.log('RECORD IS', record);
             toast.success('Time logged successfully!');
+            checkUser();
 
             // Retrieve the latest total time
             try {
