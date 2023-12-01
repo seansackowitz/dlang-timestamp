@@ -220,7 +220,7 @@ const HoursRecord = () => {
         console.log("was i ehre");
         return records.map((item) => {
           return (
-            <div className="relative mt-6 flex w-80 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md recordCard">
+            <div className="relative mt-6 mb-3 flex w-80 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md recordCard">
               <div className="p-6 pb-0">
                 <div className="flex justify-between">
                   <h5 className="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
@@ -276,8 +276,7 @@ const HoursRecord = () => {
 
   return (
     <div
-      className="overflow-y-auto w-full flex flex-col items-center"
-      style={{ maxHeight: "calc(100vh - 9rem)" }} 
+      className="overflow-y-auto w-full flex flex-col items-center container-height"
     >
       <h1 className="text-4xl mt-8 text-center">My Hours</h1>
       <div className="w-72 mt-5">
