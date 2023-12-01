@@ -312,8 +312,7 @@ const EmployeeHomepage = () => {
 
     return (
         <div
-            className="flex flex-col items-center overflow-y-auto "
-            style={{ maxHeight: 'calc(100vh - 9rem)' }}
+            className="flex flex-col items-center overflow-y-auto container-height"
         >
             <h1 className=" text-5xl mt-24 text-center">Total Hours</h1>
             <h2 className=" text-center text-4xl my-4">{`${Math.floor(
