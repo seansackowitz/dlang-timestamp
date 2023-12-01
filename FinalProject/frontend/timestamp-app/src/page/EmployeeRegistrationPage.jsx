@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export const EmployeeRegistrationPage = () => {
     const navigate = useNavigate();
@@ -65,7 +66,7 @@ export const EmployeeRegistrationPage = () => {
             <h1 className="text-5xl mb-8 text-center max-lg:mt-24">
                 Employee Registration
             </h1>
-            <form className="flex flex-col gap-7">
+            <form className="flex flex-col gap-7 items-center">
                 <div className="w-72">
                     <div className="relative h-10 w-full min-w-[200px]">
                         <input
@@ -158,6 +159,14 @@ export const EmployeeRegistrationPage = () => {
                         Sign In
                     </a>
                 </div>
+
+                <Link
+                    to="/register"
+                    className="middle center rounded-sm py-2 px-6 font-sans text-xs text-black transition-all hover:underline mt-1"
+                    type="button"
+                >
+                    Back
+                </Link>
             </form>
         </div>
     );

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Register = () => {
     return (
-        <div className="flex flex-col justify-center h-full items-center">
+        <div className="flex flex-col justify-center h-full items-center align-items">
             <h1 className=" text-5xl mb-4">Register</h1>
             <div className="flex gap-12 mt-14">
                 <Link
@@ -21,6 +21,14 @@ const Register = () => {
                     Employee
                 </Link>
             </div>
+
+            <Link
+                to="/login"
+                className="middle center rounded-sm py-2 px-6 font-sans text-xs text-black transition-all hover:underline mt-8"
+                type="button"
+            >
+                Back
+            </Link>
         </div>
     );
 };
