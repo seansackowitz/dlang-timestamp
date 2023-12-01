@@ -287,12 +287,12 @@ const EmployeeHomepage = () => {
     };
 
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center mb-20">
             <h1 className=" text-5xl mt-24 text-center">Total Hours</h1>
             <h2 className=" text-center text-4xl mt-4">{`${Math.floor(
                 minutes / 60
             )} H ${minutes % 60} M`}</h2>
-            <h1>{minutes}</h1>
+            {/* <h1>{minutes}</h1> */}
             <div className="flex gap-8 mt-8">
                 <button
                     className="block w-full select-none rounded-lg bg-zinc-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-zinc-500/20 transition-all hover:shadow-lg hover:shadow-zinc-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
@@ -328,7 +328,7 @@ const EmployeeHomepage = () => {
                 </svg>
             </button> */}
             <button
-                className="middle none center w-60 h-60 mt-10 rounded-full bg-slate-500 py-3.5 px-7 font-sans text-3xl font-bold uppercase text-white shadow-md shadow-slate-500/20 transition-all hover:shadow-lg hover:shadow-slate-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                className="middle none center w-48 h-48 mt-10 rounded-full bg-slate-500 py-3.5 px-7 font-sans text-3xl font-bold uppercase text-white shadow-md shadow-slate-500/20 transition-all hover:shadow-lg hover:shadow-slate-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 data-ripple-light="true"
                 onClick={() => {
                     handleClockInButtonClicked()
@@ -337,7 +337,7 @@ const EmployeeHomepage = () => {
                 {clockInText}
             </button>
             <p>Timer: {timer} seconds</p>
-            <p><b>Note</b>: You must remember to clock out in order to conclude session and get paid for that time.</p>
+            <p className='sm:ml-4'><b>Note</b>: You must remember to clock out in order to conclude session and get paid for that time.</p>
 
             <Modal open={open} onClose={() => setOpen(false)}>
                 {openCalculatedModal ? (
