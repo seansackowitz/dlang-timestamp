@@ -119,7 +119,7 @@ const ProfilePage = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [hourlyRate, setHourlyRate] = useState("");
-    //employer changing those settings
+    //employer changing those settings 
     const [role, setRole] = useState("");
     const [affiliation, setAffiliation] = useState("");
     const [avatar, setAvatar] = useState("");
