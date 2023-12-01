@@ -101,8 +101,12 @@ const ProfilePage = () => {
             // Notify the user of success
             toast.success("Profile Updated!");
         } catch (error) {
+            if (!window.navigator.onLine) {
+                toast.error("You are offline. Please go back online to update your profile.");
+                return;
+            }
             console.log("error: ", error);
-            toast.error("An error occurred while updating the profile.");
+            toast.error("An error occurred while updating your profile.");
         }
     };
 
@@ -115,7 +119,7 @@ const ProfilePage = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [hourlyRate, setHourlyRate] = useState("");
-    //employer changing those settings
+    //employer changing those settings 
     const [role, setRole] = useState("");
     const [affiliation, setAffiliation] = useState("");
     const [avatar, setAvatar] = useState("");
@@ -123,7 +127,7 @@ const ProfilePage = () => {
     return (
         <div
             className="overflow-y-auto w-full flex flex-col items-center"
-            style={{ maxHeight: "calc(100vh - 5rem)" }}
+            style={{ maxHeight: "calc(100vh - 8rem)" }}
         >
             <section className="w-full mb-20">
                 <h1 className=" text-3xl mx-8 lg:mx-36 mt-8 pb-7 border-b-2">

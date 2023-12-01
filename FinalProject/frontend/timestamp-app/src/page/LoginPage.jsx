@@ -33,14 +33,18 @@ const LoginPage = () => {
                 navigate('/dashboard');
             }, 3000);
         } catch (error) {
+            if (!window.navigator.onLine) {
+                toast.error('You are offline. Please go back online to login');
+                return;
+            }
             toast.error(error.message);
         }
     }
     const username = useRef();
     const password = useRef();
     return (
-        <div className="flex flex-col justify-center h-full items-center">
-            <h1 className="text-5xl mb-8 text-center max-lg:mt-24">Login</h1>
+        <div className="flex flex-col justify-center h-full items-center max-auto">
+            <h1 className="text-5xl mb-8 text-center">Login</h1>
             <form className="flex flex-col gap-7">
                 <div className="w-72">
                     <div className="relative h-10 w-full min-w-[200px]">
@@ -57,6 +61,12 @@ const LoginPage = () => {
                 <div className="w-72">
                     <div className="relative h-10 w-full min-w-[200px]">
                         <input
+                            onKeyDown={(e) => {
+                                if(e.key == 'Enter') {
+                                    
+                                    onLogin();
+                                }
+                            }}
                             type="password"
                             className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                             placeholder=" "

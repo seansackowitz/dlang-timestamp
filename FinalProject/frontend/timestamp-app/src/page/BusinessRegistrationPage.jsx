@@ -53,6 +53,10 @@ const BusinessRegistrationPage = () => {
             }, 1000);
 
         } catch (error) {
+            if (!window.navigator.onLine) {
+                toast.error("You are offline. Please go back online to register as a business.");
+                return;
+            }
             console.log("error: ", error);
             toast.error("An error occurred while registering.");
         }
