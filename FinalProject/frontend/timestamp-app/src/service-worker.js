@@ -14,7 +14,7 @@ import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
 
 function log(...data) {
-  console.log("SWv1.0", ...data);
+  console.log("SWv2.0", ...data);
 }
 
 log("SW Script executing - adding event listeners");
@@ -104,6 +104,7 @@ self.addEventListener('install', event => {
         // '/js/HTTPClient.js',
         // '/js/login.js',
         // '/js/park.js',
+        '/page/LoginPage.jsx',
         '/page/ProfilePage.jsx',
         '/page/Homepage.jsx',
         '/page/HoursRecord.jsx',
@@ -153,10 +154,18 @@ self.addEventListener('fetch', (event) => {
   if (requestUrl.origin === location.origin && requestUrl.pathname.startsWith('/api/')) {
     if (event.request.method === "GET") {
       try {
-        // Attempt to fetch and cache the response
-        event.respondWith(
-          fetchAndCache(event.request)
-        );
+        if (navigator.onLine) {
+          // Attempt to fetch and cache the response
+          event.respondWith(
+            fetchAndCache(event.request)
+          );
+        }
+        else {
+          // Only respond with cache when calling GET API requests if an error occurs (offline)
+          event.respondWith(
+            cacheFirst(event.request)
+          );
+        }
       }
       catch (error) {
         // Only respond with cache when calling GET API requests if an error occurs (offline)
@@ -237,5 +246,7 @@ function fetchAndCache(request) {
       });
     }
     return response.clone();
+  }).catch(() => {
+    return new Error("Fetch doesn't work. Potentially offline.");
   });
 }
