@@ -268,7 +268,7 @@ const HoursRecord = () => {
   return (
     <div
       className="overflow-y-auto w-full flex flex-col items-center"
-      style={{ maxHeight: "calc(100vh - 5rem)" }}
+      style={{ maxHeight: "calc(100vh - 10rem)" }}
     >
       <h1 className="text-4xl mt-8 text-center">My Hours</h1>
       <div className="w-72 mt-5">
