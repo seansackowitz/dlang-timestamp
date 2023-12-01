@@ -288,6 +288,7 @@ router.post("/records/manual", TokenMiddleware, async (req, res) => {
         paid: false,
     };
     await records.createRecord(newRecord, await req.user.id);
+    return res.json({ success: true, message: "Record added successfully!" });
 });
 
 router.post("/payments/:recipientId", TokenMiddleware, async (req, res) => {

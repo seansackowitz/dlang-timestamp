@@ -41,7 +41,7 @@ const EmployeeHomepage = () => {
                         return;
                     }
                     toast.error("An error has occurred while obtaining records.");
-                 }
+                }
                 // loggedUser.current.value = "Hello " + user.first_name + " " + user.last_name;
             } else {
                 navigate('/login');
@@ -109,20 +109,18 @@ const EmployeeHomepage = () => {
             minutes: minutes,
         };
         try {
-            let record = await (
-                await fetch('/api/records/manual', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(body),
-                })
-            ).json();
+            await fetch('/api/records/manual', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            });
             setManualHours('');
             setManualMinutes('');
-            manualDate = '';
+            setManualDate('');
             manualMessage.current.value = '';
-            toast.success('Record entered successfully!');    
+            toast.success('Record entered successfully!');
         } catch (error) {
             if (!window.navigator.onLine) {
                 toast.error("You are offline. Please go back online to make new records.");
@@ -187,7 +185,7 @@ const EmployeeHomepage = () => {
             startTime.current.value = '';
             endTime.current.value = '';
             setOpen(false);
-            toast.success('Record entered successfully!');    
+            toast.success('Record entered successfully!');
         } catch (error) {
             if (!window.navigator.onLine) {
                 toast.error("You are offline. Please go back online to make new records.");

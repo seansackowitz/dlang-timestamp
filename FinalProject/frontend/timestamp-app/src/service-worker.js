@@ -14,7 +14,7 @@ import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
 
 function log(...data) {
-  console.log("SWv2.0", ...data);
+  console.log("SWv1.0", ...data);
 }
 
 log("SW Script executing - adding event listeners");
