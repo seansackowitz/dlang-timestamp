@@ -12,12 +12,26 @@ const EmployeeHomepage = () => {
     const [timer, setTimer] = useState(0);
     const [clockedIn, setClockedIn] = useState(false);
     const [clockInText, setClockInText] = useState('CLOCK IN');
+    const [offline, setOffline] = useState(false);
 
     useEffect(() => {
+        if (!window.navigator.onLine) {
+            setOffline(true);
+        } else {
+            setOffline(false);
+        }
+        
+        console.log("Offline status", offline);
+    }, [offline]);
+
+    useEffect(() => {
+        console.log('test...')
         const checkUser = async () => {
+
             user.current = await (
                 await fetch('/api/login/users/current')
             ).json();
+
             console.log('USER IS', user.current);
             if (
                 user.current !== undefined &&
@@ -41,6 +55,7 @@ const EmployeeHomepage = () => {
                     );
                     setMinutes(totalMinutes);
                 } catch (error) {
+                    
                     if (!window.navigator.onLine) {
                         toast.error(
                             'You are offline. Please go back online to view your total time logged.'
@@ -51,7 +66,6 @@ const EmployeeHomepage = () => {
                         'An error has occurred while obtaining records.'
                     );
                 }
-                // loggedUser.current.value = "Hello " + user.first_name + " " + user.last_name;
             } else {
                 navigate('/login');
             }
@@ -59,7 +73,8 @@ const EmployeeHomepage = () => {
         checkUser();
 
         let interval;
-        console.log(clockedIn);
+        console.log('clockedIn', clockedIn);
+        console.log('offline', offline);
         if (clockedIn) {
             interval = setInterval(() => {
                 setTimer((prevTimer) => {
@@ -76,7 +91,7 @@ const EmployeeHomepage = () => {
 
         // Cleanup the interval when the component unmounts or when isRunning changes
         return () => clearInterval(interval);
-    }, [navigate, clockedIn]);
+    }, [navigate, clockedIn, offline]);
 
     //Enter time manually
     const [manualHours, setManualHours] = useState('');
@@ -226,6 +241,13 @@ const EmployeeHomepage = () => {
     };
 
     const handleClockInButtonClicked = () => {
+        if (!window.navigator.onLine) {
+            toast.error(
+                'You are offline. Please go back online to clock in.'
+            );
+            return
+        }
+
         // TODO: Handle clock in button clicked
         setClockedIn((prevState) => !prevState);
 
@@ -294,10 +316,34 @@ const EmployeeHomepage = () => {
             style={{ maxHeight: 'calc(100vh - 9rem)' }}
         >
             <h1 className=" text-5xl mt-24 text-center">Total Hours</h1>
-            <h2 className=" text-center text-4xl mt-4">{`${Math.floor(
+            <h2 className=" text-center text-4xl my-4">{`${Math.floor(
                 minutes / 60
             )} H ${minutes % 60} M`}</h2>
-            {/* <h1>{minutes}</h1> */}
+
+            {offline && (
+            <svg
+                width="12.278452mm"
+                height="8.639862mm"
+                viewBox="0 0 24.556904 17.279724"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                >
+                <defs id="defs216" />
+                <g transform="translate(-48.872324,-94.74602)">
+                    <g transform="matrix(0.27870523,0,0,0.27870523,47.200093,-175.9777)">
+                    <path
+                        style={{ opacity: 1, fill: '#000000', stroke: 'none' }}
+                        d="m 52.53125,19 c -8.891138,0 -17.283401,2.11681 -24.6875,5.90625 a 2.0001995,2.0001995 0 1 0 1.8125,3.5625 C 36.513003,24.95945 44.28163,23 52.53125,23 67.707796,23 81.288582,29.69621 90.5,40.28125 a 2.0001995,2.0001995 0 1 0 3,-2.625 C 83.560476,26.23453 68.887976,19 52.53125,19 Z M 14.875,23.34375 C 9.973676,23.34375 6,27.30536 6,32.1875 c 0,4.88214 3.973676,8.84375 8.875,8.84375 4.901323,0 8.875,-3.96161 8.875,-8.84375 0,-4.88214 -3.973677,-8.84375 -8.875,-8.84375 z M 11.65625,27.5 a 1.6137304,1.607418 0 0 1 1.3125,0.5 L 14.875,29.90625 16.78125,28 a 1.6137304,1.607418 0 0 1 1.125,-0.5 1.6137304,1.607418 0 0 1 1.15625,2.78125 l -1.90625,1.90625 1.90625,1.875 a 1.6162578,1.6099355 0 1 1 -2.28125,2.28125 L 14.875,34.4375 12.96875,36.34375 A 1.6162578,1.6099355 0 1 1 10.6875,34.0625 l 1.90625,-1.875 -1.90625,-1.90625 A 1.6137304,1.607418 0 0 1 11.65625,27.5 Z m 40.875,5.59375 c -12.460899,0 -23.624025,5.68549 -30.96875,14.59375 a 2.0085875,2.0085875 0 1 0 3.09375,2.5625 c 6.612219,-8.01982 16.628601,-13.15625 27.875,-13.15625 11.246397,0 21.294031,5.13643 27.90625,13.15625 A 2.0001995,2.0001995 0 1 0 83.5,47.6875 C 76.155275,38.77924 64.992147,33.09375 52.53125,33.09375 Z m 0,14.75 c -8.421407,0 -15.885334,4.14175 -20.46875,10.46875 a 2.003476,2.003476 0 0 0 3.25,2.34375 c 3.86053,-5.3291 10.107399,-8.8125 17.21875,-8.8125 7.11135,0 13.389469,3.4834 17.25,8.8125 a 2.003476,2.003476 0 0 0 3.25,-2.34375 c -4.583417,-6.327 -12.078594,-10.46875 -20.5,-10.46875 z m 0,16.71875 c -4.529891,0 -8.21875,3.70655 -8.21875,8.21875 0,4.5122 3.688859,8.21875 8.21875,8.21875 4.529891,0 8.25,-3.70655 8.25,-8.21875 0,-4.5122 -3.720109,-8.21875 -8.25,-8.21875 z m 0,4 c 2.363891,0 4.25,1.86405 4.25,4.21875 0,2.3546 -1.886109,4.21875 -4.25,4.21875 -2.36389,0 -4.21875,-1.86415 -4.21875,-4.21875 0,-2.3547 1.85486,-4.21875 4.21875,-4.21875 z"
+                        transform="translate(0,952.36218)"
+                    />
+                    </g>
+                </g>
+            </svg>
+            )}
+
+
+
+
             <div className="flex gap-8 mt-8 px-3">
                 <button
                     className="block w-full select-none rounded-lg bg-zinc-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-zinc-500/20 transition-all hover:shadow-lg hover:shadow-zinc-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
@@ -323,15 +369,6 @@ const EmployeeHomepage = () => {
                 </button>
             </div>
 
-            {/* <button className="w-60 h-60 mt-10 flex items-center justify-center bg-white hover:bg-slate-50 text-white font-bold py-2 px-4 rounded-full focus:outline-none">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="15em"
-                    viewBox="0 0 512 512"
-                >
-                    <path d="M464 256A208 208 0 1 1 48 256a208 208 0 1 1 416 0zM0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z" />
-                </svg>
-            </button> */}
             <button
                 className="middle none center w-48 h-48 mt-10 rounded-full bg-slate-500 py-3.5 px-7 font-sans text-3xl font-bold uppercase text-white shadow-md shadow-slate-500/20 transition-all hover:shadow-lg hover:shadow-slate-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 data-ripple-light="true"
