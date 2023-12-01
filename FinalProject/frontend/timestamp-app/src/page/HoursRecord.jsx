@@ -34,6 +34,7 @@ const HoursRecord = () => {
     let recordCards = document.getElementsByClassName('recordCard');
     console.log("LENGTH OF RECORD CARDS", recordCards.length);
     let index = 0;
+    let recordExists = false;
     for (const record of recordCards) {
       console.log("RECORD", record);
       console.log("SELECTED FILTER", selectedFilter);
@@ -45,19 +46,26 @@ const HoursRecord = () => {
       console.log("IS records[index] != 0 TRUE?", records[index] != 0);
       if ((selectedFilter.value == 1 && records[index].paid == 0) || (selectedFilter.value == 2 && records[index].paid == 1)) {
         console.log("HIDE RECORD", record.id);
-        // record.style.display = "none";
-        record.style.zIndex = "-1";
+        record.style.display = "none";
+        // record.style.zIndex = "-1";
       }
       else {
-        record.style.zIndex = "0";
-        // record.style.display = "block";
+        // record.style.zIndex = "0";
+        record.style.display = "block";
+        recordExists = true;
       }
       index++;
+    }
+    if (recordExists) {
+      document.querySelector('#noRecord').classList.add("hidden");
+    }
+    else {
+      document.querySelector('#noRecord').classList.remove("hidden");
     }
   }
   const handleChange = (e) => {
     // console.log("THIS IS E", e);
-    setSelectedFilter(e);
+    setSelectedFilter(e);  
   }
   const handleEditRecord = (record) => {
     setSelectedRecord(record);
@@ -107,6 +115,7 @@ const HoursRecord = () => {
 
   useEffect(() => {
     checkUser();
+    document.querySelector('#noRecord').classList.add('hidden');
   }, []);
 
   const handleManualHoursInput = (e) => {
@@ -276,8 +285,13 @@ const HoursRecord = () => {
           <label className="">Filters Applied:</label>
         </div>
         <div className="mt-3">
-          <Select options={options} defaultValue={{ value: 0, label: 'None' }} value={selectedFilter} onChange={handleChange} className="z-10">
+          <Select options={options} defaultValue={{ value: 0, label: 'None' }} value={selectedFilter} onChange={handleChange}>
           </Select>
+        </div>
+        <div id="noRecord" className="hidden mt-5 h-1/5 text-center">
+          <p className="text-2xl">There are no records that match the selected filter.</p>
+          <br></br>
+          <p className="text-2xl">Please select another filter.</p>
         </div>
       </div>
       {renderRecords()}
