@@ -15,7 +15,9 @@ const EmployeeHomepage = () => {
 
     useEffect(() => {
         const checkUser = async () => {
-            user.current = await (await fetch('/api/login/users/current')).json();
+            user.current = await (
+                await fetch('/api/login/users/current')
+            ).json();
             console.log('USER IS', user.current);
             if (
                 user.current !== undefined &&
@@ -40,10 +42,14 @@ const EmployeeHomepage = () => {
                     setMinutes(totalMinutes);
                 } catch (error) {
                     if (!window.navigator.onLine) {
-                        toast.error("You are offline. Please go back online to view your total time logged.");
+                        toast.error(
+                            'You are offline. Please go back online to view your total time logged.'
+                        );
                         return;
                     }
-                    toast.error("An error has occurred while obtaining records.");
+                    toast.error(
+                        'An error has occurred while obtaining records.'
+                    );
                 }
                 // loggedUser.current.value = "Hello " + user.first_name + " " + user.last_name;
             } else {
@@ -53,10 +59,9 @@ const EmployeeHomepage = () => {
         checkUser();
 
         let interval;
-        console.log(clockedIn)
+        console.log(clockedIn);
         if (clockedIn) {
             interval = setInterval(() => {
-                
                 setTimer((prevTimer) => {
                     console.log('TIMER IS', prevTimer);
                     setMinutes(minutes + Math.floor(prevTimer / 60));
@@ -72,7 +77,7 @@ const EmployeeHomepage = () => {
         // Cleanup the interval when the component unmounts or when isRunning changes
         return () => clearInterval(interval);
     }, [navigate, clockedIn]);
-    
+
     //Enter time manually
     const [manualHours, setManualHours] = useState('');
     const [manualMinutes, setManualMinutes] = useState('');
@@ -87,16 +92,12 @@ const EmployeeHomepage = () => {
             setManualMinutes(e.target.value);
         }
     };
-    
+
     const handleManualTimeSubmit = async (e) => {
-        if (
-            manualHours === '' ||
-            manualMinutes === '' ||
-            manualDate === ''
-        ) {
-            console.log("MANUAL HOURS", manualHours);
-            console.log("MANUAL MINUTES", manualMinutes);
-            console.log("MANUAL DATE", manualDate);
+        if (manualHours === '' || manualMinutes === '' || manualDate === '') {
+            console.log('MANUAL HOURS', manualHours);
+            console.log('MANUAL MINUTES', manualMinutes);
+            console.log('MANUAL DATE', manualDate);
             toast.error(
                 'Please input the date of the log and the amount of time in hours and minutes.'
             );
@@ -107,15 +108,12 @@ const EmployeeHomepage = () => {
             manualMinutes > 59 ||
             manualHours < 0 ||
             manualMinutes < 0 ||
-            (manualHours == 0 && manualMinutes == 0) || (manualHours == 24 && manualMinutes > 0)
+            (manualHours == 0 && manualMinutes == 0) ||
+            (manualHours == 24 && manualMinutes > 0)
         ) {
             toast.error('Please input a valid amount of hours and minutes.');
             return;
-        } else if (
-            !/^\d{4}$/.test(
-                '' + new Date(manualDate).getFullYear()
-            )
-        ) {
+        } else if (!/^\d{4}$/.test('' + new Date(manualDate).getFullYear())) {
             toast.error(
                 'Please input a valid date. The year must be 4 digits long.'
             );
@@ -148,10 +146,13 @@ const EmployeeHomepage = () => {
             toast.success('Record entered successfully!');
         } catch (error) {
             if (!window.navigator.onLine) {
-                toast.error("You are offline. Please go back online to make new records.");
-            }
-            else {
-                toast.error("An error has occurred while creating your manual record.");
+                toast.error(
+                    'You are offline. Please go back online to make new records.'
+                );
+            } else {
+                toast.error(
+                    'An error has occurred while creating your manual record.'
+                );
             }
         }
     };
@@ -213,10 +214,13 @@ const EmployeeHomepage = () => {
             toast.success('Record entered successfully!');
         } catch (error) {
             if (!window.navigator.onLine) {
-                toast.error("You are offline. Please go back online to make new records.");
-            }
-            else {
-                toast.error("An error occurred while creating your calculated record.");
+                toast.error(
+                    'You are offline. Please go back online to make new records.'
+                );
+            } else {
+                toast.error(
+                    'An error occurred while creating your calculated record.'
+                );
             }
         }
     };
@@ -236,47 +240,45 @@ const EmployeeHomepage = () => {
             let minutes = Math.floor(timer / 60);
             let body = {
                 date: currentTime.toISOString().split('T')[0],
-                notes: "",
+                notes: '',
                 minutes: minutes,
             };
             let record = fetch('/api/records/manual', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(body),
-                }).then(res => res.json());
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            }).then((res) => res.json());
             console.log('RECORD IS', record);
             toast.success('Time logged successfully!');
 
             // Retrieve the latest total time
             try {
                 const data = fetch('/api/records/' + user.current.id)
-                .then(res => res.json())
-                .then(data => {
-                    console.log("$$$$$$$$$$$")
-                    console.log("New records data $$$", data);
-                    // setRecords(data);
-                    console.log("start minutes", minutes);
-                    let totalMinutes = 0;
-                    data.forEach(
-                        (record) => (totalMinutes += record.minutes)
-                    );
+                    .then((res) => res.json())
+                    .then((data) => {
+                        console.log('$$$$$$$$$$$');
+                        console.log('New records data $$$', data);
+                        // setRecords(data);
+                        console.log('start minutes', minutes);
+                        let totalMinutes = 0;
+                        data.forEach(
+                            (record) => (totalMinutes += record.minutes)
+                        );
 
-                    console.log("New minutes $$$", totalMinutes + minutes);
-                    setMinutes(totalMinutes + minutes);
-                });
-                console.log("*************")
+                        console.log('New minutes $$$', totalMinutes + minutes);
+                        setMinutes(totalMinutes + minutes);
+                    });
+                console.log('*************');
 
-                console.log("New records data ***", data);
+                console.log('New records data ***', data);
                 // setRecords(data);
                 // console.log("start minutes", minutes);
                 let totalMinutes = 0;
-                data.forEach(
-                    (record) => (totalMinutes += record.minutes)
-                );
+                data.forEach((record) => (totalMinutes += record.minutes));
 
-                console.log("New minutes ***", totalMinutes);
+                console.log('New minutes ***', totalMinutes);
                 setMinutes(totalMinutes + minutes);
             } catch (error) {}
         }
@@ -287,13 +289,16 @@ const EmployeeHomepage = () => {
     };
 
     return (
-        <div className="flex flex-col items-center mb-20">
+        <div
+            className="flex flex-col items-center overflow-y-auto "
+            style={{ maxHeight: 'calc(100vh - 9rem)' }}
+        >
             <h1 className=" text-5xl mt-24 text-center">Total Hours</h1>
             <h2 className=" text-center text-4xl mt-4">{`${Math.floor(
                 minutes / 60
             )} H ${minutes % 60} M`}</h2>
             {/* <h1>{minutes}</h1> */}
-            <div className="flex gap-8 mt-8">
+            <div className="flex gap-8 mt-8 px-3">
                 <button
                     className="block w-full select-none rounded-lg bg-zinc-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-zinc-500/20 transition-all hover:shadow-lg hover:shadow-zinc-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
@@ -331,7 +336,7 @@ const EmployeeHomepage = () => {
                 className="middle none center w-48 h-48 mt-10 rounded-full bg-slate-500 py-3.5 px-7 font-sans text-3xl font-bold uppercase text-white shadow-md shadow-slate-500/20 transition-all hover:shadow-lg hover:shadow-slate-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 data-ripple-light="true"
                 onClick={() => {
-                    handleClockInButtonClicked()
+                    handleClockInButtonClicked();
                 }}
             >
                 {clockInText}
@@ -351,7 +356,9 @@ const EmployeeHomepage = () => {
                                 <input
                                     name="date"
                                     type="date"
-                                    onChange={(e) => setManualDate(e.target.value)}
+                                    onChange={(e) =>
+                                        setManualDate(e.target.value)
+                                    }
                                     required
                                 />
                             </div>
@@ -362,7 +369,9 @@ const EmployeeHomepage = () => {
                                             handleManualHoursInput(e)
                                         }
                                         value={manualHours}
-                                        onChange={(e) => setManualHours(e.target.value)}
+                                        onChange={(e) =>
+                                            setManualHours(e.target.value)
+                                        }
                                         placeholder="Hours"
                                         type="number"
                                         className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
@@ -380,7 +389,8 @@ const EmployeeHomepage = () => {
                                         }
                                         value={manualMinutes}
                                         onChange={(e) =>
-                                            setManualMinutes(e.target.value)}
+                                            setManualMinutes(e.target.value)
+                                        }
                                         type="number"
                                         placeholder="Minutes"
                                         className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
