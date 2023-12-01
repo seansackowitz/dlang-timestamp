@@ -126,10 +126,9 @@ const ProfilePage = () => {
 
     return (
         <div
-            className="overflow-y-auto w-full flex flex-col items-center"
-            style={{ maxHeight: "calc(100vh - 9rem)" }}
+            className="overflow-y-auto w-full flex flex-col items-center container-height"
         >
-            <section className="w-full mb-20">
+            <section className="w-full mb-4">
                 <h1 className=" text-3xl mx-8 lg:mx-36 mt-8 pb-7 border-b-2">
                     Account Settings
                 </h1>
