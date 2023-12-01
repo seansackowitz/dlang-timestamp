@@ -45,10 +45,12 @@ const HoursRecord = () => {
       console.log("IS records[index] != 0 TRUE?", records[index] != 0);
       if ((selectedFilter.value == 1 && records[index].paid == 0) || (selectedFilter.value == 2 && records[index].paid == 1)) {
         console.log("HIDE RECORD", record.id);
-        record.style.display = "none";
+        // record.style.display = "none";
+        record.style.zIndex = "-1";
       }
       else {
-        record.style.display = "block";
+        record.style.zIndex = "0";
+        // record.style.display = "block";
       }
       index++;
     }
@@ -274,7 +276,7 @@ const HoursRecord = () => {
           <label className="">Filters Applied:</label>
         </div>
         <div className="mt-3">
-          <Select options={options} defaultValue={{ value: 0, label: 'None' }} value={selectedFilter} onChange={handleChange}>
+          <Select options={options} defaultValue={{ value: 0, label: 'None' }} value={selectedFilter} onChange={handleChange} className="z-10">
           </Select>
         </div>
       </div>
