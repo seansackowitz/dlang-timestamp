@@ -35,7 +35,13 @@ const EmployeeHomepage = () => {
                         (record) => (totalMinutes += record.minutes)
                     );
                     setMinutes(totalMinutes);
-                } catch (error) {}
+                } catch (error) {
+                    if (!window.navigator.onLine) {
+                        toast.error("You are offline. Please go back online to view your total time logged.");
+                        return;
+                    }
+                    toast.error("An error has occurred while obtaining records.");
+                 }
                 // loggedUser.current.value = "Hello " + user.first_name + " " + user.last_name;
             } else {
                 navigate('/login');
@@ -46,7 +52,7 @@ const EmployeeHomepage = () => {
     //Enter time manually
     const [manualHours, setManualHours] = useState('');
     const [manualMinutes, setManualMinutes] = useState('');
-    const manualDate = useRef();
+    const [manualDate, setManualDate] = useState('');
     const handleManualHoursInput = (e) => {
         if (!isNaN(e.target.value) && e.target.value != '.') {
             setManualHours(e.target.value);
@@ -61,8 +67,11 @@ const EmployeeHomepage = () => {
         if (
             manualHours === '' ||
             manualMinutes === '' ||
-            manualDate.current.value === ''
+            manualDate === ''
         ) {
+            console.log("MANUAL HOURS", manualHours);
+            console.log("MANUAL MINUTES", manualMinutes);
+            console.log("MANUAL DATE", manualDate);
             toast.error(
                 'Please input the date of the log and the amount of time in hours and minutes.'
             );
@@ -73,13 +82,13 @@ const EmployeeHomepage = () => {
             manualMinutes > 59 ||
             manualHours < 0 ||
             manualMinutes < 0 ||
-            (manualHours == 0 && manualMinutes == 0)
+            (manualHours == 0 && manualMinutes == 0) || (manualHours == 24 && manualMinutes > 0)
         ) {
             toast.error('Please input a valid amount of hours and minutes.');
             return;
         } else if (
             !/^\d{4}$/.test(
-                '' + new Date(manualDate.current.value).getFullYear()
+                '' + new Date(manualDate).getFullYear()
             )
         ) {
             toast.error(
@@ -92,27 +101,36 @@ const EmployeeHomepage = () => {
         console.log('MANUAL HOURS', manualHours);
         console.log('MANUAL MINUTES', manualMinutes);
         console.log('MANUAL MESSAGE', await manualMessage.current.value);
-        console.log('MANUAL DATE', await manualDate.current.value);
+        console.log('MANUAL DATE', await manualDate);
         let minutes = parseInt(manualHours) * 60 + parseInt(manualMinutes);
         let body = {
-            date: await manualDate.current.value,
+            date: await manualDate,
             notes: await manualMessage.current.value,
             minutes: minutes,
         };
-        let record = await (
-            await fetch('/api/records/manual', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(body),
-            })
-        ).json();
-        setManualHours('');
-        setManualMinutes('');
-        manualDate.current.value = '';
-        manualMessage.current.value = '';
-        toast.success('Record entered successfully!');
+        try {
+            let record = await (
+                await fetch('/api/records/manual', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(body),
+                })
+            ).json();
+            setManualHours('');
+            setManualMinutes('');
+            manualDate = '';
+            manualMessage.current.value = '';
+            toast.success('Record entered successfully!');    
+        } catch (error) {
+            if (!window.navigator.onLine) {
+                toast.error("You are offline. Please go back online to make new records.");
+            }
+            else {
+                toast.error("An error has occurred while creating your manual record.");
+            }
+        }
     };
     const manualMessage = useRef();
 
@@ -154,21 +172,30 @@ const EmployeeHomepage = () => {
             endTime: await endTime.current.value,
         };
         console.log('RECORD IS ABOUT TO BE POSTED');
-        let record = await (
-            await fetch('/api/records/calculate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(body),
-            })
-        ).json();
-        console.log('RECORD IS', await record);
-        calculatedMessage.current.value = '';
-        startTime.current.value = '';
-        endTime.current.value = '';
-        setOpen(false);
-        toast.success('Record entered successfully!');
+        try {
+            let record = await (
+                await fetch('/api/records/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(body),
+                })
+            ).json();
+            console.log('RECORD IS', await record);
+            calculatedMessage.current.value = '';
+            startTime.current.value = '';
+            endTime.current.value = '';
+            setOpen(false);
+            toast.success('Record entered successfully!');    
+        } catch (error) {
+            if (!window.navigator.onLine) {
+                toast.error("You are offline. Please go back online to make new records.");
+            }
+            else {
+                toast.error("An error occurred while creating your calculated record.");
+            }
+        }
     };
 
     return (
@@ -229,7 +256,7 @@ const EmployeeHomepage = () => {
                                 <input
                                     name="date"
                                     type="date"
-                                    ref={manualDate}
+                                    onChange={(e) => setManualDate(e.target.value)}
                                     required
                                 />
                             </div>
@@ -240,7 +267,9 @@ const EmployeeHomepage = () => {
                                             handleManualHoursInput(e)
                                         }
                                         value={manualHours}
+                                        onChange={(e) => setManualHours(e.target.value)}
                                         placeholder="Hours"
+                                        type="number"
                                         className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                     />
                                     <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 flex h-full w-full select-none text-sm font-normal leading-tight text-blue-gray-500 transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-pink-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:after:scale-x-100 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
@@ -255,6 +284,9 @@ const EmployeeHomepage = () => {
                                             handleManualMinutesInput(e)
                                         }
                                         value={manualMinutes}
+                                        onChange={(e) =>
+                                            setManualMinutes(e.target.value)}
+                                        type="number"
                                         placeholder="Minutes"
                                         className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                     />

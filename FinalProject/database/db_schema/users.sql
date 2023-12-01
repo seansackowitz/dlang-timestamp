@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `avatar` TEXT NOT NULL,
   `role` varchar(13) NOT NULL,
   `affiliation` varchar(100) NOT NULL,
-  `hourly_rate` DECIMAL,
+  `hourly_rate` DECIMAL(10, 2),
   `salt` TEXT NOT NULL,
   `password` TEXT NOT NULL,
   PRIMARY KEY (`id`),
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `payments` (
   `date` DATE NOT NULL,
   `sender_id` INTEGER NOT NULL,
   `recipient_id` INTEGER NOT NULL,
-  `amount` NUMERIC NOT NULL
+  `amount` DECIMAL(10, 2) NOT NULL
 );
 
 -- Create records_payments join table
