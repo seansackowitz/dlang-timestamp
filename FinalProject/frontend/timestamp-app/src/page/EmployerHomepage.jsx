@@ -61,11 +61,12 @@ const EmployerHomepage = () => {
         setOpen(true); // Open the modal
     };
 
-    const handleRemoveEmployee = async () => {
-        if (!selectedEmployee) {
-            toast.error("Error");
-            return;
-        }
+    const handleRemoveEmployee = async (employee) => {
+        setSelectedEmployee(employee);
+        // if (!selectedEmployee) {
+        //     toast.error("Error");
+        //     return;
+        // }
         try {
             const updateData = {
                 affiliation: "none",
@@ -73,7 +74,7 @@ const EmployerHomepage = () => {
                 role: "self-employed",
             };
             const response = await fetch(
-                `/api/users/employer/${selectedEmployee.username}`,
+                `/api/users/employer/${await employee.username}`,
                 {
                     method: "PUT",
                     headers: {
@@ -86,7 +87,7 @@ const EmployerHomepage = () => {
                 throw new Error("Failed to removing employee");
             }
             const result = await response.json();
-            console.log("Update result:", result);
+            console.log("Update result:", await result);
             toast.success("Employee Removed");
             setTimeout(() => {
                 window.location.reload(false);
