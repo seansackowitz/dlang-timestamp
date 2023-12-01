@@ -278,7 +278,7 @@ router.post("/records/calculate", TokenMiddleware, async (req, res) => {
 });
 
 router.post("/records/manual", TokenMiddleware, async (req, res) => {
-    const { date, notes, minutes } = await req.body;
+    const { date, notes, minutes } = req.body;
     const newRecord = {
         // id: records[records.length - 1].id + 1,
         date: date,

@@ -6,27 +6,30 @@ import toast from 'react-hot-toast';
 
 const EmployeeHomepage = () => {
     const navigate = useNavigate();
-    let user;
+    const user = useRef();
     const [records, setRecords] = useState([]);
     const [minutes, setMinutes] = useState(0);
+    const [timer, setTimer] = useState(0);
+    const [clockedIn, setClockedIn] = useState(false);
+    const [clockInText, setClockInText] = useState('CLOCK IN');
 
     useEffect(() => {
         const checkUser = async () => {
-            user = await (await fetch('/api/login/users/current')).json();
-            console.log('USER IS', user);
+            user.current = await (await fetch('/api/login/users/current')).json();
+            console.log('USER IS', user.current);
             if (
-                user !== undefined &&
-                user !== null &&
-                user.role !== undefined
+                user.current !== undefined &&
+                user.current !== null &&
+                user.current.role !== undefined
             ) {
-                if (user.role === 'employer') {
+                if (user.current.role === 'employer') {
                     // TODO: Navigate employer to employer page
                     console.log('THIS IS AN EMPLOYER');
                     navigate('/dashboard/employer_home');
                 }
                 try {
                     const data = await (
-                        await fetch('/api/records/' + user.id)
+                        await fetch('/api/records/' + user.current.id)
                     ).json();
                     console.log(data);
                     setRecords(data);
@@ -48,7 +51,28 @@ const EmployeeHomepage = () => {
             }
         };
         checkUser();
-    }, [navigate]);
+
+        let interval;
+        console.log(clockedIn)
+        if (clockedIn) {
+            interval = setInterval(() => {
+                
+                setTimer((prevTimer) => {
+                    console.log('TIMER IS', prevTimer);
+                    setMinutes(minutes + Math.floor(prevTimer / 60));
+                    return prevTimer + 1;
+                });
+                // setMinutes(minutes + timer);
+            }, 1000);
+            // setMinutes(minutes + timer);  //Math.floor(timer / 60)
+        } else {
+            clearInterval(interval);
+        }
+
+        // Cleanup the interval when the component unmounts or when isRunning changes
+        return () => clearInterval(interval);
+    }, [navigate, clockedIn]);
+    
     //Enter time manually
     const [manualHours, setManualHours] = useState('');
     const [manualMinutes, setManualMinutes] = useState('');
@@ -63,6 +87,7 @@ const EmployeeHomepage = () => {
             setManualMinutes(e.target.value);
         }
     };
+    
     const handleManualTimeSubmit = async (e) => {
         if (
             manualHours === '' ||
@@ -133,7 +158,7 @@ const EmployeeHomepage = () => {
     const manualMessage = useRef();
 
     const [open, setOpen] = useState(false);
-    const [openCalculatedModal, setOpenCalcualtedModal] = useState(false);
+    const [openCalculatedModal, setOpenCalculatedModal] = useState(false);
 
     // Enter start time and end time modal (automatically calculated)
     const startTime = useRef();
@@ -196,12 +221,78 @@ const EmployeeHomepage = () => {
         }
     };
 
+    const handleClockInButtonClicked = () => {
+        // TODO: Handle clock in button clicked
+        setClockedIn((prevState) => !prevState);
+
+        if (clockInText == 'CLOCK IN') {
+            setClockInText('CLOCK OUT');
+        } else {
+            // clocking out
+            setClockInText('CLOCK IN');
+
+            const currentTime = new Date();
+
+            let minutes = Math.floor(timer / 60);
+            let body = {
+                date: currentTime.toISOString().split('T')[0],
+                notes: "",
+                minutes: minutes,
+            };
+            let record = fetch('/api/records/manual', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(body),
+                }).then(res => res.json());
+            console.log('RECORD IS', record);
+            toast.success('Time logged successfully!');
+
+            // Retrieve the latest total time
+            try {
+                const data = fetch('/api/records/' + user.current.id)
+                .then(res => res.json())
+                .then(data => {
+                    console.log("$$$$$$$$$$$")
+                    console.log("New records data $$$", data);
+                    // setRecords(data);
+                    console.log("start minutes", minutes);
+                    let totalMinutes = 0;
+                    data.forEach(
+                        (record) => (totalMinutes += record.minutes)
+                    );
+
+                    console.log("New minutes $$$", totalMinutes + minutes);
+                    setMinutes(totalMinutes + minutes);
+                });
+                console.log("*************")
+
+                console.log("New records data ***", data);
+                // setRecords(data);
+                // console.log("start minutes", minutes);
+                let totalMinutes = 0;
+                data.forEach(
+                    (record) => (totalMinutes += record.minutes)
+                );
+
+                console.log("New minutes ***", totalMinutes);
+                setMinutes(totalMinutes + minutes);
+            } catch (error) {}
+        }
+
+        if (!clockedIn) {
+            setTimer(0);
+        }
+    };
+
     return (
         <div className="flex flex-col items-center">
             <h1 className=" text-5xl mt-24 text-center">Total Hours</h1>
             <h2 className=" text-center text-4xl mt-4">{`${Math.floor(
                 minutes / 60
-            )} H ${minutes % 60}M`}</h2>
+            )} H ${minutes % 60} M`}</h2>
+            <h1>{minutes}</h1>
             <div className="flex gap-8 mt-8">
                 <button
                     className="block w-full select-none rounded-lg bg-zinc-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-zinc-500/20 transition-all hover:shadow-lg hover:shadow-zinc-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
@@ -209,7 +300,7 @@ const EmployeeHomepage = () => {
                     data-ripple-light="true"
                     onClick={() => {
                         setOpen(true);
-                        setOpenCalcualtedModal(false);
+                        setOpenCalculatedModal(false);
                     }}
                 >
                     Enter Hours
@@ -220,12 +311,13 @@ const EmployeeHomepage = () => {
                     data-ripple-light="true"
                     onClick={() => {
                         setOpen(true);
-                        setOpenCalcualtedModal(true);
+                        setOpenCalculatedModal(true);
                     }}
                 >
                     Enter hours manually
                 </button>
             </div>
+
             {/* <button className="w-60 h-60 mt-10 flex items-center justify-center bg-white hover:bg-slate-50 text-white font-bold py-2 px-4 rounded-full focus:outline-none">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -235,12 +327,17 @@ const EmployeeHomepage = () => {
                     <path d="M464 256A208 208 0 1 1 48 256a208 208 0 1 1 416 0zM0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z" />
                 </svg>
             </button> */}
-            {/* <button
-                className=" middle none center w-60 h-60 mt-10 rounded-full bg-slate-500 py-3.5 px-7 font-sans text-4xl font-bold uppercase text-white shadow-md shadow-slate-500/20 transition-all hover:shadow-lg hover:shadow-slate-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+            <button
+                className="middle none center w-60 h-60 mt-10 rounded-full bg-slate-500 py-3.5 px-7 font-sans text-3xl font-bold uppercase text-white shadow-md shadow-slate-500/20 transition-all hover:shadow-lg hover:shadow-slate-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 data-ripple-light="true"
+                onClick={() => {
+                    handleClockInButtonClicked()
+                }}
             >
-                CLOCK IN
-            </button> */}
+                {clockInText}
+            </button>
+            <p>Timer: {timer} seconds</p>
+            <p><b>Note</b>: You must remember to clock out in order to conclude session and get paid for that time.</p>
 
             <Modal open={open} onClose={() => setOpen(false)}>
                 {openCalculatedModal ? (
