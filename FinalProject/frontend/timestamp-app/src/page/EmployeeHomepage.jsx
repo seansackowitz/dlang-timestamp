@@ -371,7 +371,7 @@ const EmployeeHomepage = () => {
                 </button>
             </div>
 
-            <button
+            {/* <button
                 className="middle none center w-48 h-48 mt-10 rounded-full bg-slate-500 py-3.5 px-7 font-sans text-3xl font-bold uppercase text-white shadow-md shadow-slate-500/20 transition-all hover:shadow-lg hover:shadow-slate-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 data-ripple-light="true"
                 onClick={() => {
@@ -381,7 +381,7 @@ const EmployeeHomepage = () => {
                 {clockInText}
             </button>
             <p>Timer: {timer} seconds</p>
-            <p className='sm:ml-4'><b>Note</b>: You must remember to clock out in order to conclude session and get paid for that time.</p>
+            <p className='sm:ml-4'><b>Note</b>: You must remember to clock out in order to conclude session and get paid for that time.</p> */}
 
             <Modal open={open} onClose={() => setOpen(false)}>
                 {openCalculatedModal ? (
