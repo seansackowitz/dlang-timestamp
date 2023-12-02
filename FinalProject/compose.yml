@@ -35,6 +35,6 @@ services:
             # Mount a volume for mariadb's persistent files for lifecycle outside of stack
             - './database/data:/var/lib/mysql'
             # Mount the db_schema directory into the container to be auto-read and created in the new db
-            - './database/db_schema:/docker-entrypoint-initdb.d'
+            - './database/db_schema:/docker-entrypoint-initdb.d/users.sql'
         env_file:
             - .env
