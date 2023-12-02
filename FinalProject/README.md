@@ -95,11 +95,11 @@ Team Member | Contributions
 ------------|--------------
 Kuangyao Mai | Set up the frontend pages and a lot of API endpoints related to profiles of users, payments, and registration for employers and employees. Also set up routing for navigating between pages. Also worked on responsive design and dynamically rendering content based on the currently logged in user for the employers and employees.
 Dylan Lang | Set up the Dockerfile and docker compose file for the configuration settings and also set up the SQL file for the tables and mock data. Worked on various pages to interact with the APIs, such as POST, GET, and PUT requests for records. Also protected the frontend routes with role authorization and checking the current user and dynamically rendering hours and minutes worked for records and the name of the currently logged in user.
-Michael Dacanay | Worked on the payment page.
+Michael Dacanay | Worked on the payment page (invoices for business to pay employee wages) and payment confirmation page.
 
 #### Final Project
 Team Member | Contributions
 ------------|--------------
 Kuangyao Mai | Worked on addressing the feedback from Milestone 2 to make the system more intuitive to use and finished the Payment page to be responsive and work as intended. Also updated other pages to be responsive. Worked on updating the Manifest to ensure that the application is installable. Also fixed the profile photo not being updated when the user changes it on the profile page.
 Dylan Lang | Worked on supporting offline functionality with the service worker for all of the mentioned pages above and also helped with supporting responsive design for various pages. Also made some bug fixes to removing an employee, editing a record, and POSTing a new manual employee record.
-Michael Dacanay | Worked on the clock in button (that was later found to be too time consuming of a feature to implement) and added UI enhancements, such as back buttons and the wifi icon to notify the user is offline.
+Michael Dacanay | Worked on the clock in button (that was later found to be too time consuming of a feature to implement e.g. while the timer works and displays length of current session on the screen, the timer does not persist when changing pages) and added UI enhancements, such as back buttons and the offline wifi icon to notify the user is offline. Also, made a bug fix so that total time worked is updated right after recording a work session (whereas before, one needed to navigate away and back). 
