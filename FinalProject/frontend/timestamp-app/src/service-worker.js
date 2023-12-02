@@ -236,13 +236,32 @@ function cacheFirst(request) {
 
 
 
+// function fetchAndCache(request) {
+//   return fetch(request).then(response => {
+//     var requestUrl = new URL(request.url);
+//     //Cache everything except login
+//     if (response.ok /*&& !requestUrl.pathname.startsWith('/login')*/) {
+//       caches.open(STATIC_CACHE_NAME).then((cache) => {
+//         cache.put(request, response);
+//       });
+//     }
+//     return response.clone();
+//   }).catch(() => {
+//     return new Error("Fetch doesn't work. Potentially offline.");
+//   });
+// }
+
 function fetchAndCache(request) {
+  // Only proceed for GET requests
+  if (request.method !== 'GET') {
+    return fetch(request);
+  }
+
   return fetch(request).then(response => {
-    var requestUrl = new URL(request.url);
-    //Cache everything except login
-    if (response.ok /*&& !requestUrl.pathname.startsWith('/login')*/) {
+    // Only cache valid responses for GET requests
+    if (response.ok) {
       caches.open(STATIC_CACHE_NAME).then((cache) => {
-        cache.put(request, response);
+        cache.put(request, response.clone());
       });
     }
     return response.clone();

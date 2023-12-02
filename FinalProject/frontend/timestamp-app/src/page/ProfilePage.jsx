@@ -1,35 +1,35 @@
-import React, { useRef, useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import React, { useRef, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const ProfilePage = () => {
     const navigate = useNavigate();
-
+    const [selectedFile, setSelectedFile] = useState(null);
     useEffect(() => {
         const checkUser = async () => {
-            let user = await (await fetch("/api/login/users/current")).json();
+            let user = await (await fetch('/api/login/users/current')).json();
             if (
                 user !== undefined &&
                 user !== null &&
                 user.role !== undefined
             ) {
-                setUsername(user.username || "");
-                setFirstName(user.first_name || "");
-                setLastName(user.last_name || "");
-                setHourlyRate(user.hourly_rate || "");
-                setRole(user.role || "");
-                setAffiliation(user.affiliation || "");
+                setUsername(user.username || '');
+                setFirstName(user.first_name || '');
+                setLastName(user.last_name || '');
+                setHourlyRate(user.hourly_rate || 0);
+                setRole(user.role || '');
+                setAffiliation(user.affiliation || '');
                 setAvatar(
                     user.avatar ||
-                    "https://images-ext-1.discordapp.net/external/6CZaeJz37z5zmVIZ2c1ELxM5NicrKd96KM65FiBHGPA/https/art.pixilart.com/0b055c338bd0168.png?width=598&height=598"
+                        'https://images-ext-1.discordapp.net/external/6CZaeJz37z5zmVIZ2c1ELxM5NicrKd96KM65FiBHGPA/https/art.pixilart.com/0b055c338bd0168.png?width=598&height=598'
                 );
 
-                if (user.role === "employer") {
+                if (user.role === 'employer') {
                     // TODO: Navigate employer to employer page
-                    console.log("THIS IS AN EMPLOYER");
+                    console.log('THIS IS AN EMPLOYER');
                 }
             } else {
-                navigate("/login");
+                navigate('/login');
             }
         };
         checkUser();
@@ -42,17 +42,19 @@ const ProfilePage = () => {
         profilePicUploadRef.current.click();
     };
 
-    const handleUploadProfileChange = (event) => {
+    const handleUploadProfileChange = async (event) => {
         //To do: see the preview image
         const file = event.target.files[0];
         if (!file) {
             return;
         }
-        if (file.size > 1 * 1024 * 1024) {
-            alert("File size too big");
+        if (file.size > 2 * 1024 * 1024) {
+            alert('File size too big');
             return;
         }
-        console.log(file);
+
+        setSelectedFile(event.target.files[0]);
+
         const reader = new FileReader();
         reader.onload = (e) => {
             previewProfile.current.src = e.target.result;
@@ -61,6 +63,39 @@ const ProfilePage = () => {
     };
 
     const handleOnSave = async () => {
+        let imageUrl = avatar;
+
+        // Check if there's a file to upload
+        if (selectedFile) {
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('upload_preset', 'fztcb0vm');
+            formData.append(
+                'tags',
+                `${username}_${new Date()
+                    .toISOString()
+                    .split('T')[0]
+                    .replace(/-/g, '')}`
+            );
+            try {
+                const uploadResponse = await fetch(
+                    'https://api.cloudinary.com/v1_1/dbt2yzebq/image/upload',
+                    {
+                        method: 'POST',
+                        body: formData,
+                    }
+                );
+                const imageData = await uploadResponse.json();
+                imageUrl = imageData.url;
+            } catch (error) {
+                console.error('Error uploading image: ', error);
+                alert('Error uploading image');
+                return; // Exit if upload fails
+            }
+        }
+        if(!hourlyRate || hourlyRate === '') {
+            setHourlyRate(0);
+        }
         console.log({
             username: username,
             password: password,
@@ -68,9 +103,10 @@ const ProfilePage = () => {
             role: role,
             affiliation: affiliation,
             hourlyRate: hourlyRate,
+            avatar: imageUrl,
         });
         if ((password || confirmPassword) && password !== confirmPassword) {
-            toast.error("password does not match");
+            toast.error('password does not match');
             return;
         }
         const updateData = {
@@ -80,15 +116,16 @@ const ProfilePage = () => {
             hourly_rate: hourlyRate,
             role: role,
             affiliation: affiliation,
+            avatar: imageUrl,
         };
         if (password) {
             updateData.newPassword = password;
         }
         try {
-            const response = await fetch("/api/users/" + username, {
-                method: "PUT",
+            const response = await fetch('/api/users/' + username, {
+                method: 'PUT',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(updateData),
             });
@@ -96,37 +133,43 @@ const ProfilePage = () => {
                 throw new Error(response.statusText);
             }
             const data = await response.json();
-            console.log("Response back with data: ", data);
+            console.log('Response back with data: ', data);
 
             // Notify the user of success
-            toast.success("Profile Updated!");
+            toast.success('Profile Updated!');
+            setTimeout(() => {
+                window.location.reload(false);
+            }, 1000)
         } catch (error) {
             if (!window.navigator.onLine) {
-                toast.error("You are offline. Please go back online to update your profile.");
+                toast.error(
+                    'You are offline. Please go back online to update your profile.'
+                );
                 return;
             }
-            console.log("error: ", error);
-            toast.error("An error occurred while updating your profile.");
+            console.log('error: ', error);
+            toast.error('An error occurred while updating your profile.');
         }
     };
 
     /**
      * Storing the user information
      */
-    const [username, setUsername] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [hourlyRate, setHourlyRate] = useState("");
-    //employer changing those settings 
-    const [role, setRole] = useState("");
-    const [affiliation, setAffiliation] = useState("");
-    const [avatar, setAvatar] = useState("");
+    const [username, setUsername] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [hourlyRate, setHourlyRate] = useState(0);
+    //employer changing those settings
+    const [role, setRole] = useState('');
+    const [affiliation, setAffiliation] = useState('');
+    const [avatar, setAvatar] = useState('');
 
     return (
         <div
-            className="overflow-y-auto w-full flex flex-col items-center container-height"
+            className="overflow-y-auto w-full flex flex-col items-center"
+            style={{ maxHeight: 'calc(100vh - 5rem)' }}
         >
             <section className="w-full mb-4">
                 <h1 className=" text-3xl mx-8 lg:mx-36 mt-8 pb-7 border-b-2">
@@ -141,7 +184,7 @@ const ProfilePage = () => {
                     ></img>
                     <div className="flex flex-col justify-center gap-2">
                         <b className=" text-lg">Profile Photo</b>
-                        <p>Accepted file type .png. Less than 1MB</p>
+                        <p>Accepted file type .png. Less than 2MB</p>
                         <div className=" relative overflow-hidden">
                             <input
                                 ref={profilePicUploadRef}
@@ -179,7 +222,7 @@ const ProfilePage = () => {
                             <div className="flex items-center gap-3">
                                 <input
                                     disabled={
-                                        role === "employee" ? true : false
+                                        role === 'employee' ? true : false
                                     }
                                     className=" w-11/12 h-11 px-3 mb-2 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
                                     type="text"
@@ -302,7 +345,7 @@ const ProfilePage = () => {
                         <div>
                             <b>Logout of your account</b>
                             <p className="mt-1">
-                                You will be logged out of your current session.{" "}
+                                You will be logged out of your current session.{' '}
                             </p>
                         </div>
                         <button
@@ -314,8 +357,8 @@ const ProfilePage = () => {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',
-                                        'Accept': 'application/json'
-                                    }
+                                        Accept: 'application/json',
+                                    },
                                 });
                                 navigate('/login');
                             }}
