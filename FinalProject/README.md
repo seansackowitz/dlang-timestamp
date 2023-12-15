@@ -16,13 +16,13 @@ The clock in button is defunct as this muddied the implementation and made the o
 ### Page Status
 Pages   | Status | Wireframe
 ------- | ------ | ---------
-Splash Screen | ✅ | [Wireframe](https://github.ncsu.edu/engr-csc342/csc342-2023Fall-GroupX/blob/main/Proposal/Wireframes/splash_login_signin.png) 
-Login   | ✅   | [Wireframe](https://github.ncsu.edu/engr-csc342/csc342-2023Fall-GroupX/blob/main/Proposal/Wireframes/splash_login_signin.png) 
-Profile | ✅     | [Wireframe](https://github.ncsu.edu/engr-csc342/csc342-2023Fall-GroupX/blob/main/Proposal/Wireframes/timestamp_logs_settings.png)
-Register   | ✅     |  [Wireframe](https://github.ncsu.edu/engr-csc342/csc342-2023Fall-GroupX/blob/main/Proposal/Wireframes/splash_login_signin.png) 
-Payment | ✅     | [Wireframe](https://github.ncsu.edu/engr-csc342/csc342-2023Fall-GroupX/blob/main/Proposal/Wireframes/timestamp_business.png)
-Logs   |  ✅    | [Wireframe](https://github.ncsu.edu/engr-csc342/csc342-2023Fall-GroupX/blob/main/Proposal/Wireframes/timestamp_logs_settings.png)
-Homepage  | ✅   | [Wireframe](https://github.ncsu.edu/engr-csc342/csc342-2023Fall-GroupX/blob/main/Proposal/Wireframes/All%20Mobile%20Wireframes.png)
+Splash Screen | ✅ | [Wireframe](https://github.com/DLang42/Timestamp-PWA/assets/47933368/6a605a17-412d-46eb-a935-3b016a8f9044)
+Login   | ✅   | [Wireframe](https://github.com/DLang42/Timestamp-PWA/assets/47933368/5b9bec6e-4d12-4089-89a9-8bf4cd874fd4)
+Profile | ✅     | [Wireframe](https://github.com/DLang42/Timestamp-PWA/assets/47933368/2a4a1feb-455d-49e5-b5d8-ffcf771b434b)
+Register   | ✅     |  [Wireframe](https://github.com/DLang42/Timestamp-PWA/assets/47933368/210c2960-3d60-4181-a872-e5fb21c4d4c4)
+Payment | ✅     | [Wireframe](https://github.com/DLang42/Timestamp-PWA/assets/47933368/01cd6677-83eb-4137-99ea-c59ff502c7ca)
+Logs   |  ✅    | [Wireframe](https://github.com/DLang42/Timestamp-PWA/assets/47933368/8facfcef-31ca-4ef0-8d2c-57142dcd6947)
+Homepage  | ✅   | [Wireframe](https://github.com/DLang42/Timestamp-PWA/assets/47933368/64ee00bf-8c2c-4ec3-9d8a-1a4a40263956)
 
 ### Page Information
 There are several pages to discuss here. 
