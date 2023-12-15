@@ -76,8 +76,14 @@ In terms of authentication and authorization, we are using cookies that are sent
 ## ER Diagram
 ![image](https://media.github.ncsu.edu/user/20833/files/24ae21d3-813a-458d-aef4-03cb54bcd783)
 
-Link to more information: https://github.ncsu.edu/engr-csc342/csc342-2023Fall-GroupX/wiki/TimeStamp-ER-Diagram
+* Users: Each of the user a unique unique identifier (id) and personal information such as first_name, last_name, and username. It also includes avatar URLs, the role of the user within the system, their affiliation with any organization, and hourly rate for payment purposes. Security-related information like salt (used to hash passwords) and password are stored as well.
 
+* Payments: Each transaction has a unique id, a date, and includes both a sender_id and a recipient_id to link back to the Users table, indicating who sent and who received the payment, along with the amount transferred.
+
+* Records:  This table logs the specific activities or work records. It contains a unique id, a date for the record, a minutes field that could track the duration of the activity, notes for any additional information, and a paid field that may indicate whether the activity has been paid. 
+
+* Records_Payments: It links records to payments, allowing for the association of transactions with specific record logs.
+* User_Records: This table connects users to records, which can be used to determine which activities or logs are associated with which users.
 ### Individual Team Member Contributions
 
 #### Project Proposal
