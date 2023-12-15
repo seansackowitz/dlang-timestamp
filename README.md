@@ -15,4 +15,4 @@ There are required technologies that need to be installed in order for this to w
 - NodeJS
 - MySQL 
 
-To run this project, navigate to the FinalProject directory. Then, run the command docker compose up (with an optional --build argument) to run the application. To restart the build each time, simply do docker compose down. Make sure to do docker system prune in order to remove all containers and images.
+To run this project, navigate to the FinalProject directory through ``cd FinalProject``. Then, run the command ``docker compose up`` (with an optional ``--build`` argument) to run the application. To restart the build each time, simply do ``docker compose down`` before doing ``docker compose up --build``. Make sure to do ``docker system prune`` in order to remove all containers and images.
