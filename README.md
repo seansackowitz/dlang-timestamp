@@ -38,3 +38,7 @@ Here are a list of ideas for improving the application:
 - Add support for adding self-employed users to a business and promoting employees to employer status if there are multiple employers.
 - Fix the date for editing an unpaid record for mobile view (low priority)
 - Support an option for the user to delete their account (low priority)
+- Add a function to filter records by specific periods of time for employees
+- Allow employers to view the employee records before paying the employee
+- Allow an employer to communicate with the employee if there are issues with the employee using web sockets
+- Allow an employer to disapprove an employee's unpaid records
