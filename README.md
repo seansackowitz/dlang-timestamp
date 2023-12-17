@@ -37,4 +37,4 @@ Here are a list of ideas for improving the application:
 - Make registering a business more secure by ensuring that only one instance of a business exists. This can be done through string comparisons.
 - Add support for adding self-employed users to a business and promoting employees to employer status if there are multiple employers.
 - Fix the date for editing an unpaid record for mobile view (low priority)
-- Support an option for the user to delete their account
+- Support an option for the user to delete their account (low priority)
