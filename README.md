@@ -46,3 +46,4 @@ Here are a list of ideas for improving the application:
 - Allow employers to view the employee records before paying the employee
 - Allow an employer to communicate with the employee if there are issues with the employee using web sockets
 - Allow an employer to disapprove an employee's unpaid records
+- Change the installation of the web application to be standalone to look more like a mobile app
