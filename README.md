@@ -19,6 +19,8 @@ It isn't enough to have these required technologies to set up the web applicatio
 
 To run this project, navigate to the FinalProject directory through ``cd FinalProject``. Then, run the command ``docker compose up`` (with an optional ``--build`` argument) to run the application. To restart the build each time, simply do ``docker compose down`` before doing ``docker compose up --build``. Make sure to do ``docker system prune`` in order to remove all containers and images.
 
+If there is ever an issue with running containers because a port was already allocated (i.e. ``port 3307`` was already allocated to an existing container), then simply go through the directories ``Milestone1`` and ``Milestone2`` and perform ``docker compose down``. Then run ``docker compose up --build`` in ``FinalProject``.
+
 # Developer's Guide
 To view the state of the database using the Docker container, you can use MySQL workbench or Heidi SQL or any other client to connect to the database. Since ``port 3306`` is the default database connection with respect to your local machine, a proxy configuration was used to ensure that ``port 3307`` will be mapped to ``port 3306`` within the Docker container. Keep this in mind when setting up your database connection and connecting to the database within the Docker container.
 
