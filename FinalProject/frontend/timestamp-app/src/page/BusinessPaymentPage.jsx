@@ -152,8 +152,8 @@ const BusinessPaymentPage = () => {
 
     return (
         <div
-            className="overflow-y-auto w-full flex flex-col items-center"
-            style={{ maxHeight: "calc(100vh - 10rem)" }}
+            className="overflow-y-auto w-full flex flex-col items-center container-height"
+            // style={{ maxHeight: "calc(100vh - 10rem)" }}
         >
             <section className="mt-8 w-full px-2 sm:px-4 md:px-8 lg:px-10 flex flex-col">
                 <h1 className="text-3xl text-center">Payment</h1>

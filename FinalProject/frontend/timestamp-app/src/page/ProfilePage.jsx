@@ -168,8 +168,8 @@ const ProfilePage = () => {
 
     return (
         <div
-            className="overflow-y-auto w-full flex flex-col items-center"
-            style={{ maxHeight: 'calc(100vh - 5rem)' }}
+            className="overflow-y-auto w-full flex flex-col items-center container-height"
+            // style={{ maxHeight: 'calc(100vh - 5rem)' }}
         >
             <section className="w-full mb-4">
                 <h1 className=" text-3xl mx-8 lg:mx-36 mt-8 pb-7 border-b-2">
@@ -340,7 +340,7 @@ const ProfilePage = () => {
                         </button>
                     </div>
                 </div> */}
-                <div className=" mx-4 mt-4 flex lg:mx-36">
+                <div className="mx-4 my-4 flex lg:mx-36">
                     <div className="flex justify-between w-full lg:flex-nowrap flex-wrap gap-4">
                         <div>
                             <b>Logout of your account</b>
