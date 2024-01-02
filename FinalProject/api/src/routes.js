@@ -442,7 +442,7 @@ router.put("/users/employer/:username", TokenMiddleware, async (req, res) => {
         console.log("This is the update data: ", updateData);
         // console.log('This is the new password: ', newPassword);
         const checkValidUser = await users.getUserByUsername(username);
-        if (checkValidUser.role === "employer") {
+        if (checkValidUser.role === "employer" || (checkValidUser.role === "employee" && checkValidUser.affiliation !== req.user.affiliation)) {
             throw new Error("You are not allowed to update this user");
         }
         const result = await users.updateUser(
