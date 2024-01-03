@@ -63,11 +63,11 @@ const BusinessRegistrationPage = () => {
         }
     };
     return (
-        <div className="flex flex-col justify-center h-full items-center">
-            <h1 className="text-5xl mb-8  text-center max-lg:mt-24">
+        <div className="flex flex-col h-full items-center overflow-auto">
+            <h1 className="text-5xl text-center">
                 Business Registration
             </h1>
-            <form className="flex flex-col gap-7 items-center">
+            <form className="flex flex-col gap-7 items-center mt-8">
                 <div className="w-72">
                     <div className="relative h-10 w-full min-w-[200px]">
                         <input
@@ -176,15 +176,14 @@ const BusinessRegistrationPage = () => {
                         Sign In
                     </a>
                 </div>
-
-                <Link
-                    to="/register"
-                    className="middle center rounded-sm py-2 px-6 font-sans text-xs text-black transition-all hover:underline mt-1"
-                    type="button"
-                >
-                    Back
-                </Link>
             </form>
+            <Link
+                to="/register"
+                className="middle center rounded-sm py-2 px-6 font-sans text-xs text-black transition-all hover:underline mt-4 mb-4"
+                type="button"
+            >
+                Back
+            </Link>
         </div>
     );
 };
