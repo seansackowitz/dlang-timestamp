@@ -363,6 +363,17 @@ router.put("/users/:username", TokenMiddleware, async (req, res) => {
         console.log("This is the username: ", username);
         console.log("This is the update data: ", updateData);
         console.log("This is the new password: ", newPassword);
+        console.log("This is the user: ", req.user);
+        // Check for validation of fields
+        if (req.user.role !== updateData.role) {
+            res.status(error.code || 400).json({success: false, message: error.message || "Role cannot be modified."})
+        }
+        else if (req.user.affiliation !== updateData.affiliation) {
+            res.status(error.code || 400).json({success: false, message: error.message || "Affiliation cannot be modified."})
+        }
+        else if (req.user.role === "employee" && req.user.hourly_rate !== updateData.hourly_rate) {
+            res.status(error.code || 400).json({success: false, message: error.message || "Hourly rate cannot be modified as an employee."})
+        }
         const result = await users.updateUser(
             username,
             updateData,
