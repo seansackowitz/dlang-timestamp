@@ -80,7 +80,7 @@ async function registerBusiness(registerData) {
         }
         const existingBusiness = await db.query('SELECT * FROM users WHERE affiliation = ?', [affiliation]);
         if (existingBusiness.results.length > 0) {
-            throw new Error('Business already exists')
+            throw new Error('Business already exists');
         }
         // Generate a salt
         const salt = crypto.randomBytes(16).toString('hex');
