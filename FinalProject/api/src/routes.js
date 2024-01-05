@@ -368,11 +368,23 @@ router.put("/users/:username", TokenMiddleware, async (req, res) => {
         if (req.user.role !== updateData.role) {
             res.status(error.code || 400).json({success: false, message: error.message || "Role cannot be modified."})
         }
-        else if (req.user.affiliation !== updateData.affiliation) {
-            res.status(error.code || 400).json({success: false, message: error.message || "Affiliation cannot be modified."})
+        else if (req.user.affiliation !== updateData.affiliation && req.user.role !== "employer") {
+            res.status(error.code || 400).json({success: false, message: error.message || "Affiliation cannot be modified as an employee nor a self-employed user."})
         }
         else if (req.user.role === "employee" && req.user.hourly_rate !== updateData.hourly_rate) {
             res.status(error.code || 400).json({success: false, message: error.message || "Hourly rate cannot be modified as an employee."})
+        }
+        // Update the company name for all users if the employer wishes to change the business name
+        if (req.user.affiliation !== updateData.affiliation && req.user.role === "employer") {
+            const employees = await users.getUsersWithSameAffiliationAsEmployer(req.user.username);
+            console.log("THESE ARE ALL EMPLOYEES:", employees);
+            for (let i = 0; i < employees.length; i++) {
+                const employee = employees[i];
+                const affiliationChange = {
+                    affiliation: updateData.affiliation
+                };
+                await users.updateUser(employee.username, affiliationChange, null);
+            }
         }
         const result = await users.updateUser(
             username,
@@ -434,7 +446,7 @@ router.get("/users/:username/employees", TokenMiddleware, async (req, res) => {
     const { username } = req.params;
     try {
         const usersWithTheSameAffiliation =
-            await users.getUsersWithSameAffilaitionAsEmployer(username);
+            await users.getUsersWithSameAffiliationAsEmployer(username);
         res.json(usersWithTheSameAffiliation);
     } catch (error) {
         res.status(error.code || 500).json({

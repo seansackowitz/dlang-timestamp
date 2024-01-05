@@ -239,7 +239,7 @@ async function updateUser(username, updateData, newPassword) {
     }
 }
 
-function getUsersWithSameAffilaitionAsEmployer(username) {
+function getUsersWithSameAffiliationAsEmployer(username) {
     // First, get the employer's affiliation
     return db
         .query(
@@ -280,8 +280,8 @@ module.exports = {
     getUserById: getUserById,
     registerUser: registerUser,
     updateUser: updateUser,
-    getUsersWithSameAffilaitionAsEmployer:
-        getUsersWithSameAffilaitionAsEmployer,
+    getUsersWithSameAffiliationAsEmployer:
+        getUsersWithSameAffiliationAsEmployer,
     getUserByUsername: getUserByUsername,
     registerBusiness: registerBusiness,
 };
