@@ -289,8 +289,10 @@ const ProfilePage = () => {
                                 type="text"
                                 value={affiliation}
                                 onChange={(e) => setAffiliation(e.target.value)}
-                                disabled
-                            />
+                                disabled={
+                                    role === 'employer' ? false : true
+                                }
+                        />
                         </div>
                         <div className="flex flex-col gap-2 lg:w-1/2 w-full">
                             <label className=" ml-1">Role</label>
