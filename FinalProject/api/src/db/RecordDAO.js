@@ -172,9 +172,14 @@ async function updateRecord(record) {
 
 async function deleteRecord(record) {
     try {
-        const sql = `DELETE FROM records WHERE id=?`;
-        const { results } = await db.query(sql, [record.id]);
-        return await results[0];
+        const deleteFromUserRecordsSql = `DELETE FROM user_records WHERE record_id = ?`;
+        await db.query(deleteFromUserRecordsSql, [record.id]);
+
+        
+        const deleteFromRecordsSql = `DELETE FROM records WHERE id = ?`;
+        await db.query(deleteFromRecordsSql, [record.id]);
+
+        return { message: 'Record deleted successfully' };
     }
     catch (error) {
         throw {

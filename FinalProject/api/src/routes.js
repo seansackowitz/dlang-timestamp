@@ -406,7 +406,7 @@ router.put("/users/:username", TokenMiddleware, async (req, res) => {
 });
 
 router.delete("/records/:id", TokenMiddleware, async (req, res) => {
-    const { id } = await req.body;
+    const { id } = await req.params;
     try {
         let record = await records.getRecordById(id);
         await records.deleteRecord(record);
